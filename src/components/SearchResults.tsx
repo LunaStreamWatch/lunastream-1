@@ -263,7 +263,7 @@ const SearchResults: React.FC = () => {
         </div>
       </div>
 
-      {warningVisible && (
+      {warningVisible &&
         <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-[1000] flex items-center justify-center px-6">
           <div className="bg-white dark:bg-gray-800 rounded-xl p-8 max-w-lg w-full text-center">
             <h2 className="text-3xl font-bold mb-4 text-pink-600 dark:text-pink-400">Haiii!</h2>
@@ -278,7 +278,7 @@ const SearchResults: React.FC = () => {
             </button>
           </div>
         </div>
-      )}
+      }
 
       <main className={`max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 ${warningVisible ? 'blur-sm pointer-events-none' : ''}`}>
         <div className="mb-8">
