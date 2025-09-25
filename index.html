@@ -1,0 +1,33 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <link rel="icon" href="favicon.ico" type="image/x-icon" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LunaStream</title>
+    <meta name="description" content="Discover and stream your favorite movies and TV shows with LunaStream's beautiful, easy-to-use platform." />
+
+    <!-- Global site tag (gtag.js) - Google Analytics -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6FMEE0EMLC"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'G-6FMEE0EMLC');
+    </script>
+  </head>
+  <body>
+    <div id="root"></div>
+    <script type="module" src="/src/main.tsx"></script>
+    <script
+        src="https://slelguoygbfzlpylpxfs.supabase.co/storage/v1/object/public/scripts//route-messenger-vite.js"
+       data-target-origin="*"
+        data-message-type="ROUTE_CHANGE"
+        data-include-search-params="true"
+        data-only-in-iframe="true"
+        data-debug="true"
+        data-custom-data='{"appName": "YourApp", "version": "1.0.0", "greeting": "hi"}'
+        defer
+    ></script>
+  </body>
+</html>
