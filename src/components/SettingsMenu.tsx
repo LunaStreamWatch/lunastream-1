@@ -194,32 +194,32 @@ export const SettingsMenu: React.FC = () => {
 
           {/* Modal */}
           <div ref={ref} className="fixed inset-0 flex items-center justify-center p-4">
-            <div className="w-full max-w-4xl sm:rounded-2xl rounded-none bg-white/95 dark:bg-neutral-900 backdrop-blur-xl border border-gray-200/60 dark:border-white/30 shadow-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[88vh]">
+            <div className="w-full max-w-4xl sm:rounded-2xl rounded-none bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl border border-gray-200/60 dark:border-gray-700/50 shadow-2xl overflow-hidden flex flex-col max-h-[92vh] sm:max-h-[88vh]">
               {/* Header */}
-              <div className="sticky top-0 z-10 px-4 py-3 border-b border-gray-200 dark:border-white/30 bg-white/95 dark:bg-neutral-900 backdrop-blur-xl">
+              <div className="sticky top-0 z-10 px-4 py-3 border-b border-gray-200 dark:border-gray-700/50 bg-white/95 dark:bg-gray-900/95 backdrop-blur-xl">
                 <div className="flex items-center justify-between">
-                  <div className="flex items-center gap-2 text-sm font-semibold text-gray-800 dark:text-gray-100">
+                  <div className="flex items-center gap-2 text-sm font-semibold text-gray-800 dark:text-white">
                     <Cog className="w-4 h-4" /> Settings
                   </div>
                   <div className="flex items-center gap-2">
-                    <button onClick={resetAll} className="px-3 py-1.5 text-xs rounded-lg border border-gray-300 dark:border-white/10 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/5">Reset</button>
-                    <button onClick={() => setOpen(false)} aria-label="Close settings" className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-white/5">
-                      <X className="w-5 h-5 text-gray-600 dark:text-gray-300" />
+                    <button onClick={resetAll} className="px-3 py-1.5 text-xs rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">Reset</button>
+                    <button onClick={() => setOpen(false)} aria-label="Close settings" className="p-1 rounded-md hover:bg-gray-100 dark:hover:bg-gray-800">
+                      <X className="w-5 h-5 text-gray-600 dark:text-gray-200" />
                     </button>
                   </div>
                 </div>
                 {/* Tabs */}
                 <div className="mt-3 grid grid-cols-4 gap-2 sm:hidden">
-                  <button onClick={() => setTab('theme')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-sm ${tab==='theme'? 'bg-gray-100 dark:bg-white/10 border-gray-300 dark:border-white/10' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'}`}>
+                  <button onClick={() => setTab('theme')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='theme'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                     <Moon className="w-4 h-4"/> Theme
                   </button>
-                  <button onClick={() => setTab('accent')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-sm ${tab==='accent'? 'bg-gray-100 dark:bg-white/10 border-gray-300 dark:border-white/10' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'}`}>
+                  <button onClick={() => setTab('accent')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='accent'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                     <Palette className="w-4 h-4"/> Accent
                   </button>
-                  <button onClick={() => setTab('font')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-sm ${tab==='font'? 'bg-gray-100 dark:bg-white/10 border-gray-300 dark:border-white/10' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'}`}>
+                  <button onClick={() => setTab('font')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='font'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                     <Type className="w-4 h-4"/> Font
                   </button>
-                  <button onClick={() => setTab('language')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-sm ${tab==='language'? 'bg-gray-100 dark:bg-white/10 border-gray-300 dark:border-white/10' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/5'}`}>
+                  <button onClick={() => setTab('language')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='language'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                     <Globe className="w-4 h-4"/> Language
                   </button>
                 </div>
@@ -230,16 +230,16 @@ export const SettingsMenu: React.FC = () => {
                 <div className="grid grid-cols-1 sm:grid-cols-[280px,1fr] gap-4">
                   {/* Sidebar (desktop) */}
                   <div className="hidden sm:flex flex-col gap-2">
-                    <button onClick={() => setTab('theme')} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm ${tab==='theme'? 'bg-gray-100 dark:bg-white/15 border-gray-300 dark:border-white/20' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10'}`}>
+                    <button onClick={() => setTab('theme')} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='theme'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                       <Moon className="w-4 h-4"/> Theme
                     </button>
-                    <button onClick={() => setTab('accent')} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm ${tab==='accent'? 'bg-gray-100 dark:bg-white/15 border-gray-300 dark:border-white/20' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10'}`}>
+                    <button onClick={() => setTab('accent')} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='accent'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                       <Palette className="w-4 h-4"/> Accent
                     </button>
-                    <button onClick={() => setTab('font')} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm ${tab==='font'? 'bg-gray-100 dark:bg-white/15 border-gray-300 dark:border-white/20' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10'}`}>
+                    <button onClick={() => setTab('font')} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='font'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                       <Type className="w-4 h-4"/> Font
                     </button>
-                    <button onClick={() => setTab('language')} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm ${tab==='language'? 'bg-gray-100 dark:bg-white/15 border-gray-300 dark:border-white/20' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10'}`}>
+                    <button onClick={() => setTab('language')} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='language'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                       <Globe className="w-4 h-4"/> Language
                     </button>
                   </div>
@@ -247,29 +247,29 @@ export const SettingsMenu: React.FC = () => {
                   <div>
                     {tab === 'theme' && (
                       <div className="space-y-3">
-                        <div className="text-sm font-semibold text-gray-700 dark:text-gray-200">Choose theme</div>
+                        <div className="text-sm font-semibold text-gray-700 dark:text-white">Choose theme</div>
                         <div className="grid grid-cols-2 gap-2">
-                          <button onClick={() => setTheme("light")} className={`flex items-center justify-center gap-2 px-3 py-3 rounded-xl border ${theme==='light'? 'bg-gray-100 dark:bg-white/15 border-gray-300 dark:border-white/20' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10'}`}>
+                          <button onClick={() => setTheme("light")} className={`flex items-center justify-center gap-2 px-3 py-3 rounded-xl border text-gray-700 dark:text-gray-200 ${theme==='light'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                             <Sun className="w-4 h-4" /> Light
                           </button>
-                          <button onClick={() => setTheme("dark")} className={`flex items-center justify-center gap-2 px-3 py-3 rounded-xl border ${theme==='dark'? 'bg-gray-100 dark:bg-white/15 border-gray-300 dark:border-white/20' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10'}`}>
+                          <button onClick={() => setTheme("dark")} className={`flex items-center justify-center gap-2 px-3 py-3 rounded-xl border text-gray-700 dark:text-gray-200 ${theme==='dark'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                             <Moon className="w-4 h-4" /> Dark
                           </button>
                         </div>
                         <div>
-                          <button onClick={resetAll} className="mt-2 px-3 py-2 text-xs rounded-lg border border-gray-300 dark:border-white/20 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-white/10">Reset to defaults</button>
+                          <button onClick={resetAll} className="mt-2 px-3 py-2 text-xs rounded-lg border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-800">Reset to defaults</button>
                         </div>
                       </div>
                     )}
 
                     {tab === 'accent' && (
                       <div className="space-y-3">
-                        <div className="text-sm font-semibold text-gray-700 dark:text-gray-200">Accent gradient</div>
+                        <div className="text-sm font-semibold text-gray-700 dark:text-white">Accent gradient</div>
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-2">
                           {ACCENTS.map(a => (
-                            <button key={a.key} onClick={() => setAccent(a.key)} className={`flex items-center gap-3 px-4 py-3 rounded-xl border ${accent===a.key? 'bg-gray-100 dark:bg-white/15 border-gray-300 dark:border-white/20' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10'}`}>
+                            <button key={a.key} onClick={() => setAccent(a.key)} className={`flex items-center gap-3 px-4 py-3 rounded-xl border text-gray-700 dark:text-gray-200 ${accent===a.key? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                               {a.key === 'custom' ? (
-                                <span className="w-6 h-6 rounded-md border border-gray-300 dark:border-white/20 bg-black" />
+                                <span className="w-6 h-6 rounded-md border border-gray-300 dark:border-gray-600 bg-black" />
                               ) : (
                                 <span className="w-6 h-6 rounded-md" style={{ backgroundImage: `linear-gradient(90deg, ${a.from}, ${a.to})` }} />
                               )}
@@ -278,11 +278,11 @@ export const SettingsMenu: React.FC = () => {
                           ))}
                         </div>
                         {accent === 'custom' && (
-                          <div className="flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-white/20 p-3">
+                          <div className="flex flex-col gap-2 rounded-xl border border-gray-200 dark:border-gray-600 p-3">
                             <label className="text-xs text-gray-600 dark:text-gray-300">Pick a base color</label>
                             <div className="flex items-center gap-3">
-                              <input type="color" value={customHex} onChange={(e) => setCustomHex(e.target.value)} aria-label="Pick accent color" className="h-10 w-10 rounded-md border border-gray-300 dark:border-white/20" />
-                              <div className="flex-1 h-10 rounded-md border border-gray-200 dark:border-white/20" style={{ backgroundImage: `linear-gradient(90deg, ${generateGradientStops(customHex).from}, ${generateGradientStops(customHex).to})` }} />
+                              <input type="color" value={customHex} onChange={(e) => setCustomHex(e.target.value)} aria-label="Pick accent color" className="h-10 w-10 rounded-md border border-gray-300 dark:border-gray-600" />
+                              <div className="flex-1 h-10 rounded-md border border-gray-200 dark:border-gray-600" style={{ backgroundImage: `linear-gradient(90deg, ${generateGradientStops(customHex).from}, ${generateGradientStops(customHex).to})` }} />
                             </div>
                           </div>
                         )}
@@ -291,10 +291,10 @@ export const SettingsMenu: React.FC = () => {
 
                     {tab === 'font' && (
                       <div className="space-y-2">
-                        <div className="text-sm font-semibold text-gray-700 dark:text-gray-200">Global font</div>
+                        <div className="text-sm font-semibold text-gray-700 dark:text-white">Global font</div>
                         <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 max-h-60 overflow-auto pr-1">
                           {FONTS.map(f => (
-                            <button key={f.key} onClick={() => setFont(f.key)} className={`px-3 py-2 rounded-xl border text-left ${font===f.key? 'bg-gray-100 dark:bg-white/15 border-gray-300 dark:border-white/20' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10'}`} style={{ fontFamily: f.css }}>
+                            <button key={f.key} onClick={() => setFont(f.key)} className={`px-3 py-2 rounded-xl border text-left text-gray-700 dark:text-gray-200 ${font===f.key? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`} style={{ fontFamily: f.css }}>
                               {f.label}
                             </button>
                           ))}
@@ -304,10 +304,10 @@ export const SettingsMenu: React.FC = () => {
 
                     {tab === 'language' && (
                       <div className="space-y-2">
-                        <div className="text-sm font-semibold text-gray-700 dark:text-gray-200">Language</div>
+                        <div className="text-sm font-semibold text-gray-700 dark:text-white">Language</div>
                         <div className="grid grid-cols-2 gap-2">
                           {languages.map(({ name, shortname }) => (
-                            <button key={shortname} onClick={() => setLanguage(shortname)} className={`flex items-center gap-2 px-3 py-2 rounded-xl border ${language===shortname? 'bg-gray-100 dark:bg-white/15 border-gray-300 dark:border-white/20' : 'border-gray-200 dark:border-white/10 hover:bg-gray-50 dark:hover:bg-white/10'}`}>
+                            <button key={shortname} onClick={() => setLanguage(shortname)} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-gray-700 dark:text-gray-200 ${language===shortname? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                               <img src={`https://flagsapi.com/${shortname === 'en' ? 'US' : 'DK'}/flat/24.png`} alt={`${name} flag`} className="w-5 h-5 rounded-sm"/>
                               <span>{name}</span>
                             </button>
