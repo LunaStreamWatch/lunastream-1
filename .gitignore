@@ -27,3 +27,4 @@ electron_app/
 bank/
 app/
 electron-dist/
+.env
