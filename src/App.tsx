@@ -23,11 +23,7 @@ import AnimeSection from './components/AnimeSection';
 import AnimeMovieDetail from './components/AnimeMovieDetail';
 import AnimeTVDetail from './components/AnimeTVDetail';
 import { LanguageProvider } from './components/LanguageContext';
-import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { Toaster } from 'sonner';
-import { BrowserRouter } from 'react-router-dom';
-import HoverReceiver from "@/visual-edits/VisualEditsMessenger";
 
 function App() {
   const [isAdminAuthenticated, setIsAdminAuthenticated] = useState(false);
