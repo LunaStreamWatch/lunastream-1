@@ -1,6 +1,11 @@
 export const languages = [
   { name: 'English', shortname: 'en', flag: '🇬🇧' },
   { name: 'Dansk', shortname: 'dk', flag: '🇩🇰' },
+  { name: 'Deutsch', shortname: 'de', flag: '🇩🇪' },
+  { name: 'Français', shortname: 'fr', flag: '🇫🇷' },
+  { name: 'Italiano', shortname: 'it', flag: '🇮🇹' },
+  { name: 'Русский', shortname: 'ru', flag: '🇷🇺' },
+  { name: '日本語', shortname: 'ja', flag: '🇯🇵' },
 ];
 
 export const translations = {
