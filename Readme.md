@@ -1,8 +1,5 @@
 # LunaStream
 
-Cool streaming ong! no ads.
+customisation, bug fixed version.
 
-domains:
-https://lunastream.watch - original, now redirects
-https://lunastream.lol - main
-https://lunastream.gay - new domain for school bypass
+https://lunastream.gay
