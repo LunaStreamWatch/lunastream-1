@@ -65,14 +65,6 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 3000,
-  },
-  plugins: [
-    react(),
-    logErrorsPlugin(),
-    mode === 'development' && componentTaggerPlugin(),
-  ].filter(Boolean),
-  base: './',
-  server: {
     proxy: {
       '/api': {
         target: 'http://localhost:3000',
@@ -81,6 +73,12 @@ export default defineConfig(({ mode }) => ({
       },
     },
   },
+  plugins: [
+    react(),
+    logErrorsPlugin(),
+    mode === 'development' && componentTaggerPlugin(),
+  ].filter(Boolean),
+  base: './',
   optimizeDeps: {
     exclude: ['lucide-react'],
   },
