@@ -332,7 +332,7 @@ export const SettingsMenu: React.FC = () => {
                         <div className="grid grid-cols-2 gap-2">
                           {languages.map(({ name, shortname }) => (
                             <button key={shortname} onClick={() => setLanguage(shortname)} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-gray-700 dark:text-gray-200 ${language===shortname? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
-                              <img src={`https://flagsapi.com/${shortname === 'en' ? 'US' : 'DK'}/flat/24.png`} alt={`${name} flag`} className="w-5 h-5 rounded-sm"/>
+                              <img src={`https://flagsapi.com/${shortname === 'en' ? 'US' : shortname === 'dk' ? 'DK' : shortname === 'de' ? 'DE' : shortname === 'fr' ? 'FR' : shortname === 'it' ? 'IT' : shortname === 'ru' ? 'RU' : shortname === 'ja' ? 'JP' : 'US'}/flat/24.png`} alt={`${name} flag`} className="w-5 h-5 rounded-sm"/>
                               <span>{name}</span>
                             </button>
                           ))}
