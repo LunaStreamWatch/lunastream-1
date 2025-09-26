@@ -80,6 +80,7 @@ export default defineConfig(({ mode }) => ({
   ].filter(Boolean),
   base: './',
   optimizeDeps: {
+    include: ['estree-walker'],
     exclude: ['lucide-react'],
   },
 }));
