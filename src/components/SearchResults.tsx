@@ -40,7 +40,7 @@ const preprocessQuery = (query: string): string =>
 const SearchResults: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialQuery = searchParams.get('q') || '';
-  const initialSort = (searchParams.get('sort') as 'popularity' | 'score') || 'popularity';
+  const initialSort = (searchParams.get('sort') as 'popularity' | 'score') || 'score';
 
   const [searchInput, setSearchInput] = useState(initialQuery);
   const [query, setQuery] = useState(initialQuery);
@@ -237,8 +237,8 @@ const SearchResults: React.FC = () => {
                 className="h-12 px-6 rounded-r-xl border border-l-0 border-pink-200/50 dark:border-gray-600/30 bg-white/95 dark:bg-gray-800/95 text-gray-900 dark:text-gray-100 text-lg focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-200 appearance-none"
                 style={{ paddingRight: '1.5rem' }}
               >
-                <option value="popularity">{t.filter_popularity}</option>
                 <option value="score">{t.filter_relevance}</option>
+                <option value="popularity">{t.filter_popularity}</option>
               </select>
             )}
           </div>
@@ -254,12 +254,11 @@ const SearchResults: React.FC = () => {
                 onChange={handleSortChange}
                 className="text-sm rounded-md border border-pink-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-1 focus:outline-none focus:ring-2 focus:ring-pink-500"
               >
-                <option value="popularity">{t.filter_popularity}</option>
                 <option value="score">{t.filter_relevance}</option>
+                <option value="popularity">{t.filter_popularity}</option>
               </select>
             </div>
           )}
-          </div>
         </div>
       </div>
 
@@ -348,18 +347,19 @@ const SearchResults: React.FC = () => {
             <button
               onClick={() => setCurrentPage(1)}
               disabled={currentPage === 1}
-              className={`bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-full shadow disabled:opacity-40 transition-opacity ${isMobile ? 'px-3 py-2' : 'px-4 py-2'}`}
+              className={`px-4 py-2 rounded-md bg-purple-600 text-white font-semibold hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center ${isMobile ? 'text-sm' : ''}`}
               title={t.nav_first_page}
             >
-              <ChevronsLeft />
+              <ChevronsLeft className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
             </button>
             {/* Go to Previous Page */}
             <button
               onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
               disabled={currentPage === 1}
-              className={`bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-full shadow disabled:opacity-40 transition-opacity ${isMobile ? 'px-4 py-2 text-sm' : 'px-6 py-2'}`}
+              className={`px-4 py-2 rounded-md bg-purple-600 text-white font-semibold hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 ${isMobile ? 'text-sm' : ''}`}
             >
-              <ChevronLeft className={`inline-block mr-2 ${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} /> {t.nav_previous}
+              <ChevronLeft className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+              <span>{t.nav_previous}</span>
             </button>
             {/* Render clickable page numbers */}
             {(() => {
@@ -379,10 +379,10 @@ const SearchResults: React.FC = () => {
                     key={i}
                     onClick={() => setCurrentPage(i)}
                     aria-current={currentPage === i ? 'page' : undefined}
-                    className={`font-medium rounded-full shadow transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-md font-semibold transition ${
                       currentPage === i
-                        ? 'bg-purple-600 text-white px-4 py-2'
-                        : 'bg-white/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 hover:bg-purple-500 hover:text-white px-4 py-2'
+                        ? 'bg-purple-600 text-white'
+                        : 'bg-white/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 hover:bg-purple-700 hover:text-white'
                     } ${isMobile ? 'text-sm' : 'text-base'}`}
                   >
                     {i}
@@ -395,18 +395,19 @@ const SearchResults: React.FC = () => {
             <button
               onClick={() => setCurrentPage(p => Math.min(p + 1, totalLocalPages))}
               disabled={currentPage === totalLocalPages}
-              className={`bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-full shadow disabled:opacity-40 transition-opacity ${isMobile ? 'px-4 py-2 text-sm' : 'px-6 py-2'}`}
+              className={`px-4 py-2 rounded-md bg-purple-600 text-white font-semibold hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 ${isMobile ? 'text-sm' : ''}`}
             >
-              {t.nav_next} <ChevronRight className={`inline-block ml-2 ${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+              <span>{t.nav_next}</span>
+              <ChevronRight className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
             </button>
             {/* Go to Last Page */}
             <button
               onClick={() => setCurrentPage(totalLocalPages)}
               disabled={currentPage === totalLocalPages}
-              className={`bg-gradient-to-r from-pink-500 to-purple-600 text-white rounded-full shadow disabled:opacity-40 transition-opacity ${isMobile ? 'px-3 py-2' : 'px-4 py-2'}`}
+              className={`px-4 py-2 rounded-md bg-purple-600 text-white font-semibold hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center ${isMobile ? 'text-sm' : ''}`}
               title={t.nav_last_page}
             >
-              <ChevronsRight />
+              <ChevronsRight className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
             </button>
             </nav>
           

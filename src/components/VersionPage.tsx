@@ -28,12 +28,11 @@ const VersionPage: React.FC = () => {
   const { language } = useLanguage();
   const t = translations[language] || translations.en;
 
-  const GITHUB_OWNER = 'Waitlists'; // Replace with your GitHub username
-  const GITHUB_REPO = 'lunastream'; // Replace with your repository name
-  const GITHUB_BRANCH = 'main'; // Replace if different
+  const GITHUB_OWNER = 'LunaStreamWatch'; // GitHub organization name
+  const GITHUB_REPO = 'lunastream-1'; // Repository name
+  const GITHUB_BRANCH = 'main'; // Branch name
 
-  const isGitHubConfigured =
-    GITHUB_OWNER !== 'your-username' && GITHUB_OWNER.trim() !== '';
+  const isGitHubConfigured = GITHUB_OWNER.trim() !== '';
 
   const currentTime = new Date();
   const lastModified = new Date(document.lastModified);

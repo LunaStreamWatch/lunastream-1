@@ -1,8 +1,9 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Cog, Moon, Sun, Palette, Globe, Type, X } from "lucide-react";
+import { Cog, Moon, Sun, Palette, Globe, Type, Wand2, X } from "lucide-react";
 import { languages } from "../data/i18n";
 import { useLanguage } from "./LanguageContext";
+import { AnimationSettingsService, type AnimationSettings } from "../services/animationSettings";
 
 // Persist helpers
 const storage = {
@@ -123,7 +124,19 @@ export const SettingsMenu: React.FC = () => {
   const [customHex, setCustomHex] = useState<string>(() => storage.get("accentHex") || "#ec4899");
   const ref = useRef<HTMLDivElement>(null);
   // new: simple tabs for a cleaner layout
-  const [tab, setTab] = useState<"theme" | "accent" | "font" | "language">("accent");
+  const [tab, setTab] = useState<"theme" | "accent" | "font" | "language" | "visuals">("accent");
+  const [animationSettings, setAnimationSettings] = useState<AnimationSettings>(
+    AnimationSettingsService.getSettings()
+  );
+
+  const handleAnimationSettingChange = (
+    key: keyof AnimationSettings,
+    value: boolean
+  ) => {
+    const newSettings = { ...animationSettings, [key]: value };
+    setAnimationSettings(newSettings);
+    AnimationSettingsService.saveSettings(newSettings);
+  };
 
   const resetAll = () => {
     setTheme("light");
@@ -233,7 +246,7 @@ export const SettingsMenu: React.FC = () => {
                   </div>
                 </div>
                 {/* Tabs */}
-                <div className="mt-3 grid grid-cols-4 gap-2 sm:hidden">
+                <div className="mt-3 grid grid-cols-5 gap-2 sm:hidden">
                   <button onClick={() => setTab('theme')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='theme'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                     <Moon className="w-4 h-4"/> Theme
                   </button>
@@ -242,6 +255,9 @@ export const SettingsMenu: React.FC = () => {
                   </button>
                   <button onClick={() => setTab('font')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='font'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                     <Type className="w-4 h-4"/> Font
+                  </button>
+                  <button onClick={() => setTab('visuals')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='visuals'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
+                    <Wand2 className="w-4 h-4"/> Visuals
                   </button>
                   <button onClick={() => setTab('language')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='language'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                     <Globe className="w-4 h-4"/> Language
@@ -262,6 +278,9 @@ export const SettingsMenu: React.FC = () => {
                     </button>
                     <button onClick={() => setTab('font')} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='font'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                       <Type className="w-4 h-4"/> Font
+                    </button>
+                    <button onClick={() => setTab('visuals')} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='visuals'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
+                      <Wand2 className="w-4 h-4"/> Visuals
                     </button>
                     <button onClick={() => setTab('language')} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='language'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                       <Globe className="w-4 h-4"/> Language
@@ -326,16 +345,49 @@ export const SettingsMenu: React.FC = () => {
                       </div>
                     )}
 
+                    {tab === 'visuals' && (
+                      <div className="space-y-4">
+                        <div className="text-sm font-semibold text-gray-700 dark:text-white mb-4">Visual Settings</div>
+                        <div className="space-y-6">
+                          <label className="flex items-center justify-between">
+                            <div>
+                              <span className="text-sm text-gray-700 dark:text-gray-300">Welcome Animation</span>
+                              <p className="text-xs text-gray-500 dark:text-gray-400 mt-0.5">Show animation when visiting home page</p>
+                            </div>
+                            <input
+                              type="checkbox"
+                              checked={animationSettings.enableWelcomeAnimation}
+                              onChange={(e) => handleAnimationSettingChange('enableWelcomeAnimation', e.target.checked)}
+                              className="h-5 w-5 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
+                            />
+                          </label>
+                        </div>
+                      </div>
+                    )}
+
                     {tab === 'language' && (
                       <div className="space-y-2">
                         <div className="text-sm font-semibold text-gray-700 dark:text-white">Language</div>
                         <div className="grid grid-cols-2 gap-2">
-                          {languages.map(({ name, shortname }) => (
-                            <button key={shortname} onClick={() => setLanguage(shortname)} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-gray-700 dark:text-gray-200 ${language===shortname? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
-                              <img src={`https://flagsapi.com/${shortname === 'en' ? 'US' : shortname === 'dk' ? 'DK' : shortname === 'de' ? 'DE' : shortname === 'fr' ? 'FR' : shortname === 'it' ? 'IT' : shortname === 'ru' ? 'RU' : shortname === 'ja' ? 'JP' : 'US'}/flat/24.png`} alt={`${name} flag`} className="w-5 h-5 rounded-sm"/>
-                              <span>{name}</span>
-                            </button>
-                          ))}
+                          {languages.map(({ name, shortname }) => {
+                            const countryCode = shortname === 'en' ? 'GB' : 
+                                             shortname === 'zh' ? 'CN' :
+                                             shortname === 'ko' ? 'KR' :
+                                             shortname === 'es' ? 'ES' :
+                                             shortname === 'pt' ? 'PT' :
+                                             shortname === 'hi' ? 'IN' :
+                                             shortname === 'de' ? 'DE' :
+                                             shortname === 'fr' ? 'FR' :
+                                             shortname === 'it' ? 'IT' :
+                                             shortname === 'ru' ? 'RU' :
+                                             shortname === 'ja' ? 'JP' : 'GB';
+                            return (
+                              <button key={shortname} onClick={() => setLanguage(shortname)} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-gray-700 dark:text-gray-200 ${language===shortname? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
+                                <img src={`https://flagsapi.com/${countryCode}/flat/24.png`} alt={`${name} flag`} className="w-5 h-5 rounded-sm"/>
+                                <span>{name}</span>
+                              </button>
+                            );
+                          })}
                         </div>
                       </div>
                     )}

@@ -1,10 +1,80 @@
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700&family=Poppins:wght@400;600&family=Rubik:wght@400;600&family=Space+Grotesk:wght@400;600&family=Nunito:wght@400;700&family=Lato:wght@400;700&family=Merriweather:wght@400;700&family=Roboto+Mono:wght@400;700&family=VT323&family=Press+Start+2P&family=IBM+Plex+Sans:wght@400;600&family=Manrope:wght@400;700&family=Sora:wght@400;600&family=Urbanist:wght@400;700&family=Outfit:wght@400;600&family=Montserrat:wght@400;700&family=Raleway:wght@400;700&family=Oswald:wght@400;600&family=Archivo:wght@400;700&family=Exo+2:wght@400;700&family=JetBrains+Mono:wght@400;700&family=Fira+Code:wght@400;700&family=Open+Sans:wght@400;600;700&family=Source+Sans+Pro:wght@400;600;700&family=Roboto:wght@400;500;700&family=Playfair+Display:wght@400;700&family=Crimson+Text:wght@400;600&family=Libre+Baskerville:wght@400;700&family=Work+Sans:wght@400;600&family=DM+Sans:wght@400;500;700&family=Plus+Jakarta+Sans:wght@400;600&family=Lexend:wght@400;600&family=Quicksand:wght@400;600&family=Comfortaa:wght@400;700&family=Righteous&family=Fredoka:wght@400;600&family=Caveat:wght@400;700&family=Dancing+Script:wght@400;700&family=Pacifico&family=Bebas+Neue&family=Orbitron:wght@400;700&family=Chakra+Petch:wght@400;600&family=Source+Code+Pro:wght@400;600&family=Inconsolata:wght@400;700&family=Ubuntu+Mono:wght@400;700&family=Cascadia+Code:wght@400;600&display=swap');
 
+/* Animation utilities */
+.zoom-in-fwd {
+  animation: zoom-in-fwd 1.2s cubic-bezier(0.25, 0.46, 0.45, 0.94) both;
+}
+
+@keyframes zoom-in-fwd {
+  0% {
+    transform: translateZ(-80px) scale(0.7);
+    opacity: 0;
+  }
+  100% {
+    transform: translateZ(0) scale(1);
+    opacity: 1;
+  }
+}
+
+@keyframes puff-out-center {
+  0% {
+    -webkit-transform: scale(1);
+            transform: scale(1);
+    -webkit-filter: blur(0px);
+            filter: blur(0px);
+    opacity: 1;
+  }
+  100% {
+    -webkit-transform: scale(2);
+            transform: scale(2);
+    -webkit-filter: blur(4px);
+            filter: blur(4px);
+    opacity: 0;
+  }
+}
+
+.puff-out-center {
+  animation: puff-out-center 0.7s cubic-bezier(0.165, 0.84, 0.44, 1) 0.5s both;
+}
+
+.animate-fade-out-background {
+  animation: fade-out-background 0.3s ease-out forwards;
+}
+
+@keyframes fade-out-background {
+  0% {
+    opacity: 1;
+  }
+  100% {
+    opacity: 0;
+  }
+}
+
 /* Default design tokens controlled by SettingsMenu */
 :root {
   --app-font: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, "Apple Color Emoji", "Segoe UI Emoji";
   --grad-from: rgb(236 72 153); /* pink-500 */
   --grad-to: rgb(147 51 234);   /* purple-600 */
+  
+  /* Gradient text utilities */
+  --grad-text: linear-gradient(to right, var(--grad-from), var(--grad-to));
+  --grad-text-hover: linear-gradient(to right, color-mix(in srgb, var(--grad-from) 80%, white), color-mix(in srgb, var(--grad-to) 80%, white));
+  
+  /* Gradient background utilities */
+  --grad-bg: linear-gradient(to right, var(--grad-from), var(--grad-to));
+  --grad-bg-hover: linear-gradient(to right, color-mix(in srgb, var(--grad-from) 90%, black), color-mix(in srgb, var(--grad-to) 90%, black));
+  
+  /* Gradient border utilities */
+  --grad-border: linear-gradient(to right, var(--grad-from), var(--grad-to));
+  
+  /* Gradient shadow utilities */
+  --grad-shadow-sm: 0 1px 2px var(--grad-from), 0 1px 1px var(--grad-to);
+  --grad-shadow: 0 4px 6px var(--grad-from), 0 2px 4px var(--grad-to);
+  --grad-shadow-lg: 0 10px 15px var(--grad-from), 0 5px 10px var(--grad-to);
+  
+  /* Gradient opacity variations */
+  --grad-from-light: color-mix(in srgb, var(--grad-from) 15%, transparent);
+  --grad-to-light: color-mix(in srgb, var(--grad-to) 15%, transparent);
 }
 
 html, body {
@@ -14,6 +84,56 @@ html, body {
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+  /* Gradient Text */
+  .text-gradient {
+    background: var(--grad-text);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  .text-gradient-hover:hover {
+    background: var(--grad-text-hover);
+    background-clip: text;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+  }
+  
+  /* Gradient Background */
+  .bg-gradient {
+    background: var(--grad-bg);
+  }
+  
+  .bg-gradient-hover:hover {
+    background: var(--grad-bg-hover);
+  }
+  
+  /* Gradient Border */
+  .border-gradient {
+    border-image: var(--grad-border);
+    border-image-slice: 1;
+  }
+  
+  /* Gradient Shadow */
+  .shadow-gradient-sm {
+    box-shadow: var(--grad-shadow-sm);
+  }
+  
+  .shadow-gradient {
+    box-shadow: var(--grad-shadow);
+  }
+  
+  .shadow-gradient-lg {
+    box-shadow: var(--grad-shadow-lg);
+  }
+  
+  /* Gradient Opacity */
+  .bg-gradient-light {
+    background: linear-gradient(to right, var(--grad-from-light), var(--grad-to-light));
+  }
+}
 
 /* Mobile-first responsive design */
 @media (max-width: 640px) {

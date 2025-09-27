@@ -1,0 +1,28 @@
+/* Add to existing styles in index.css */
+@keyframes particle {
+  0% {
+    opacity: 0;
+    transform: rotate(var(--rotation)) translateY(-50px) scale(0);
+  }
+  50% {
+    opacity: 1;
+    transform: rotate(var(--rotation)) translateY(-100px) scale(1);
+  }
+  100% {
+    opacity: 0;
+    transform: rotate(var(--rotation)) translateY(-150px) scale(0);
+  }
+}
+
+@keyframes fade-out {
+  from { opacity: 1; }
+  to { opacity: 0; }
+}
+
+.animate-particle {
+  animation: particle 2s ease-out forwards;
+}
+
+.animate-fade-out {
+  animation: fade-out 0.5s ease-out forwards;
+}

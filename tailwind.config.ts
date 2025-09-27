@@ -10,6 +10,21 @@ export default {
 	],
 	prefix: "",
 	theme: {
+		extend: {
+      backgroundImage: {
+        'gradient-accent': 'var(--grad-bg)',
+        'gradient-accent-hover': 'var(--grad-bg-hover)',
+        'gradient-accent-light': 'linear-gradient(to right, var(--grad-from-light), var(--grad-to-light))',
+      },
+      borderImage: {
+        'gradient-accent': 'var(--grad-border)',
+      },
+      boxShadow: {
+        'gradient-sm': 'var(--grad-shadow-sm)',
+        'gradient': 'var(--grad-shadow)',
+        'gradient-lg': 'var(--grad-shadow-lg)',
+      },
+		},
 		container: {
 			center: true,
 			padding: '2rem',

@@ -45,14 +45,14 @@ const GlobalNavbar: React.FC = () => {
     <nav className="bg-white/95 dark:bg-gray-950/95 backdrop-blur-md border-b border-pink-200/50 dark:border-gray-600/30 sticky top-0 z-50 transition-all duration-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="relative flex items-center h-16">
-          <Link to="/" className="flex items-center space-x-2 group z-10"
-            onMouseDown={() => {
+          <div className="flex items-center space-x-2 group z-10 cursor-pointer"
+            onClick={(e) => {
+              e.preventDefault();
               setLogoSpin(true);
-              setTimeout(() => setLogoSpin(false), 1200);
-            }}
-            onClick={() => {
-              setLogoSpin(true);
-              setTimeout(() => setLogoSpin(false), 1200);
+              setTimeout(() => {
+                setLogoSpin(false);
+                window.location.href = '/';
+              }, 1200);
             }}
           >
             <div className={`w-8 h-8 bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-200 ${logoSpin ? 'animate-spin' : ''}`}
@@ -62,7 +62,7 @@ const GlobalNavbar: React.FC = () => {
             <span className="text-xl font-bold bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] bg-clip-text text-transparent">
               LunaStream
             </span>
-          </Link>
+          </div>
 
           {/* Desktop Navigation */}
           <div className="hidden md:flex items-center space-x-1 absolute left-1/2 transform -translate-x-1/2">
