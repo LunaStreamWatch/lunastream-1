@@ -58,7 +58,7 @@
     "estree-walker": "^3.0.3",
     "globals": "^15.9.0",
     "magic-string": "^0.30.19",
-    "pino-pretty": "^13.0.0",
+    "pino-pretty": "^11.2.2",
     "postcss": "^8.4.35",
     "tailwindcss": "^3.4.1",
     "typescript": "^5.5.3",
