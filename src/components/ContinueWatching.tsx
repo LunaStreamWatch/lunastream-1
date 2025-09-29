@@ -4,7 +4,7 @@ import { Play, X, Clock, ChevronRight } from 'lucide-react';
 import { continueWatchingService, ContinueWatchingItem } from '../services/continueWatching';
 import { getPlayerUrl } from '../utils/playerUtils';
 import { useLanguage } from './LanguageContext';
-import { getTranslation } from '../data/i18n';
+import { translations } from '../data/i18n';
 import { useIsMobile } from '../hooks/useIsMobile';
 
 const ContinueWatching: React.FC = () => {
@@ -12,7 +12,7 @@ const ContinueWatching: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentItem, setCurrentItem] = useState<ContinueWatchingItem | null>(null);
   const { language } = useLanguage();
-  const t = getTranslation(language);
+  const t = translations[language] || translations.en;
   const isMobile = useIsMobile();
 
   useEffect(() => {
