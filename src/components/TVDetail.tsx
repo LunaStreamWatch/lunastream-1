@@ -7,6 +7,7 @@ import { tmdb } from "../services/tmdb"
 import { analytics } from "../services/analytics"
 import type { TVDetails, Episode } from "../types"
 import { watchlistService } from "../services/watchlist"
+import { continueWatchingService } from "../services/continueWatching"
 import GlobalNavbar from "./GlobalNavbar"
 import { playerConfigs, getPlayerUrl } from "../utils/playerUtils"
 import { useLanguage } from "./LanguageContext"
@@ -215,6 +216,18 @@ const TVDetail: React.FC = () => {
   // -------------- UPDATED: Send Discord notification on watch -------------
   const handleWatchEpisode = (episode: Episode) => {
     if (show && id) {
+      // Add to continue watching
+      continueWatchingService.addOrUpdateItem({
+        type: 'tv',
+        tmdbId: show.id,
+        title: show.name,
+        poster: tmdb.getImageUrl(show.poster_path, 'w500') || '',
+        season: episode.season_number,
+        episode: episode.episode_number,
+        episodeTitle: episode.name,
+        progress: 0
+      });
+
       watchlistService.addEpisodeToWatchlist(
         {
           id: show.id,
@@ -380,7 +393,7 @@ const TVDetail: React.FC = () => {
 
         {/* Player iframe */}
         <iframe
-          src={getPlayerUrl("vidplus", { 
+          src={getPlayerUrl("vidify", { 
             tmdbId: id!, 
             mediaType: "tv", 
             seasonNumber: currentEpisode.season_number, 

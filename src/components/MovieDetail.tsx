@@ -8,6 +8,7 @@ import { isBanned } from "../utils/banList"
 import { analytics } from "../services/analytics"
 import type { MovieDetails } from "../types"
 import { watchlistService } from "../services/watchlist"
+import { continueWatchingService } from "../services/continueWatching"
 import GlobalNavbar from "./GlobalNavbar"
 import { getPlayerUrl } from "../utils/playerUtils"
 import { useLanguage } from "./LanguageContext"
@@ -144,6 +145,15 @@ const MovieDetail: React.FC = () => {
   const handleWatchMovie = () => {
     if (!movie || !id) return
 
+    // Add to continue watching
+    continueWatchingService.addOrUpdateItem({
+      type: 'movie',
+      tmdbId: movie.id,
+      title: movie.title,
+      poster: tmdb.getImageUrl(movie.poster_path, 'w500') || '',
+      progress: 0
+    });
+
     watchlistService.addMovieToWatchlist({
       id: movie.id,
       title: movie.title,
@@ -251,7 +261,7 @@ const MovieDetail: React.FC = () => {
           </button>
         </div>
         <iframe
-          src={getPlayerUrl("vidplus", { tmdbId: id!, mediaType: "movie" })}
+          src={getPlayerUrl("vidify", { tmdbId: id!, mediaType: "movie" })}
           className="fixed top-0 left-0 w-full h-full border-0"
           title={movie.title}
           allowFullScreen

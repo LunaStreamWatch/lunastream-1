@@ -5,6 +5,7 @@ import { useParams, Link } from "react-router-dom"
 import { Play, X, ChevronLeft } from "lucide-react"
 import { anilist, Anime } from "../services/anilist"
 import { analytics } from "../services/analytics"
+import { continueWatchingService } from "../services/continueWatching"
 import GlobalNavbar from "./GlobalNavbar"
 import { useLanguage } from "./LanguageContext"
 import { translations } from "../data/i18n"
@@ -145,6 +146,23 @@ const AnimeTVDetail: React.FC = () => {
   const handleWatchEpisode = (episodeNumber: number) => {
     if (!anime || !id) return
 
+    // Add to continue watching
+    let currentAnime = anime
+    if (selectedSeason > 0 && seasonData[selectedSeason - 1]) {
+      currentAnime = seasonData[selectedSeason - 1]
+    }
+    if (currentAnime) {
+      continueWatchingService.addOrUpdateItem({
+        type: 'anime',
+        anilistId: currentAnime.id,
+        title: anilist.getDisplayTitle(currentAnime),
+        poster: currentAnime.coverImage?.large || currentAnime.coverImage?.medium || '',
+        episode: episodeNumber,
+        isDub: isDub,
+        progress: 0
+      });
+    }
+
     setCurrentEpisode(episodeNumber)
 
     let currentAnime = anime
@@ -245,7 +263,12 @@ const AnimeTVDetail: React.FC = () => {
 
 
         <iframe
-          src={`https://vidnest.fun/anime/${currentAnime.id}/${currentEpisode}/${isDub ? 'dub' : 'sub'}`}
+          src={getPlayerUrl("vidify", {
+            anilistId: currentAnime.id.toString(),
+            mediaType: "anime",
+            episodeNumber: currentEpisode,
+            isDub: isDub
+          })}
           className="fixed top-0 left-0 w-full h-full border-0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
           referrerPolicy="origin-when-cross-origin"

@@ -5,6 +5,7 @@ import { useParams, Link } from "react-router-dom"
 import { Play, X, ChevronLeft } from "lucide-react"
 import { anilist, Anime } from "../services/anilist"
 import { analytics } from "../services/analytics"
+import { continueWatchingService } from "../services/continueWatching"
 import GlobalNavbar from "./GlobalNavbar"
 import { useLanguage } from "./LanguageContext"
 import { translations } from "../data/i18n"
@@ -108,6 +109,17 @@ const AnimeMovieDetail: React.FC = () => {
   const handleWatchMovie = () => {
     if (!anime || !id) return
 
+    // Add to continue watching
+    continueWatchingService.addOrUpdateItem({
+      type: 'anime',
+      anilistId: anime.id,
+      title: anilist.getDisplayTitle(anime),
+      poster: anime.coverImage?.large || anime.coverImage?.medium || '',
+      episode: 1,
+      isDub: isDub,
+      progress: 0
+    });
+
     let poster =
       anime.coverImage?.medium || anime.coverImage?.large || ""
     let releaseYear =
@@ -205,7 +217,12 @@ const AnimeMovieDetail: React.FC = () => {
 
         {/* Player iframe */}
         <iframe
-          src={`https://vidnest.fun/anime/${id}/1/${isDub ? "dub" : "sub"}`}
+          src={getPlayerUrl("vidify", {
+            anilistId: id!,
+            mediaType: "anime",
+            episodeNumber: 1,
+            isDub: isDub
+          })}
           className="fixed top-0 left-0 w-full h-full border-0"
           allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
           referrerPolicy="origin-when-cross-origin"

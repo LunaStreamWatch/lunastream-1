@@ -7,6 +7,7 @@ import { useNavigate, useParams, Link } from "react-router-dom"
 import { tmdb } from "../services/tmdb"
 import type { Movie, TVShow } from "../types"
 import GlobalNavbar from "./GlobalNavbar"
+import ContinueWatching from "./ContinueWatching"
 import { filterBannedContent } from "../utils/banList"
 import { languages, translations } from '../data/i18n'
 
@@ -298,6 +299,11 @@ const HomePage: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
+
+      {/* Continue Watching Section */}
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <ContinueWatching />
       </div>
 
       <br />

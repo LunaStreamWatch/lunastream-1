@@ -4,6 +4,7 @@ import { ArrowLeft, Play, Calendar, Star, Clock, X } from 'lucide-react';
 import { tmdb } from '../services/tmdb';
 import { analytics } from '../services/analytics';
 import { watchlistService } from '../services/watchlist';
+import { continueWatchingService } from '../services/continueWatching';
 import GlobalNavbar from './GlobalNavbar';
 import { playerConfigs, getPlayerUrl } from '../utils/playerUtils';
 import { useLanguage } from './LanguageContext';
@@ -107,6 +108,18 @@ const EpisodeDetail: React.FC = () => {
   const handleWatchEpisode = () => {
     if (!show || !episode || !id) return;
 
+    // Add to continue watching
+    continueWatchingService.addOrUpdateItem({
+      type: 'tv',
+      tmdbId: show.id,
+      title: show.name,
+      poster: tmdb.getImageUrl(show.poster_path, 'w500') || '',
+      season: episode.season_number,
+      episode: episode.episode_number,
+      episodeTitle: episode.name,
+      progress: 0
+    });
+
     watchlistService.addEpisodeToWatchlist(
       {
         id: show.id,
@@ -193,7 +206,7 @@ const EpisodeDetail: React.FC = () => {
 
           {/* Player iframe */}
           <iframe
-            src={getPlayerUrl("vidplus", { 
+            src={getPlayerUrl("vidify", { 
               tmdbId: id!, 
               mediaType: "tv", 
               seasonNumber: parseInt(seasonNumber!), 

@@ -13,21 +13,27 @@ export interface PlayerConfig {
 
 export const playerConfigs: PlayerConfig[] = [
   {
-    id: "vidplus",
-    name: "VidPlus",
+    id: "vidify",
+    name: "Vidify",
     generateUrl: ({ tmdbId, anilistId, seasonNumber, episodeNumber, mediaType, isDub = false }) => {
-      const baseUrl = "https://player.vidplus.to/embed";
+      const baseUrl = "https://player.vidify.top/embed";
       const playerParams = new URLSearchParams({
-        primarycolor: "fbc9ff",
-        secondarycolor: "f8b4ff", 
-        iconcolor: "fbc9ff",
-        autoplay: "true",
+        autoplay: "false",
         poster: "true",
-        title: "true",
-        watchparty: "false",
         chromecast: "false",
-      }
-      )
+        servericon: "true",
+        setting: "true",
+        pip: "true",
+        logourl: "https://files.catbox.moe/e41yjl.png",
+        font: "Roboto",
+        fontcolor: "6f63ff",
+        fontsize: "20",
+        opacity: "0.5",
+        primarycolor: "fbc9ff",
+        secondarycolor: "f8b4ff",
+        iconcolor: "fbc9ff",
+      });
+
       if (mediaType === "movie" && tmdbId) {
         return `${baseUrl}/movie/${tmdbId}?${playerParams.toString()}`;
       } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
@@ -41,17 +47,6 @@ export const playerConfigs: PlayerConfig[] = [
       }
       
       throw new Error(`Invalid parameters for ${mediaType}`);
-    },
-  },
-  {
-    id: "vidnest",
-    name: "Vidnest",
-    generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
-      if (mediaType === "movie") {
-        return `https://vidnest.fun/movie/${tmdbId}`;
-      } else {
-        return `https://vidnest.fun/tv/${tmdbId}/${seasonNumber}/${episodeNumber}`;
-      }
     },
   }
 ];
