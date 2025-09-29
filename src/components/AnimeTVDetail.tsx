@@ -146,11 +146,13 @@ const AnimeTVDetail: React.FC = () => {
   const handleWatchEpisode = (episodeNumber: number) => {
     if (!anime || !id) return
 
-    // Add to continue watching
+    // Pick correct anime depending on season
     let currentAnime = anime
     if (selectedSeason > 0 && seasonData[selectedSeason - 1]) {
       currentAnime = seasonData[selectedSeason - 1]
     }
+
+    // Save to continue watching
     if (currentAnime) {
       continueWatchingService.addOrUpdateItem({
         type: 'anime',
@@ -165,10 +167,6 @@ const AnimeTVDetail: React.FC = () => {
 
     setCurrentEpisode(episodeNumber)
 
-    let currentAnime = anime
-    if (selectedSeason > 0 && seasonData[selectedSeason - 1]) {
-      currentAnime = seasonData[selectedSeason - 1]
-    }
     if (!currentAnime) return
 
     let poster = currentAnime.coverImage?.medium || currentAnime.coverImage?.large || ""
@@ -260,7 +258,6 @@ const AnimeTVDetail: React.FC = () => {
             </div>
           </div>
         </div>
-
 
         <iframe
           src={getPlayerUrl("vidify", {
