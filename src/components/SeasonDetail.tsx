@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useParams, Link } from 'react-router-dom';
-import { ArrowLeft, Play, Calendar, Info, Star, Tv, Grid, X } from 'lucide-react';
+import { ArrowLeft, Play, Calendar, Info, Star, Tv, Grid2x2 as Grid, X } from 'lucide-react';
 import { tmdb } from '../services/tmdb';
 import { analytics } from '../services/analytics';
 import { watchlistService } from '../services/watchlist';
