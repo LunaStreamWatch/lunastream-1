@@ -206,7 +206,7 @@ const EpisodeDetail: React.FC = () => {
 
           {/* Player iframe */}
           <iframe
-            src={getPlayerUrl("vidify", { 
+            src={getPlayerUrl("vidplus", { 
               tmdbId: id!, 
               mediaType: "tv", 
               seasonNumber: parseInt(seasonNumber!), 

@@ -180,7 +180,7 @@ const SeasonDetail: React.FC = () => {
 
         {/* Player iframe */}
         <iframe
-          src={getPlayerUrl("vidify", { 
+          src={getPlayerUrl("vidplus", { 
             tmdbId: id!, 
             mediaType: "tv", 
             seasonNumber: currentEpisode.season_number, 
