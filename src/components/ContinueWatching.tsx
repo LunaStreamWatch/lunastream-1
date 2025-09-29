@@ -55,7 +55,7 @@ const ContinueWatching: React.FC = () => {
         episodeNumber: item.episode
       });
     } else if (item.type === 'anime' && item.anilistId && item.episode) {
-      return getPlayerUrl('vidify', {
+      return getPlayerUrl('vidplus', {
         anilistId: item.anilistId.toString(),
         mediaType: 'anime',
         episodeNumber: item.episode,
