@@ -133,11 +133,11 @@ const ContinueWatching: React.FC = () => {
         {items.map((item) => (
           <div
             key={item.id}
-            className="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg border border-pink-200/50 dark:border-gray-700/50 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-1 cursor-pointer"
+            className="group relative bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg border border-pink-200/50 dark:border-gray-700/50 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer"
             onClick={() => handleContinueWatching(item)}
           >
             {/* Poster */}
-            <div className="aspect-[16/9] overflow-hidden relative">
+            <div className="aspect-[2/3] overflow-hidden relative">
               <img
                 src={item.poster}
                 alt={item.title}
@@ -165,10 +165,10 @@ const ContinueWatching: React.FC = () => {
               {/* Remove Button */}
               <button
                 onClick={(e) => handleRemoveItem(e, item.id)}
-                className="absolute top-2 right-2 w-6 h-6 bg-red-500/90 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200"
+                className="absolute top-2 right-2 w-8 h-8 bg-red-500/90 hover:bg-red-600 text-white rounded-full flex items-center justify-center opacity-0 group-hover:opacity-100 transition-all duration-200 shadow-lg"
                 title="Remove from continue watching"
               >
-                <X className="w-3 h-3" />
+                <X className="w-4 h-4" />
               </button>
 
               {/* Type Badge */}
@@ -186,30 +186,36 @@ const ContinueWatching: React.FC = () => {
             </div>
 
             {/* Content */}
-            <div className="p-3">
-              <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-1 line-clamp-2 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
+            <div className="p-4">
+              <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-2 line-clamp-2 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
                 {item.title}
               </h3>
               
               {/* Episode/Season Info */}
               {item.type === 'tv' && item.season && item.episode && (
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
                   S{item.season}E{item.episode}
                   {item.episodeTitle && `: ${item.episodeTitle}`}
                 </p>
               )}
               
               {item.type === 'anime' && item.episode && (
-                <p className="text-xs text-gray-600 dark:text-gray-400 mb-1">
+                <p className="text-xs text-gray-500 dark:text-gray-400 mb-2">
                   Episode {item.episode} {item.isDub ? '(Dub)' : '(Sub)'}
                 </p>
               )}
 
               {/* Progress and Time */}
               <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
-                <span>{formatLastWatched(item.lastWatched)}</span>
+                <div className="flex items-center space-x-1">
+                  <Clock className="w-3 h-3" />
+                  <span>{formatLastWatched(item.lastWatched)}</span>
+                </div>
                 {item.progress && (
-                  <span>{formatProgress(item.progress)} watched</span>
+                  <div className="flex items-center space-x-1">
+                    <Play className="w-3 h-3 text-pink-500" />
+                    <span className="text-pink-600 dark:text-pink-400 font-medium">{formatProgress(item.progress)}</span>
+                  </div>
                 )}
               </div>
             </div>
