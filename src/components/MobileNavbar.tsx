@@ -1,6 +1,6 @@
 import React, { useState } from "react"
 import { Link, useLocation } from "react-router-dom"
-import { Menu, X, Home, Search, Compass, Archive, Heart, Film, Flower } from "lucide-react"
+import { Menu, X, Home, Search, Compass, Archive, Heart, Film, Flower, Settings } from "lucide-react"
 import { translations } from "../data/i18n"
 import { useLanguage } from "./LanguageContext"
 import { SettingsMenu } from "./SettingsMenu"
@@ -25,7 +25,75 @@ const MobileNavbar: React.FC = () => {
     path === "/" ? location.pathname === "/" : location.pathname.startsWith(path)
 
   return (
-    <nav className="md:hidden sticky top-0 z-50 bg-white dark:bg-gray-950 shadow-sm border-b border-pink-200 dark:border-gray-700">
+    <>
+      {/* Top Navigation Bar */}
+      <nav className="md:hidden sticky top-0 z-50 bg-white/95 dark:bg-gray-950/95 backdrop-blur-md shadow-lg border-b border-pink-200/50 dark:border-gray-700/50">
+        <div className="flex items-center justify-between px-4 py-3">
+          <Link to="/" className="flex items-center space-x-2"
+            onMouseDown={() => {
+              setLogoSpin(true)
+              setTimeout(() => setLogoSpin(false), 1200)
+            }}
+            onClick={() => {
+              setLogoSpin(true)
+              setTimeout(() => setLogoSpin(false), 1200)
+            }}
+          >
+            <div className={`w-8 h-8 bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] rounded-lg flex items-center justify-center shadow-lg ${logoSpin ? 'animate-spin' : ''}`}
+                 style={logoSpin ? { animationDuration: '1200ms' } : undefined}>
+              <Film className="w-5 h-5 text-white" />
+            </div>
+            <span className="text-xl font-bold bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] bg-clip-text text-transparent">
+              LunaStream
+            </span>
+          </Link>
+          
+          <div className="flex items-center space-x-2">
+            <SettingsMenu />
+          </div>
+        </div>
+      </nav>
+
+      {/* Bottom Navigation Bar */}
+      <nav className="md:hidden fixed bottom-0 left-0 right-0 z-50 bg-white/95 dark:bg-gray-950/95 backdrop-blur-md border-t border-pink-200/50 dark:border-gray-700/50 shadow-2xl">
+        <div className="flex items-center justify-around px-2 py-3">
+          {navItems.map(({ path, label, icon: Icon }) => (
+            <Link
+              key={path}
+              to={path}
+              className={`flex flex-col items-center space-y-1 px-3 py-2 rounded-xl transition-all duration-200 min-w-[60px] ${
+                isActive(path)
+                  ? "bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white shadow-lg"
+                  : "text-gray-600 dark:text-gray-300 hover:bg-gray-100 dark:hover:bg-gray-800/50"
+              }`}
+            >
+              <Icon className="w-5 h-5" />
+              <span className="text-xs font-medium">{label}</span>
+            </Link>
+          ))}
+          
+          {/* Donate Button */}
+          <Link
+            to="/donate"
+            className={`flex flex-col items-center space-y-1 px-3 py-2 rounded-xl transition-all duration-200 min-w-[60px] ${
+              isActive('/donate')
+                ? "bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white shadow-lg"
+                : "text-pink-600 dark:text-pink-400 hover:bg-pink-50 dark:hover:bg-pink-900/20"
+            }`}
+          >
+            <Heart className="w-5 h-5" />
+            <span className="text-xs font-medium">{t.nav_donate}</span>
+          </Link>
+        </div>
+      </nav>
+
+      {/* Spacer for bottom navigation */}
+      <div className="md:hidden h-20" />
+    </>
+  )
+}
+
+export default MobileNavbar
       <div className="flex items-center justify-between px-4 py-3">
         {/* Vertically centered by flex and minHeight */}
         <Link to="/" className="flex items-center space-x-2"

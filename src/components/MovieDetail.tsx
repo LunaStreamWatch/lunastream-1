@@ -276,7 +276,7 @@ const MovieDetail: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-indigo-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
       <GlobalNavbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div className="p-8 flex-1">
+        <div className="p-4 sm:p-8 flex-1 mobile-spacing">
           <div className="space-y-6">
             <Link to={`/`} className="text-pink-600 dark:text-pink-400 hover:underline ml-1">
               <ChevronLeft />
@@ -288,13 +288,20 @@ const MovieDetail: React.FC = () => {
             />
             <button
               onClick={handleWatchMovie}
-              className="w-full flex justify-center items-center space-x-2 bg-pink-600 hover:bg-pink-700 text-white px-6 py-4 rounded-lg font-semibold transition-colors duration-300 shadow-lg"
+              className="w-full flex justify-center items-center space-x-2 bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] hover:opacity-95 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
             >
               <Play className="w-5 h-5" />
               <span>{t.action_watch_movie || "Watch Movie"}</span>
             </button>
+            
+            {/* Comments Section */}
+            <CommentsSection 
+              mediaType="movie" 
+              mediaId={movie.id} 
+              mediaTitle={movie.title}
+            />
           </div>
-          <div className="mt-10 bg-white dark:bg-gray-900 rounded-2xl shadow-md border border-gray-200 dark:border-gray-800 p-6 sm:p-8">
+          <div className="mt-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm mobile-card rounded-2xl shadow-xl border border-pink-200/50 dark:border-gray-700/50 p-4 sm:p-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">
               {t.cast_overview || "Cast Overview"}
             </h2>

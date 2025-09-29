@@ -218,7 +218,7 @@ const AnimeSection: React.FC = () => {
 
   const handleSuggestionClick = (anime: Anime) => {
     clearSuggestions();
-    const formatPath = anime.format === "MOVIE" ? "movie" : "tv";
+    const formatPath = anilist.isMovie(anime) ? "movie" : "tv";
     navigate(`/anime/${formatPath}/${anime.id}`);
   };
 
@@ -236,7 +236,7 @@ const AnimeSection: React.FC = () => {
     const displayTitle = anilist.getDisplayTitle(anime);
     const year = anilist.getYear(anime);
     const score = anilist.formatScore(anime.averageScore);
-    const formatPath = anime.format === "MOVIE" ? "movie" : "tv";
+    const formatPath = anilist.isMovie(anime) ? "movie" : "tv";
     const path = `/anime/${formatPath}/${anime.id}`;
 
     return (

@@ -3,6 +3,7 @@
 import React, { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
 import { Play, X, ChevronLeft } from "lucide-react"
+import { getPlayerUrl } from "../utils/playerUtils"
 import { anilist, Anime } from "../services/anilist"
 import { analytics } from "../services/analytics"
 import { continueWatchingService } from "../services/continueWatching"

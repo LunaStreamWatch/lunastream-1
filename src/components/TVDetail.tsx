@@ -413,7 +413,7 @@ const TVDetail: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-indigo-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 transition-colors duration-300">
       <GlobalNavbar />
 
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 mobile-spacing">
         {/* Hybrid TV Header */}
         <div className="mb-8">
           <Link
@@ -432,7 +432,7 @@ const TVDetail: React.FC = () => {
         </div>
 
         {/* Cast Overview */}
-        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-purple-200/50 dark:border-gray-700/50 overflow-hidden mb-8 transition-colors duration-300">
+        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm mobile-card rounded-2xl shadow-xl border border-purple-200/50 dark:border-gray-700/50 overflow-hidden mb-8 transition-colors duration-300">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white px-8 pt-8 mb-4">{t.cast_overview || 'Cast Overview'}</h2>
           <div className="flex flex-wrap gap-6 px-8 pb-8">
             {loading ? (
@@ -463,8 +463,15 @@ const TVDetail: React.FC = () => {
           </div>
         </div>
 
+        {/* Comments Section */}
+        <CommentsSection 
+          mediaType="tv" 
+          mediaId={show.id} 
+          mediaTitle={show.name}
+        />
+
         {/* Season Selector & Episodes */}
-        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-pink-200/50 dark:border-gray-700/50 p-6 transition-colors duration-300">
+        <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm mobile-card rounded-2xl shadow-xl border border-pink-200/50 dark:border-gray-700/50 p-4 sm:p-6 transition-colors duration-300 mt-8">
           {/* Adjust layout for mobile */}
           <div className={`flex items-center justify-between mb-6 ${isMobile ? "flex-col space-y-4" : ""}`}>
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">

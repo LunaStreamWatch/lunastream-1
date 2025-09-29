@@ -152,6 +152,50 @@ html, body {
   input, select, textarea {
     font-size: 16px; /* Prevents zoom on iOS */
   }
+  
+  /* Mobile-specific spacing */
+  .mobile-spacing {
+    padding-bottom: 6rem; /* Account for bottom navigation */
+  }
+  
+  /* Mobile card improvements */
+  .mobile-card {
+    border-radius: 1rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+  }
+  
+  /* Mobile typography */
+  .mobile-title {
+    font-size: 1.5rem;
+    line-height: 2rem;
+  }
+  
+  .mobile-subtitle {
+    font-size: 1rem;
+    line-height: 1.5rem;
+  }
+}
+
+/* Tablet-specific styles */
+@media (min-width: 641px) and (max-width: 1024px) {
+  .tablet-grid {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+  }
+  
+  .tablet-spacing {
+    padding: 1.5rem;
+  }
+  
+  .tablet-text {
+    font-size: 1.125rem;
+    line-height: 1.75rem;
+  }
+  
+  /* Better touch targets for tablets */
+  button, a {
+    min-height: 48px;
+    min-width: 48px;
+  }
 }
 
 /* Smooth scrolling for better mobile experience */

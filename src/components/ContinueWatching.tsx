@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Play, X, Clock, ChevronRight } from 'lucide-react';
-import { continueWatchingService, ContinueWatchingItem } from '../services/continueWatching';
 import { getPlayerUrl } from '../utils/playerUtils';
+import { continueWatchingService, ContinueWatchingItem } from '../services/continueWatching';
 import { useLanguage } from './LanguageContext';
 import { translations } from '../data/i18n';
 import { useIsMobile } from '../hooks/useIsMobile';

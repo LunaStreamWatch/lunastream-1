@@ -302,14 +302,14 @@ const HomePage: React.FC = () => {
       </div>
 
       {/* Continue Watching Section */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mobile-spacing">
         <ContinueWatching />
       </div>
 
       <br />
 
       {/* Trending Content */}
-      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 pb-16 mobile-spacing">
         {loading ? (
           <div className="text-center py-16">
             <div className="w-16 h-16 bg-gradient-to-r from-pink-500 to-purple-600 rounded-full animate-spin flex items-center justify-center mb-4 shadow-lg mx-auto">
@@ -327,12 +327,12 @@ const HomePage: React.FC = () => {
                 <TrendingUp className="w-8 h-8 mr-3 text-pink-500" />
                 {t.content_trending} {t.content_movie_plural}
               </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 tablet-grid lg:grid-cols-6 gap-4 sm:gap-6">
                 {trendingMovies.map((movie) => (
                   <Link
                     key={movie.id}
                     to={`/movie/${movie.id}`}
-                    className="group block bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg border border-pink-200/50 dark:border-gray-700/50 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+                    className="group block bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm mobile-card rounded-xl shadow-lg border border-pink-200/50 dark:border-gray-700/50 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
                   >
                     <div className="aspect-[2/3] overflow-hidden">
                       <img
@@ -341,8 +341,8 @@ const HomePage: React.FC = () => {
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     </div>
-                    <div className="p-4">
-                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-2 line-clamp-2 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
+                    <div className="p-3 sm:p-4">
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-xs sm:text-sm mb-2 line-clamp-2 group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
                         {movie.title}
                       </h3>
                       <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">
@@ -364,12 +364,12 @@ const HomePage: React.FC = () => {
                 <TrendingUp className="w-8 h-8 mr-3 text-purple-500" />
                 {t.content_trending} {t.content_tv_plural}
               </h2>
-              <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-6">
+              <div className="grid grid-cols-2 sm:grid-cols-3 tablet-grid lg:grid-cols-6 gap-4 sm:gap-6">
                 {trendingTV.map((show) => (
                   <Link
                     key={show.id}
                     to={`/tv/${show.id}`}
-                    className="group block bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-xl shadow-lg border border-purple-200/50 dark:border-gray-700/50 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
+                    className="group block bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm mobile-card rounded-xl shadow-lg border border-purple-200/50 dark:border-gray-700/50 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2"
                   >
                     <div className="aspect-[2/3] overflow-hidden">
                       <img
@@ -378,8 +378,8 @@ const HomePage: React.FC = () => {
                         className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       />
                     </div>
-                    <div className="p-4">
-                      <h3 className="font-semibold text-gray-900 dark:text-white text-sm mb-2 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
+                    <div className="p-3 sm:p-4">
+                      <h3 className="font-semibold text-gray-900 dark:text-white text-xs sm:text-sm mb-2 line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors">
                         {show.name}
                       </h3>
                       <div className="flex items-center justify-between text-xs text-gray-500 dark:text-gray-400">

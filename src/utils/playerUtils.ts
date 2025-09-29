@@ -39,11 +39,25 @@ export const playerConfigs: PlayerConfig[] = [
       } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
         return `${baseUrl}/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
       } else if (mediaType === "anime" && anilistId && episodeNumber) {
+        // Use the correct anime embedding format
         const animeParams = new URLSearchParams({
-          ...Object.fromEntries(playerParams),
-          dub: isDub.toString()
+          dub: isDub ? "true" : "false",
+          autoplay: "false",
+          poster: "true",
+          chromecast: "false",
+          servericon: "true",
+          setting: "true",
+          pip: "true",
+          logourl: "https://files.catbox.moe/e41yjl.png",
+          font: "Roboto",
+          fontcolor: "6f63ff",
+          fontsize: "20",
+          opacity: "0.5",
+          primarycolor: "fbc9ff",
+          secondarycolor: "f8b4ff",
+          iconcolor: "fbc9ff",
         });
-        return `${baseUrl}/anime/${anilistId}/${episodeNumber}?${animeParams.toString()}`;
+        return `https://player.vidify.top/embed/anime/${anilistId}/${episodeNumber}?${animeParams.toString()}`;
       }
       
       throw new Error(`Invalid parameters for ${mediaType}`);
