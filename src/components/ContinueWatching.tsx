@@ -43,12 +43,12 @@ const ContinueWatching: React.FC = () => {
 
   const getPlayerUrlForItem = (item: ContinueWatchingItem): string => {
     if (item.type === 'movie' && item.tmdbId) {
-      return getPlayerUrl('vidify', {
+      return getPlayerUrl('vidplus', {
         tmdbId: item.tmdbId.toString(),
         mediaType: 'movie'
       });
     } else if (item.type === 'tv' && item.tmdbId && item.season && item.episode) {
-      return getPlayerUrl('vidify', {
+      return getPlayerUrl('vidplus', {
         tmdbId: item.tmdbId.toString(),
         mediaType: 'tv',
         seasonNumber: item.season,

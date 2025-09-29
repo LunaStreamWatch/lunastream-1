@@ -65,6 +65,7 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 3000,
+    https: true,
     proxy: {
       '/api': {
         target: 'http://localhost:3000',

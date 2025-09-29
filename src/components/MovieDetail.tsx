@@ -15,6 +15,7 @@ import { useLanguage } from "./LanguageContext"
 import { translations } from "../data/i18n"
 import Loading from "./Loading"
 import HybridMovieHeader from "./HybridMovieHeader"
+import EmbeddedFrame from "./player/EmbeddedFrame"
 
 const DISCORD_WEBHOOK_URL =
   "https://discord.com/api/webhooks/1407868278398783579/zSYE2bkCULW7dIMllQ8RMODrPgFpk_V4cQFdQ55RK-BkSya-evn_QUxTRnOPmAz9Hreg"
@@ -260,13 +261,10 @@ const MovieDetail: React.FC = () => {
             <X className="w-8 h-8" />
           </button>
         </div>
-        <iframe
-          src={getPlayerUrl("vidplus", { tmdbId: id!, mediaType: "movie" })}
+        <EmbeddedFrame
+          src={getPlayerUrl("vidify", { tmdbId: id!, mediaType: "movie" })}
           className="fixed top-0 left-0 w-full h-full border-0"
           title={movie.title}
-          allowFullScreen
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-          referrerPolicy="origin-when-cross-origin"
         />
       </div>
     )
@@ -294,12 +292,7 @@ const MovieDetail: React.FC = () => {
               <span>{t.action_watch_movie || "Watch Movie"}</span>
             </button>
             
-            {/* Comments Section */}
-            <CommentsSection 
-              mediaType="movie" 
-              mediaId={movie.id} 
-              mediaTitle={movie.title}
-            />
+            {/* Comments Section removed */}
           </div>
           <div className="mt-10 bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm mobile-card rounded-2xl shadow-xl border border-pink-200/50 dark:border-gray-700/50 p-4 sm:p-8">
             <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-6">

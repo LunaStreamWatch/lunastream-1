@@ -7,6 +7,7 @@ import { watchlistService } from '../services/watchlist';
 import { continueWatchingService } from '../services/continueWatching';
 import GlobalNavbar from './GlobalNavbar';
 import { playerConfigs, getPlayerUrl } from '../utils/playerUtils';
+import EmbeddedFrame from './player/EmbeddedFrame';
 import { useLanguage } from './LanguageContext';
 import { translations } from '../data/i18n';
 import Loading from './Loading';
@@ -179,8 +180,8 @@ const SeasonDetail: React.FC = () => {
 
 
         {/* Player iframe */}
-        <iframe
-          src={getPlayerUrl("vidplus", { 
+        <EmbeddedFrame
+          src={getPlayerUrl("vidify", { 
             tmdbId: id!, 
             mediaType: "tv", 
             seasonNumber: currentEpisode.season_number, 

@@ -7,6 +7,7 @@ import { watchlistService } from '../services/watchlist';
 import { continueWatchingService } from '../services/continueWatching';
 import GlobalNavbar from './GlobalNavbar';
 import { playerConfigs, getPlayerUrl } from '../utils/playerUtils';
+import EmbeddedFrame from './player/EmbeddedFrame';
 import { useLanguage } from './LanguageContext';
 import { translations } from '../data/i18n';
 import Loading from './Loading';
@@ -205,8 +206,8 @@ const EpisodeDetail: React.FC = () => {
           </div>
 
           {/* Player iframe */}
-          <iframe
-            src={getPlayerUrl("vidplus", { 
+          <EmbeddedFrame
+            src={getPlayerUrl("vidify", { 
               tmdbId: id!, 
               mediaType: "tv", 
               seasonNumber: parseInt(seasonNumber!), 
@@ -214,9 +215,6 @@ const EpisodeDetail: React.FC = () => {
             })}
             className="fixed top-0 left-0 w-full h-full border-0"
             title={`${show.name} - S${episode.season_number}E${episode.episode_number}`}
-            allowFullScreen
-            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
-            referrerPolicy="origin-when-cross-origin"
           />
         </div>
       );

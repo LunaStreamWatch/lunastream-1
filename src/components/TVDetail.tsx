@@ -15,6 +15,7 @@ import { translations } from "../data/i18n"
 import Loading from "./Loading"
 import { useIsMobile } from "../hooks/useIsMobile"
 import HybridTVHeader from "./HybridTVHeader"
+import EmbeddedFrame from "./player/EmbeddedFrame"
 
 // ------------------ DISCORD WEBHOOK URL ------------------
 const DISCORD_WEBHOOK_URL =
@@ -392,18 +393,15 @@ const TVDetail: React.FC = () => {
 
 
         {/* Player iframe */}
-        <iframe
-          src={getPlayerUrl("vidplus", { 
+        <EmbeddedFrame
+          src={getPlayerUrl("vidify", { 
             tmdbId: id!, 
             mediaType: "tv", 
             seasonNumber: currentEpisode.season_number, 
             episodeNumber: currentEpisode.episode_number 
           })}
           className="fixed top-0 left-0 w-full h-full border-0"
-          allowFullScreen
-          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share; fullscreen"
           title={`${show.name} - S${currentEpisode.season_number}E${currentEpisode.episode_number}`}
-          referrerPolicy="origin-when-cross-origin"
         />
       </div>
     );
@@ -463,12 +461,7 @@ const TVDetail: React.FC = () => {
           </div>
         </div>
 
-        {/* Comments Section */}
-        <CommentsSection 
-          mediaType="tv" 
-          mediaId={show.id} 
-          mediaTitle={show.name}
-        />
+        {/* Comments Section removed */}
 
         {/* Season Selector & Episodes */}
         <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm mobile-card rounded-2xl shadow-xl border border-pink-200/50 dark:border-gray-700/50 p-4 sm:p-6 transition-colors duration-300 mt-8">

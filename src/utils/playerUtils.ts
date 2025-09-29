@@ -13,9 +13,9 @@ export interface PlayerConfig {
 
 export const playerConfigs: PlayerConfig[] = [
   {
-    id: "vidplus",
-    name: "VidPlus",
-    generateUrl: ({ tmdbId, anilistId, seasonNumber, episodeNumber, mediaType, isDub = false }) => {
+    id: "vidify",
+    name: "Vidify",
+    generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
       if (mediaType === "movie" && tmdbId) {
         const playerParams = new URLSearchParams({
           autoplay: "false",
@@ -52,10 +52,25 @@ export const playerConfigs: PlayerConfig[] = [
           iconcolor: "fbc9ff",
         });
         return `https://player.vidify.top/embed/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
-      } else if (mediaType === "anime" && anilistId && episodeNumber) {
-        // Use vidplus.to for anime
+      }
+      
+      throw new Error(`Invalid parameters for ${mediaType}`);
+    },
+  },
+  {
+    id: "vidplus",
+    name: "VidPlus",
+    generateUrl: ({ tmdbId, anilistId, seasonNumber, episodeNumber, mediaType, isDub = false }) => {
+      if (mediaType === "anime" && anilistId && episodeNumber) {
         const dubParam = isDub ? "/dub" : "";
         return `https://vidplus.to/embed/anime/${anilistId}/${episodeNumber}${dubParam}`;
+      } else if (mediaType === "movie" && tmdbId) {
+        // Fallback to Vidify domain if needed for movies
+        const params = new URLSearchParams({ autoplay: "false", poster: "true" });
+        return `https://player.vidify.top/embed/movie/${tmdbId}?${params.toString()}`;
+      } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
+        const params = new URLSearchParams({ autoplay: "false", poster: "true" });
+        return `https://player.vidify.top/embed/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${params.toString()}`;
       }
       
       throw new Error(`Invalid parameters for ${mediaType}`);
