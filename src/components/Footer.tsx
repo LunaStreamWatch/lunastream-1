@@ -24,7 +24,7 @@ const Footer: React.FC = () => {
           {/* Email */}
           <a
             href="mailto:admin@lunastream.watch"
-            className="bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] hover:opacity-90 text-white p-3 rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 group"
+            className="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white p-3 rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 group"
             title={t.footer_email_us}
           >
             <svg
@@ -44,7 +44,7 @@ const Footer: React.FC = () => {
             href="https://discord.gg/8ubGetGGge"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] hover:opacity-90 text-white p-3 rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 group"
+            className="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white p-3 rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 group"
             title={t.footer_join_discord}
           >
             <svg
@@ -64,7 +64,7 @@ const Footer: React.FC = () => {
             href="https://tiktok.com/@lunastream.watch"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] hover:opacity-90 text-white p-3 rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 group"
+            className="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white p-3 rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 group"
             title={t.footer_follow_tiktok}
           >
             <svg
@@ -99,7 +99,7 @@ const Footer: React.FC = () => {
             href="https://x.com/Lunastreamwatch"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] hover:opacity-90 text-white p-3 rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 group"
+            className="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white p-3 rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 group"
             title={t.footer_follow_twitter}
           >
             <svg
@@ -119,7 +119,7 @@ const Footer: React.FC = () => {
             href="https://t.me/lunastreaming"
             target="_blank"
             rel="noopener noreferrer"
-            className="bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] hover:opacity-90 text-white p-3 rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 group"
+            className="bg-gradient-to-r from-pink-500 to-purple-600 hover:opacity-90 text-white p-3 rounded-lg shadow-md transition-all duration-200 transform hover:-translate-y-0.5 group"
             title={t.footer_join_telegram}
           >
             <svg

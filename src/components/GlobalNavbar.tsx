@@ -112,10 +112,10 @@ const GlobalNavbar: React.FC = () => {
           <div className="flex items-center ml-auto space-x-3 z-10">
             <Link
               to="/donate"
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 border-2 ${
+              className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
                 isActive('/donate')
-                  ? 'bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white shadow-lg border-transparent'
-                  : 'text-[var(--grad-from)] dark:text-[var(--grad-to)] border-[var(--grad-from)] dark:border-[var(--grad-to)] hover:bg-gradient-to-r hover:from-[var(--grad-from)] hover:to-[var(--grad-to)] hover:text-white'
+                  ? 'bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white shadow-lg'
+                  : 'text-gray-600 dark:text-gray-200 hover:bg-gray-100 dark:hover:bg-gray-700/50 hover:text-pink-600 dark:hover:text-pink-400'
               }`}
             >
               <Heart className="w-4 h-4" />

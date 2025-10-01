@@ -379,7 +379,8 @@ export const SettingsMenu: React.FC = () => {
                         <div className="text-sm font-semibold text-gray-700 dark:text-white">Language</div>
                         <div className="grid grid-cols-2 gap-2">
                           {languages.map(({ name, shortname }) => {
-                            const countryCode = shortname === 'en' ? 'GB' : 
+                            const countryCode = shortname === 'en' ? 'GB' :
+                                             shortname === 'dk' ? 'DK' :
                                              shortname === 'zh' ? 'CN' :
                                              shortname === 'ko' ? 'KR' :
                                              shortname === 'es' ? 'ES' :
