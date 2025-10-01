@@ -144,7 +144,7 @@ const HomePage: React.FC = () => {
               {t.home_heading_subtitle}
             </p>
             {/* Search with Suggestions */}
-            <div className="max-w-2xl mx-auto relative px-4">
+            <form onSubmit={handleSearch} className="max-w-2xl mx-auto relative px-4">
                       <Search className="h-5 w-5 sm:h-6 sm:w-6 text-[var(--grad-from)] dark:text-[var(--grad-to)] transition-colors duration-300" />
                 <div className="relative bg-white/90 dark:bg-gray-900/90 backdrop-blur-sm rounded-2xl shadow-xl border border-pink-200/50 dark:border-gray-700/50 transition-colors duration-300">
                   <div className="absolute inset-y-0 left-0 pl-6 flex items-center pointer-events-none">
@@ -295,8 +295,6 @@ const HomePage: React.FC = () => {
                     })}
                   </div>
                 )}
-              </form>
-            </div>
           </div>
         </div>
       </div>
