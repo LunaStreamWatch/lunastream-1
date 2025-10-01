@@ -1,5 +1,3 @@
-"use client"
-
 import React, { useState, useEffect } from "react"
 import { Search, TrendingUp } from "lucide-react"
 import { useNavigate, useParams, Link } from "react-router-dom"
