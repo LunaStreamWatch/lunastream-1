@@ -144,6 +144,9 @@ export const SettingsMenu: React.FC = () => {
     setFont("Inter");
     setCustomHex("#ec4899");
     setLanguage("en");
+    const newAnimationSettings = { enableWelcomeAnimation: false };
+    setAnimationSettings(newAnimationSettings);
+    AnimationSettingsService.saveSettings(newAnimationSettings);
     try {
       localStorage.removeItem("theme");
       localStorage.removeItem("accent");
@@ -198,6 +201,12 @@ export const SettingsMenu: React.FC = () => {
     const root = document.documentElement;
     root.style.setProperty("--grad-from", from);
     root.style.setProperty("--grad-to", to);
+    // Update dynamic color utilities
+    root.style.setProperty("--dynamic-primary", from);
+    root.style.setProperty("--dynamic-secondary", to);
+    root.style.setProperty("--dynamic-bg", `linear-gradient(to right, ${from}, ${to})`);
+    root.style.setProperty("--dynamic-border", from);
+    root.style.setProperty("--dynamic-text", from);
     storage.set("accent", accent);
     if (accent === 'custom') storage.set('accentHex', customHex);
   }, [accent, customHex]);

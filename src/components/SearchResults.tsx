@@ -347,18 +347,18 @@ const SearchResults: React.FC = () => {
             <button
               onClick={() => setCurrentPage(1)}
               disabled={currentPage === 1}
-              className={`px-4 py-2 rounded-md bg-purple-600 text-white font-semibold hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center ${isMobile ? 'text-sm' : ''}`}
+              className={`bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white rounded-full shadow disabled:opacity-40 transition-opacity ${isMobile ? 'px-3 py-2' : 'px-4 py-2'}`}
               title={t.nav_first_page}
             >
-              <ChevronsLeft className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+              <ChevronsLeft size={isMobile ? 16 : 18} />
             </button>
             {/* Go to Previous Page */}
             <button
               onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
               disabled={currentPage === 1}
-              className={`px-4 py-2 rounded-md bg-purple-600 text-white font-semibold hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 ${isMobile ? 'text-sm' : ''}`}
+              className={`bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white rounded-full shadow disabled:opacity-40 transition-opacity ${isMobile ? 'px-4 py-2 text-sm' : 'px-6 py-2'}`}
             >
-              <ChevronLeft className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+              <ChevronLeft className={`inline-block mr-2 ${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
               <span>{t.nav_previous}</span>
             </button>
             {/* Render clickable page numbers */}
@@ -379,10 +379,10 @@ const SearchResults: React.FC = () => {
                     key={i}
                     onClick={() => setCurrentPage(i)}
                     aria-current={currentPage === i ? 'page' : undefined}
-                    className={`px-4 py-2 rounded-md font-semibold transition ${
+                    className={`font-medium rounded-full shadow transition-all duration-200 ${
                       currentPage === i
-                        ? 'bg-purple-600 text-white'
-                        : 'bg-white/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 hover:bg-purple-700 hover:text-white'
+                        ? 'bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white px-4 py-2'
+                        : 'bg-white/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-[var(--grad-from)] hover:to-[var(--grad-to)] hover:text-white px-4 py-2'
                     } ${isMobile ? 'text-sm' : 'text-base'}`}
                   >
                     {i}
@@ -395,19 +395,19 @@ const SearchResults: React.FC = () => {
             <button
               onClick={() => setCurrentPage(p => Math.min(p + 1, totalLocalPages))}
               disabled={currentPage === totalLocalPages}
-              className={`px-4 py-2 rounded-md bg-purple-600 text-white font-semibold hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 ${isMobile ? 'text-sm' : ''}`}
+              className={`bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white rounded-full shadow disabled:opacity-40 transition-opacity ${isMobile ? 'px-4 py-2 text-sm' : 'px-6 py-2'}`}
             >
               <span>{t.nav_next}</span>
-              <ChevronRight className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+              <ChevronRight className={`inline-block ml-2 ${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
             </button>
             {/* Go to Last Page */}
             <button
               onClick={() => setCurrentPage(totalLocalPages)}
               disabled={currentPage === totalLocalPages}
-              className={`px-4 py-2 rounded-md bg-purple-600 text-white font-semibold hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed flex items-center ${isMobile ? 'text-sm' : ''}`}
+              className={`bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white rounded-full shadow disabled:opacity-40 transition-opacity ${isMobile ? 'px-3 py-2' : 'px-4 py-2'}`}
               title={t.nav_last_page}
             >
-              <ChevronsRight className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+              <ChevronsRight size={isMobile ? 16 : 18} />
             </button>
             </nav>
           
@@ -415,7 +415,7 @@ const SearchResults: React.FC = () => {
               <button
                 onClick={loadMoreResults}
                 disabled={loading}
-                className="px-6 py-3 rounded-md bg-purple-600 text-white font-semibold hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+                className="px-6 py-3 rounded-xl bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white font-semibold hover:opacity-95 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
               >
                 {loading ? t.status_loading : 'Load More Results'}
               </button>

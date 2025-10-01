@@ -61,7 +61,7 @@ const Pagination: React.FC<{ currentPage: number; totalPages: number; onPageChan
           className={`font-medium rounded-full shadow transition-all duration-200 ${
             page === currentPage
               ? 'bg-purple-600 text-white px-4 py-2'
-              : 'bg-white/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 hover:bg-purple-500 hover:text-white px-4 py-2'
+          className={`bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white rounded-full shadow disabled:opacity-40 transition-opacity ${isMobile ? 'px-4 py-2 text-sm' : 'px-6 py-2'}`}
           } ${isMobile ? 'text-sm' : 'text-base'}`}
         >
           {page}

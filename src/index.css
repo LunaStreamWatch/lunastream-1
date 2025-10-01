@@ -75,6 +75,13 @@
   /* Gradient opacity variations */
   --grad-from-light: color-mix(in srgb, var(--grad-from) 15%, transparent);
   --grad-to-light: color-mix(in srgb, var(--grad-to) 15%, transparent);
+  
+  /* Dynamic color utilities for components that should follow accent */
+  --dynamic-primary: var(--grad-from);
+  --dynamic-secondary: var(--grad-to);
+  --dynamic-bg: var(--grad-bg);
+  --dynamic-border: var(--grad-from);
+  --dynamic-text: var(--grad-from);
 }
 
 html, body {
@@ -132,6 +139,23 @@ html, body {
   /* Gradient Opacity */
   .bg-gradient-light {
     background: linear-gradient(to right, var(--grad-from-light), var(--grad-to-light));
+  }
+  
+  /* Dynamic color classes that update with accent changes */
+  .text-dynamic {
+    color: var(--dynamic-text);
+  }
+  
+  .bg-dynamic {
+    background: var(--dynamic-bg);
+  }
+  
+  .border-dynamic {
+    border-color: var(--dynamic-border);
+  }
+  
+  .shadow-dynamic {
+    box-shadow: 0 4px 6px var(--grad-from), 0 2px 4px var(--grad-to);
   }
 }
 

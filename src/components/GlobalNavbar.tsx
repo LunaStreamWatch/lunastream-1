@@ -49,14 +49,16 @@ const GlobalNavbar: React.FC = () => {
             onClick={(e) => {
               e.preventDefault();
               setLogoSpin(true);
+              // Navigate immediately but keep spinning
+              window.location.href = '/';
+              // Keep spinning for additional time after navigation
               setTimeout(() => {
                 setLogoSpin(false);
-                window.location.href = '/';
-              }, 1200);
+              }, 2000);
             }}
           >
             <div className={`w-8 h-8 bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] rounded-lg flex items-center justify-center shadow-lg group-hover:shadow-xl transition-shadow duration-200 ${logoSpin ? 'animate-spin' : ''}`}
-                 style={logoSpin ? { animationDuration: '1200ms' } : undefined}>
+                 style={logoSpin ? { animationDuration: '2000ms' } : undefined}>
               <Film className="w-5 h-5 text-white" />
             </div>
             <span className="text-xl font-bold bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] bg-clip-text text-transparent">
@@ -110,10 +112,10 @@ const GlobalNavbar: React.FC = () => {
           <div className="flex items-center ml-auto space-x-3 z-10">
             <Link
               to="/donate"
-              className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 ${
+              className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-medium transition-all duration-200 border-2 ${
                 isActive('/donate')
-                  ? 'bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white shadow-lg'
-                  : 'text-pink-600 dark:text-pink-400 border border-transparent border-[1.5px] border-gradient-to-r from-pink-500 to-purple-600 hover:bg-pink-50/40 dark:hover:bg-gray-800'
+                  ? 'bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white shadow-lg border-transparent'
+                  : 'text-[var(--grad-from)] dark:text-[var(--grad-to)] border-[var(--grad-from)] dark:border-[var(--grad-to)] hover:bg-gradient-to-r hover:from-[var(--grad-from)] hover:to-[var(--grad-to)] hover:text-white'
               }`}
             >
               <Heart className="w-4 h-4" />

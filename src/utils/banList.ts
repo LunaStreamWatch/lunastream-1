@@ -140,6 +140,6 @@ export const filterBannedContent = <T extends { id: number }>(items: T[]): T[] =
 export const filterBannedSearchResults = <T extends { id: number }>(results: { results: T[] }): { results: T[] } => {
   return {
     ...results,
-    results: filterBannedContent(results.results || [])
+    results: filterBannedContent(results.results || []).filter(item => !isBanned(item.id))
   };
 };

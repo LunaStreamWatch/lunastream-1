@@ -20,6 +20,13 @@ export const tmdb = {
     return filterBannedSearchResults(data);
   },
 
+  searchMulti: async (query: string) => {
+    const response = await fetch(
+      `${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`
+    );
+    const data = await response.json();
+    return filterBannedSearchResults(data);
+  },
   getTrendingMovies: async () => {
     const response = await fetch(
       `${BASE_URL}/trending/movie/week?api_key=${API_KEY}`
@@ -110,13 +117,6 @@ export const tmdb = {
     };
   },
 
-  searchMulti: async (query: string) => {
-    const response = await fetch(
-      `${BASE_URL}/search/multi?api_key=${API_KEY}&query=${encodeURIComponent(query)}`
-    );
-    const data = await response.json();
-    return filterBannedSearchResults(data);
-  },
 
   getImageUrl: (path: string | null, size: string = 'w500') => {
     if (!path)

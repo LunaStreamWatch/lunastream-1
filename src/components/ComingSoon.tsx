@@ -256,7 +256,7 @@ const ComingSoon: React.FC = () => {
               <button
                 onClick={handleFirstPage}
                 disabled={page === 1 || loading}
-                className={`bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full shadow disabled:opacity-40 ${isMobile ? 'px-3 py-2' : 'px-4 py-2'}`}
+                className={`bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white rounded-full shadow disabled:opacity-40 ${isMobile ? 'px-3 py-2' : 'px-4 py-2'}`}
                 title={t.nav_first_page}
               >
                 <ChevronsLeft size={isMobile ? 16 : 18} />
@@ -264,7 +264,7 @@ const ComingSoon: React.FC = () => {
               <button
                 onClick={handlePrevPage}
                 disabled={page === 1 || loading}
-                className={`bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full shadow disabled:opacity-40 ${isMobile ? 'px-4 py-2 text-sm' : 'px-6 py-2'}`}
+                className={`bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white rounded-full shadow disabled:opacity-40 ${isMobile ? 'px-4 py-2 text-sm' : 'px-6 py-2'}`}
               >
                 <ArrowLeft className={`inline-block mr-2 ${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} /> {t.coming_soon_prev}
               </button>
@@ -289,14 +289,14 @@ const ComingSoon: React.FC = () => {
               <button
                 onClick={handleNextPage}
                 disabled={page === totalPages || loading}
-                className={`bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full shadow disabled:opacity-40 ${isMobile ? 'px-4 py-2 text-sm' : 'px-6 py-2'}`}
+                className={`bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white rounded-full shadow disabled:opacity-40 ${isMobile ? 'px-4 py-2 text-sm' : 'px-6 py-2'}`}
               >
                 {t.coming_soon_next} <ArrowRight className={`inline-block ml-2 ${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
               </button>
               <button
                 onClick={handleLastPage}
                 disabled={page === totalPages || loading}
-                className={`bg-gradient-to-r from-indigo-500 to-purple-600 text-white rounded-full shadow disabled:opacity-40 ${isMobile ? 'px-3 py-2' : 'px-4 py-2'}`}
+                className={`bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white rounded-full shadow disabled:opacity-40 ${isMobile ? 'px-3 py-2' : 'px-4 py-2'}`}
                 title={t.nav_last_page}
               >
                 <ChevronsRight size={isMobile ? 16 : 18} />
