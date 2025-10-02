@@ -40,7 +40,7 @@ const preprocessQuery = (query: string): string =>
 const SearchResults: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const initialQuery = searchParams.get('q') || '';
-  const initialSort = (searchParams.get('sort') as 'popularity' | 'score') || 'score';
+  const initialSort = (searchParams.get('sort') as 'popularity' | 'score') || 'popularity';
 
   const [searchInput, setSearchInput] = useState(initialQuery);
   const [query, setQuery] = useState(initialQuery);
@@ -211,40 +211,26 @@ const SearchResults: React.FC = () => {
   const hasMore = apiPage <= totalPagesFromApi;
   const totalLocalPages = Math.ceil(results.length / resultsPerPage);
 
-
-  return (
-    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-indigo-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 transition-colors duration-300">
-      <GlobalNavbar />
-      
-      {/* Search Header */}
-      <div className={`backdrop-blur-md sticky top-16 z-40 transition-colors duration-300 ${isMobile ? 'bg-white/90 dark:bg-gray-950/90' : ''}`}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
-          <div className={`flex items-center ${isMobile ? 'flex-col space-y-3' : 'space-x-0'}`}>
-            <div className="flex-1 relative">
-              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400" />
-              <input
-                type="text"
-                placeholder={t.search_placeholder}
-                value={searchInput}
-                onChange={handleInputChange}
-                className={`w-full pl-10 pr-4 h-12 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md border border-pink-200/50 dark:border-gray-600/30 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-200 ${isMobile ? 'rounded-xl' : 'rounded-l-xl'}`}
-              />
+  if (isMobile) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-indigo-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 transition-colors duration-300">
+        <GlobalNavbar />
+        {/* Mobile Search/Sort UI */}
+        <div className="backdrop-blur-md sticky top-16 z-40 transition-colors duration-300">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+            <div className="flex items-center space-x-0">
+              <div className="flex-1 relative">
+                <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400" />
+                <input
+                  type="text"
+                  placeholder={t.search_placeholder}
+                  value={searchInput}
+                  onChange={handleInputChange}
+                  className="w-full pl-10 pr-4 h-12 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl border border-pink-200/50 dark:border-gray-600/30 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-200"
+                />
+              </div>
             </div>
-            {!isMobile && (
-              <select
-                value={sortBy}
-                onChange={handleSortChange}
-                className="h-12 px-6 rounded-r-xl border border-l-0 border-pink-200/50 dark:border-gray-600/30 bg-white/95 dark:bg-gray-800/95 text-gray-900 dark:text-gray-100 text-lg focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-200 appearance-none"
-                style={{ paddingRight: '1.5rem' }}
-              >
-                <option value="score">{t.filter_relevance}</option>
-                <option value="popularity">{t.filter_popularity}</option>
-              </select>
-            )}
-          </div>
-          
-          {isMobile && (
-            <div className="flex items-center justify-between mt-2 w-full">
+            <div className="flex items-center justify-between mt-2">
               <p className="text-sm text-gray-700 dark:text-gray-300 truncate">
                 {t.search_results_for} "<span className="font-semibold bg-gradient-to-r from-pink-600 to-purple-600 bg-clip-text text-transparent">{query}</span>" — {results.length} {results.length === 1 ? t.result : t.results}
               </p>
@@ -254,11 +240,59 @@ const SearchResults: React.FC = () => {
                 onChange={handleSortChange}
                 className="text-sm rounded-md border border-pink-300 dark:border-gray-700 bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 px-3 py-1 focus:outline-none focus:ring-2 focus:ring-pink-500"
               >
-                <option value="score">{t.filter_relevance}</option>
                 <option value="popularity">{t.filter_popularity}</option>
+                <option value="score">{t.filter_relevance}</option>
               </select>
             </div>
-          )}
+          </div>
+        </div>
+        <MobileSearchResults
+          query={query}
+          results={results}
+          loading={loading}
+          error={error}
+          warningVisible={warningVisible}
+          setWarningVisible={setWarningVisible}
+          sortBy={sortBy}
+          setSortBy={setSortBy}
+          currentPage={currentPage}
+          setCurrentPage={setCurrentPage}
+          resultsPerPage={resultsPerPage}
+          getTitle={getTitle}
+          getDate={getDate}
+          getLink={getLink}
+          t={t}
+        />
+      </div>
+    );
+  }
+
+  return (
+    <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-indigo-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 transition-colors duration-300">
+      <GlobalNavbar />
+      <div className="backdrop-blur-md sticky top-16 z-40 transition-colors duration-300">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-4">
+          <div className="flex items-center space-x-0">
+            <div className="flex-1 relative">
+              <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400" />
+              <input
+                type="text"
+                placeholder={t.search_placeholder}
+                value={searchInput}
+                onChange={handleInputChange}
+                className="w-full pl-10 pr-4 h-12 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-l-xl border border-pink-200/50 dark:border-gray-600/30 text-gray-900 dark:text-gray-100 placeholder-gray-500 dark:placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-200"
+              />
+            </div>
+            <select
+              value={sortBy}
+              onChange={handleSortChange}
+              className="h-12 px-6 rounded-r-xl border border-l-0 border-pink-200/50 dark:border-gray-600/30 bg-white/95 dark:bg-gray-800/95 text-gray-900 dark:text-gray-100 text-lg focus:outline-none focus:ring-2 focus:ring-pink-500 transition-all duration-200 appearance-none"
+              style={{ paddingRight: '1.5rem' }}
+            >
+              <option value="popularity">{t.filter_popularity}</option>
+              <option value="score">{t.filter_relevance}</option>
+            </select>
+          </div>
         </div>
       </div>
 
@@ -290,76 +324,69 @@ const SearchResults: React.FC = () => {
         </div>
 
         {!loading && !error && results.length > 0 && (
-          <>
-          <div className={`grid gap-6 ${isMobile ? 'grid-cols-2 gap-3' : 'grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6'}`}>
+          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-6 gap-4">
             {paginatedResults.map((item) => (
               <Link
                 to={getLink(item)}
                 key={`${item.media_type}-${item.id}`}
-                className={`group bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm shadow-lg border border-purple-200/50 dark:border-gray-700/50 overflow-hidden hover:shadow-2xl transition-all duration-300 hover:-translate-y-2 cursor-pointer ${isMobile ? 'rounded-lg' : 'rounded-xl'}`}
+                className="group bg-white dark:bg-gray-800 rounded-lg shadow-lg overflow-hidden transform hover:scale-[1.04] transition-transform duration-300 relative"
                 aria-label={`${getTitle(item)} (${getDate(item)?.slice(0, 4) || 'N/A'})`}
               >
                 <div className="aspect-[2/3] w-full relative overflow-hidden bg-gray-200 dark:bg-gray-700 rounded-t-lg">
                   {item.poster_path ? (
                     <img
                       loading="lazy"
-                      src={`https://image.tmdb.org/t/p/${isMobile ? 'w185' : 'w342'}${item.poster_path}`}
+                      src={`https://image.tmdb.org/t/p/w342${item.poster_path}`}
                       alt={getTitle(item)}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                     />
                   ) : (
-                    <div className="flex items-center justify-center w-full h-full bg-gray-200 dark:bg-gray-700 text-gray-500 dark:text-gray-400 text-xs">
-                      {t.content_no_image || 'No Image'}
+                    <div className="flex items-center justify-center w-full h-full bg-pink-100 dark:bg-pink-900 text-pink-700 dark:text-pink-300 text-xs uppercase font-semibold">
+                      No Poster
                     </div>
                   )}
                 </div>
-                <div className={isMobile ? 'p-2' : 'p-4'}>
-                  <h3 className={`font-semibold text-gray-900 dark:text-white line-clamp-2 group-hover:text-purple-600 dark:group-hover:text-purple-400 transition-colors ${isMobile ? 'text-xs' : 'text-sm'}`}>
+                <div className="p-2 space-y-1">
+                  <h3 className="text-sm font-bold text-gray-900 dark:text-white truncate" title={getTitle(item)}>
                     {getTitle(item)}
                   </h3>
-                  <div className={`flex items-center justify-between mt-1 text-gray-500 dark:text-gray-400 ${isMobile ? 'text-xs' : 'text-xs'}`}>
-                    <span className="flex items-center space-x-1">
-                      <Calendar className="w-3 h-3" />
+                  <div className="flex items-center space-x-3 text-xs text-gray-600 dark:text-gray-300 font-semibold">
+                    <span className="flex items-center">
+                      <Calendar className="w-3.5 h-3.5 mr-1" />
                       {getDate(item) ? getDate(item).slice(0, 4) : 'N/A'}
                     </span>
-                    <span className="flex items-center space-x-1">
-                      <Star className="w-3 h-3 text-yellow-500" />
+                    <span className="flex items-center">
+                      <Star className="w-3.5 h-3.5 mr-1 text-yellow-500" />
                       {item.vote_average.toFixed(1)}
                     </span>
-                  </div>
-                  <div className={`mt-1 ${isMobile ? 'text-xs' : 'text-xs'}`}>
-                    <span className={`px-2 py-0.5 rounded-full text-white text-xs font-medium ${item.media_type === 'movie' ? 'bg-pink-500' : 'bg-purple-500'}`}>
-                      {item.media_type === 'movie' ? t.content_movie_singular : t.content_tv_singular}
+                    <span className="flex items-center">
+                      <Film className="w-3.5 h-3.5 mr-1" />
+                      {item.media_type.toUpperCase()}
                     </span>
                   </div>
                 </div>
               </Link>
             ))}
           </div>
-          </>
         )}
 
-        {/* Pagination */}
-        {(totalLocalPages > 1 || hasMore) && (
-          <div className="flex flex-col items-center justify-center mt-8 space-y-4">
-            <nav aria-label={t.pagination_label || 'Pagination'} className="flex flex-wrap justify-center gap-2">
+        <div className="flex flex-col items-center justify-center mt-8 space-y-4">
+          <nav aria-label={t.pagination_label} className="flex flex-wrap justify-center gap-2">
             {/* Go to First Page */}
             <button
               onClick={() => setCurrentPage(1)}
               disabled={currentPage === 1}
-              className={`bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white rounded-full shadow disabled:opacity-40 transition-opacity ${isMobile ? 'px-3 py-2' : 'px-4 py-2'}`}
-              title={t.nav_first_page}
+              className="px-4 py-2 rounded-md bg-pink-600 text-white font-semibold hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-pink-400"
             >
-              <ChevronsLeft size={isMobile ? 16 : 18} />
+              <ChevronsLeft />
             </button>
             {/* Go to Previous Page */}
             <button
               onClick={() => setCurrentPage(p => Math.max(p - 1, 1))}
               disabled={currentPage === 1}
-              className={`bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white rounded-full shadow disabled:opacity-40 transition-opacity ${isMobile ? 'px-4 py-2 text-sm' : 'px-6 py-2'}`}
+              className="px-4 py-2 rounded-md bg-pink-600 text-white font-semibold hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-pink-400"
             >
-              <ChevronLeft className={`inline-block mr-2 ${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
-              <span>{t.nav_previous}</span>
+              <ChevronLeft />
             </button>
             {/* Render clickable page numbers */}
             {(() => {
@@ -379,11 +406,11 @@ const SearchResults: React.FC = () => {
                     key={i}
                     onClick={() => setCurrentPage(i)}
                     aria-current={currentPage === i ? 'page' : undefined}
-                    className={`font-medium rounded-full shadow transition-all duration-200 ${
+                    className={`px-4 py-2 rounded-md font-semibold focus:outline-none focus:ring-2 focus:ring-pink-400 ${
                       currentPage === i
-                        ? 'bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white px-4 py-2'
-                        : 'bg-white/50 dark:bg-gray-800/50 text-gray-700 dark:text-gray-300 hover:bg-gradient-to-r hover:from-[var(--grad-from)] hover:to-[var(--grad-to)] hover:text-white px-4 py-2'
-                    } ${isMobile ? 'text-sm' : 'text-base'}`}
+                        ? 'bg-pink-600 text-white'
+                        : 'bg-white dark:bg-gray-800 text-gray-900 dark:text-gray-100 hover:bg-pink-100 dark:hover:bg-pink-900'
+                    }`}
                   >
                     {i}
                   </button>
@@ -395,42 +422,30 @@ const SearchResults: React.FC = () => {
             <button
               onClick={() => setCurrentPage(p => Math.min(p + 1, totalLocalPages))}
               disabled={currentPage === totalLocalPages}
-              className={`bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white rounded-full shadow disabled:opacity-40 transition-opacity ${isMobile ? 'px-4 py-2 text-sm' : 'px-6 py-2'}`}
+              className="px-4 py-2 rounded-md bg-pink-600 text-white font-semibold hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-pink-400"
             >
-              <span>{t.nav_next}</span>
-              <ChevronRight className={`inline-block ml-2 ${isMobile ? 'w-4 h-4' : 'w-5 h-5'}`} />
+              <ChevronRight />
             </button>
             {/* Go to Last Page */}
             <button
               onClick={() => setCurrentPage(totalLocalPages)}
               disabled={currentPage === totalLocalPages}
-              className={`bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white rounded-full shadow disabled:opacity-40 transition-opacity ${isMobile ? 'px-3 py-2' : 'px-4 py-2'}`}
-              title={t.nav_last_page}
+              className="px-4 py-2 rounded-md bg-pink-600 text-white font-semibold hover:bg-pink-700 disabled:opacity-50 disabled:cursor-not-allowed focus:outline-none focus:ring-2 focus:ring-pink-400"
             >
-              <ChevronsRight size={isMobile ? 16 : 18} />
+              <ChevronsRight />
             </button>
-            </nav>
+          </nav>
           
-            {hasMore && (
-              <button
-                onClick={loadMoreResults}
-                disabled={loading}
-                className="px-6 py-3 rounded-xl bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white font-semibold hover:opacity-95 transition disabled:opacity-50 disabled:cursor-not-allowed shadow-lg"
-              >
-                {loading ? t.status_loading : 'Load More Results'}
-              </button>
-            )}
-          </div>
-        )}
-        
-        {/* No results */}
-        {!loading && !error && results.length === 0 && query && (
-          <div className="text-center py-16">
-            <p className="text-gray-600 dark:text-gray-400 text-lg">
-              {t.search_no_results}
-            </p>
-          </div>
-        )}
+          {hasMore && (
+            <button
+              onClick={loadMoreResults}
+              disabled={loading}
+              className="px-6 py-3 rounded-md bg-purple-600 text-white font-semibold hover:bg-purple-700 transition disabled:opacity-50 disabled:cursor-not-allowed"
+            >
+              {loading ? 'Loading...' : 'Load More Results'}
+            </button>
+          )}
+        </div>
       </main>
     </div>
   );

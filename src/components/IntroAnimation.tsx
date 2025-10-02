@@ -16,12 +16,7 @@ export const IntroAnimation: React.FC<IntroAnimationProps> = ({ onComplete }) =>
       onComplete();
       return;
     }
-
-    const audio = new Audio(introSound);
-    audio.play().catch(error => {
-      console.log("Audio autoplay prevented:", error);
-    });
-
+    
     const totalDuration = 1900; // Animation: 1.2s, Linger: 0.7s
 
     const exitTimer = setTimeout(() => {
