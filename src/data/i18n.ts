@@ -186,7 +186,11 @@ export const translations = {
     back_to_season: 'Back to Season',
     cast_overview: 'Cast Overview',
     no_description: 'No description available',
-    pagination_label: 'Pagination'
+    pagination_label: 'Pagination',
+
+    // Anime Section
+    popular_tv_shows: 'Popular Anime',
+    trending_tv_shows: 'Trending Anime'
   },
 
   es: {
@@ -361,7 +365,11 @@ export const translations = {
     back_to_season: 'Volver a la Temporada',
     cast_overview: 'Resumen del Reparto',
     no_description: 'No hay descripción disponible',
-    pagination_label: 'Paginación'
+    pagination_label: 'Paginación',
+
+    // Anime Section
+    popular_tv_shows: 'Anime Popular',
+    trending_tv_shows: 'Anime en Tendencia'
   },
 
   fr: {
@@ -536,7 +544,11 @@ export const translations = {
     back_to_season: 'Retour à la Saison',
     cast_overview: 'Aperçu du Casting',
     no_description: 'Aucune description disponible',
-    pagination_label: 'Pagination'
+    pagination_label: 'Pagination',
+
+    // Anime Section
+    popular_tv_shows: 'Anime Populaires',
+    trending_tv_shows: 'Anime Tendances'
   },
 
   de: {
@@ -711,7 +723,11 @@ export const translations = {
     back_to_season: 'Zurück zur Staffel',
     cast_overview: 'Besetzungsübersicht',
     no_description: 'Keine Beschreibung verfügbar',
-    pagination_label: 'Paginierung'
+    pagination_label: 'Paginierung',
+
+    // Anime Section
+    popular_tv_shows: 'Beliebte Anime',
+    trending_tv_shows: 'Trendige Anime'
   },
 
   it: {
@@ -886,7 +902,11 @@ export const translations = {
     back_to_season: 'Torna alla Stagione',
     cast_overview: 'Panoramica Cast',
     no_description: 'Nessuna descrizione disponibile',
-    pagination_label: 'Paginazione'
+    pagination_label: 'Paginazione',
+
+    // Anime Section
+    popular_tv_shows: 'Anime Popolari',
+    trending_tv_shows: 'Anime di Tendenza'
   },
 
   pt: {
@@ -1061,7 +1081,11 @@ export const translations = {
     back_to_season: 'Voltar à Temporada',
     cast_overview: 'Visão Geral do Elenco',
     no_description: 'Nenhuma descrição disponível',
-    pagination_label: 'Paginação'
+    pagination_label: 'Paginação',
+
+    // Anime Section
+    popular_tv_shows: 'Anime Populares',
+    trending_tv_shows: 'Anime em Alta'
   },
 
   zh: {
@@ -1236,7 +1260,11 @@ export const translations = {
     back_to_season: '返回季度',
     cast_overview: '演员表概述',
     no_description: '无描述可用',
-    pagination_label: '分页'
+    pagination_label: '分页',
+
+    // Anime Section
+    popular_tv_shows: '热门动漫',
+    trending_tv_shows: '流行动漫'
   },
 
   ja: {
@@ -1411,7 +1439,11 @@ export const translations = {
     back_to_season: 'シーズンに戻る',
     cast_overview: 'キャスト概要',
     no_description: '説明がありません',
-    pagination_label: 'ページネーション'
+    pagination_label: 'ページネーション',
+
+    // Anime Section
+    popular_tv_shows: '人気アニメ',
+    trending_tv_shows: 'トレンドアニメ'
   },
 
   ko: {
@@ -1586,7 +1618,11 @@ export const translations = {
     back_to_season: '시즌으로 돌아가기',
     cast_overview: '출연진 개요',
     no_description: '설명이 없습니다',
-    pagination_label: '페이지네이션'
+    pagination_label: '페이지네이션',
+
+    // Anime Section
+    popular_tv_shows: '인기 애니메이션',
+    trending_tv_shows: '트렌딩 애니메이션'
   },
 
   ru: {
@@ -1761,7 +1797,11 @@ export const translations = {
     back_to_season: 'Назад к Сезону',
     cast_overview: 'Обзор Актёрского Состава',
     no_description: 'Описание недоступно',
-    pagination_label: 'Пагинация'
+    pagination_label: 'Пагинация',
+
+    // Anime Section
+    popular_tv_shows: 'Популярное Аниме',
+    trending_tv_shows: 'Трендовое Аниме'
   },
 
   hi: {
@@ -1936,7 +1976,11 @@ export const translations = {
     back_to_season: 'सीज़न पर वापस',
     cast_overview: 'कास्ट अवलोकन',
     no_description: 'कोई विवरण उपलब्ध नहीं',
-    pagination_label: 'पेजिनेशन'
+    pagination_label: 'पेजिनेशन',
+
+    // Anime Section
+    popular_tv_shows: 'लोकप्रिय एनीमे',
+    trending_tv_shows: 'ट्रेंडिंग एनीमे'
   },
 
   dk: {
@@ -2111,6 +2155,10 @@ export const translations = {
     back_to_season: 'Tilbage til Sæson',
     cast_overview: 'Cast Oversigt',
     no_description: 'Ingen beskrivelse tilgængelig',
-    pagination_label: 'Paginering'
+    pagination_label: 'Paginering',
+
+    // Anime Section
+    popular_tv_shows: 'Populære Anime',
+    trending_tv_shows: 'Trending Anime'
   }
 };

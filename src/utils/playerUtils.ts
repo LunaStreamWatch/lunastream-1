@@ -36,6 +36,7 @@ export const playerConfigs: PlayerConfig[] = [
       if (mediaType === "movie" && tmdbId) {
         return `https://player.vidify.top/embed/movie/${tmdbId}?${playerParams.toString()}`;
       } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
+        playerParams.set("hidenextButton", "false");
         return `https://player.vidify.top/embed/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
       }
       
@@ -84,6 +85,7 @@ export const playerConfigs: PlayerConfig[] = [
           primarycolor: "fbc9ff",
           secondarycolor: "f8b4ff",
           iconcolor: "fbc9ff",
+          hidenextButton: "false",
         });
         return `https://player.vidify.top/embed/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${params.toString()}`;
       }
