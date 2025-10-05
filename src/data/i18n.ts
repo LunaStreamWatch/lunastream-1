@@ -190,7 +190,12 @@ export const translations = {
 
     // Anime Section
     popular_tv_shows: 'Popular Anime',
-    trending_tv_shows: 'Trending Anime'
+    trending_tv_shows: 'Trending Anime',
+    anime_page_title: 'Anime & Movies',
+    anime_page_subtitle: 'LunaStream is your home for all the best anime series and films, past and present.',
+    anime_search_placeholder: 'Search for anime or movies...',
+    anime_search_button: 'Search',
+    anime_search_results: 'Search Results for'
   },
 
   es: {
@@ -369,7 +374,12 @@ export const translations = {
 
     // Anime Section
     popular_tv_shows: 'Anime Popular',
-    trending_tv_shows: 'Anime en Tendencia'
+    trending_tv_shows: 'Anime en Tendencia',
+    anime_page_title: 'Anime y Películas',
+    anime_page_subtitle: 'LunaStream es tu hogar para todas las mejores series y películas de anime, pasadas y presentes.',
+    anime_search_placeholder: 'Buscar anime o películas...',
+    anime_search_button: 'Buscar',
+    anime_search_results: 'Resultados de búsqueda para'
   },
 
   fr: {
@@ -548,7 +558,12 @@ export const translations = {
 
     // Anime Section
     popular_tv_shows: 'Anime Populaires',
-    trending_tv_shows: 'Anime Tendances'
+    trending_tv_shows: 'Anime Tendances',
+    anime_page_title: 'Anime et Films',
+    anime_page_subtitle: 'LunaStream est votre destination pour toutes les meilleures séries et films d\'anime, passés et présents.',
+    anime_search_placeholder: 'Rechercher des anime ou des films...',
+    anime_search_button: 'Rechercher',
+    anime_search_results: 'Résultats de recherche pour'
   },
 
   de: {
@@ -727,7 +742,12 @@ export const translations = {
 
     // Anime Section
     popular_tv_shows: 'Beliebte Anime',
-    trending_tv_shows: 'Trendige Anime'
+    trending_tv_shows: 'Trendige Anime',
+    anime_page_title: 'Anime & Filme',
+    anime_page_subtitle: 'LunaStream ist Ihr Zuhause für alle besten Anime-Serien und Filme, Vergangenheit und Gegenwart.',
+    anime_search_placeholder: 'Nach Anime oder Filmen suchen...',
+    anime_search_button: 'Suchen',
+    anime_search_results: 'Suchergebnisse für'
   },
 
   it: {
@@ -906,7 +926,12 @@ export const translations = {
 
     // Anime Section
     popular_tv_shows: 'Anime Popolari',
-    trending_tv_shows: 'Anime di Tendenza'
+    trending_tv_shows: 'Anime di Tendenza',
+    anime_page_title: 'Anime e Film',
+    anime_page_subtitle: 'LunaStream è la tua casa per tutte le migliori serie e film anime, passati e presenti.',
+    anime_search_placeholder: 'Cerca anime o film...',
+    anime_search_button: 'Cerca',
+    anime_search_results: 'Risultati di ricerca per'
   },
 
   pt: {
@@ -1085,7 +1110,12 @@ export const translations = {
 
     // Anime Section
     popular_tv_shows: 'Anime Populares',
-    trending_tv_shows: 'Anime em Alta'
+    trending_tv_shows: 'Anime em Alta',
+    anime_page_title: 'Anime e Filmes',
+    anime_page_subtitle: 'LunaStream é o seu lar para todas as melhores séries e filmes de anime, passados e presentes.',
+    anime_search_placeholder: 'Pesquisar anime ou filmes...',
+    anime_search_button: 'Pesquisar',
+    anime_search_results: 'Resultados de pesquisa para'
   },
 
   zh: {
@@ -1264,7 +1294,12 @@ export const translations = {
 
     // Anime Section
     popular_tv_shows: '热门动漫',
-    trending_tv_shows: '流行动漫'
+    trending_tv_shows: '流行动漫',
+    anime_page_title: '动漫与电影',
+    anime_page_subtitle: 'LunaStream 是您观看所有最佳动漫系列和电影的家园，过去和现在。',
+    anime_search_placeholder: '搜索动漫或电影...',
+    anime_search_button: '搜索',
+    anime_search_results: '搜索结果'
   },
 
   ja: {
@@ -1443,7 +1478,12 @@ export const translations = {
 
     // Anime Section
     popular_tv_shows: '人気アニメ',
-    trending_tv_shows: 'トレンドアニメ'
+    trending_tv_shows: 'トレンドアニメ',
+    anime_page_title: 'アニメ＆映画',
+    anime_page_subtitle: 'LunaStreamは、過去と現在のすべての最高のアニメシリーズと映画の拠点です。',
+    anime_search_placeholder: 'アニメや映画を検索...',
+    anime_search_button: '検索',
+    anime_search_results: '検索結果'
   },
 
   ko: {
@@ -1622,7 +1662,12 @@ export const translations = {
 
     // Anime Section
     popular_tv_shows: '인기 애니메이션',
-    trending_tv_shows: '트렌딩 애니메이션'
+    trending_tv_shows: '트렌딩 애니메이션',
+    anime_page_title: '애니메이션 & 영화',
+    anime_page_subtitle: 'LunaStream은 과거와 현재의 모든 최고의 애니메이션 시리즈와 영화를 위한 곳입니다.',
+    anime_search_placeholder: '애니메이션이나 영화 검색...',
+    anime_search_button: '검색',
+    anime_search_results: '검색 결과'
   },
 
   ru: {
@@ -1801,7 +1846,12 @@ export const translations = {
 
     // Anime Section
     popular_tv_shows: 'Популярное Аниме',
-    trending_tv_shows: 'Трендовое Аниме'
+    trending_tv_shows: 'Трендовое Аниме',
+    anime_page_title: 'Аниме и Фильмы',
+    anime_page_subtitle: 'LunaStream - это ваш дом для всех лучших аниме-сериалов и фильмов, прошлых и настоящих.',
+    anime_search_placeholder: 'Поиск аниме или фильмов...',
+    anime_search_button: 'Поиск',
+    anime_search_results: 'Результаты поиска для'
   },
 
   hi: {
@@ -1980,7 +2030,12 @@ export const translations = {
 
     // Anime Section
     popular_tv_shows: 'लोकप्रिय एनीमे',
-    trending_tv_shows: 'ट्रेंडिंग एनीमे'
+    trending_tv_shows: 'ट्रेंडिंग एनीमे',
+    anime_page_title: 'एनीमे और फिल्में',
+    anime_page_subtitle: 'LunaStream सभी सर्वश्रेष्ठ एनीमे श्रृंखला और फिल्मों के लिए आपका घर है, अतीत और वर्तमान।',
+    anime_search_placeholder: 'एनीमे या फिल्में खोजें...',
+    anime_search_button: 'खोजें',
+    anime_search_results: 'खोज परिणाम'
   },
 
   dk: {
@@ -2159,6 +2214,11 @@ export const translations = {
 
     // Anime Section
     popular_tv_shows: 'Populære Anime',
-    trending_tv_shows: 'Trending Anime'
+    trending_tv_shows: 'Trending Anime',
+    anime_page_title: 'Anime & Film',
+    anime_page_subtitle: 'LunaStream er dit hjem for alle de bedste anime-serier og film, fortid og nutid.',
+    anime_search_placeholder: 'Søg efter anime eller film...',
+    anime_search_button: 'Søg',
+    anime_search_results: 'Søgeresultater for'
   }
 };

@@ -299,11 +299,11 @@ const AnimeSection: React.FC = () => {
         <div className="text-center mb-12">
           <h1 className="text-3xl sm:text-4xl lg:text-6xl font-bold text-gray-900 dark:text-white mb-4 sm:mb-6 transition-colors duration-300 px-4">
             <span className="bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] bg-clip-text text-transparent">
-              Anime & Movies
+              {t.anime_page_title || 'Anime & Movies'}
             </span>
           </h1>
           <p className="text-lg sm:text-xl text-gray-600 dark:text-gray-300 mb-6 sm:mb-8 max-w-3xl mx-auto transition-colors duration-300 px-4">
-            LunaStream is your home for all the best anime series and films, past and present.
+            {t.anime_page_subtitle || 'LunaStream is your home for all the best anime series and films, past and present.'}
           </p>
 
           {/* Search Bar */}
@@ -318,7 +318,7 @@ const AnimeSection: React.FC = () => {
                   value={searchInput}
                   onChange={(e) => setSearchInput(e.target.value)}
                   onBlur={() => setTimeout(clearSuggestions, 200)}
-                  placeholder="Search for anime or movies..."
+                  placeholder={t.anime_search_placeholder || 'Search for anime or movies...'}
                   className={`block w-full bg-transparent border-0 placeholder-gray-500 dark:placeholder-gray-400 text-gray-900 dark:text-white focus:ring-0 focus:outline-none transition-colors duration-300 ${isMobile ? 'pl-12 pr-4 py-4 text-base' : 'pl-16 pr-6 py-6 text-lg'}`}
                 />
                 <button
@@ -326,7 +326,7 @@ const AnimeSection: React.FC = () => {
                   className={`absolute inset-y-0 right-0 flex items-center ${isMobile ? 'pr-2' : 'pr-6'}`}
                 >
                   <div className={`bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white rounded-xl font-semibold hover:opacity-95 transition-all duration-200 shadow-lg hover:shadow-xl transform hover:-translate-y-0.5 ${isMobile ? 'px-4 py-2' : 'px-8 py-3'}`}>
-                    <span className={isMobile ? 'hidden' : 'inline'}>Search</span>
+                    <span className={isMobile ? 'hidden' : 'inline'}>{t.anime_search_button || 'Search'}</span>
                     <Search className={`${isMobile ? 'w-4 h-4' : 'w-5 h-5 hidden'}`} />
                   </div>
                 </button>
@@ -383,7 +383,7 @@ const AnimeSection: React.FC = () => {
           // Search Results View
           <div className="space-y-12">
             <h2 className={`font-bold text-gray-900 dark:text-white ${isMobile ? 'text-xl' : 'text-3xl'}`}>
-              Search Results for "{initialQuery}"
+              {t.anime_search_results || 'Search Results for'} "{initialQuery}"
             </h2>
             {searchLoading ? (
               <div className="text-center py-16">

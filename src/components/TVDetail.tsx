@@ -175,16 +175,6 @@ const TVDetail: React.FC = () => {
       try {
         const seasonData = await tmdb.getTVSeasons(Number.parseInt(id), selectedSeason)
         setEpisodes(seasonData.episodes || [])
-
-        if (show && show.seasons) {
-          const seasonDetails = show.seasons.find(s => s.season_number === selectedSeason);
-          if (seasonDetails && typeof seasonDetails.vote_average === 'number') {
-            setShow(prevShow => prevShow ? {
-              ...prevShow,
-              vote_average: parseFloat(seasonDetails.vote_average.toFixed(1)),
-            } : null);
-          }
-        }
       } catch (error) {
         console.error("Failed to fetch episodes or season details:", error)
       } finally {
@@ -193,8 +183,7 @@ const TVDetail: React.FC = () => {
     }
 
     fetchEpisodesAndRating()
-    setEpisodesLoading(false)
-  }, [id, selectedSeason, show])
+  }, [id, selectedSeason])
 
   useEffect(() => {
     if (show) {
