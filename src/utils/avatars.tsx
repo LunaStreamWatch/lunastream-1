@@ -7,7 +7,7 @@ export const AVATAR_OPTIONS = [
   { id: 'yellow', label: 'Yellow', color: '#FDD835', face: 'cheerful' },
   { id: 'orange', label: 'Orange', color: '#FB8C00', face: 'grin' },
   { id: 'teal', label: 'Teal', color: '#00897B', face: 'wink' },
-  { id: 'pink', label: 'Pink', color: '#D81B60', face: 'joy' },
+  { id: 'fuchsia', label: 'Fuchsia', color: '#D946EF', face: 'joy' },
   { id: 'cyan', label: 'Cyan', color: '#00ACC1', face: 'pleased' },
 ] as const;
 
@@ -54,10 +54,10 @@ export const AvatarIcon: React.FC<{
       className={`${sizeClass} ${className} rounded-lg flex items-center justify-center`}
       style={{ backgroundColor: color }}
     >
-      <svg viewBox="0 0 24 24" className="w-full h-full p-1">
+      <svg viewBox="0 0 24 24" className="w-full h-full p-1.5">
         {/* Eyes */}
-        <circle cx="8" cy="9" r={eyeSize} fill="white" />
-        <circle cx="16" cy="9" r={eyeSize} fill="white" />
+        <circle cx="7.5" cy="9" r={eyeSize} fill="white" />
+        <circle cx="16.5" cy="9" r={eyeSize} fill="white" />
 
         {/* Smile */}
         {face === 'smile' && (
@@ -84,8 +84,8 @@ export const AvatarIcon: React.FC<{
         {/* Cool */}
         {face === 'cool' && (
           <>
-            <line x1="5" y1="9" x2="11" y2="9" stroke="white" strokeWidth="2" strokeLinecap="round" />
-            <line x1="13" y1="9" x2="19" y2="9" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            <line x1="4.5" y1="9" x2="10.5" y2="9" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            <line x1="13.5" y1="9" x2="19.5" y2="9" stroke="white" strokeWidth="2" strokeLinecap="round" />
             <line x1="7" y1="14" x2="17" y2="14" stroke="white" strokeWidth="2" strokeLinecap="round" />
           </>
         )}
@@ -118,7 +118,7 @@ export const AvatarIcon: React.FC<{
         {/* Wink */}
         {face === 'wink' && (
           <>
-            <line x1="6" y1="9" x2="10" y2="9" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            <line x1="5" y1="9" x2="10" y2="9" stroke="white" strokeWidth="2" strokeLinecap="round" />
             <path
               d={`M 7 ${14} Q 12 ${14 + mouthSize/3} 17 ${14}`}
               stroke="white"
@@ -139,16 +139,16 @@ export const AvatarIcon: React.FC<{
               fill="none"
               strokeLinecap="round"
             />
-            <circle cx="8" cy="6" r="1.5" fill="white" />
-            <circle cx="16" cy="6" r="1.5" fill="white" />
+            <circle cx="7.5" cy="6" r="1.5" fill="white" />
+            <circle cx="16.5" cy="6" r="1.5" fill="white" />
           </>
         )}
 
         {/* Pleased */}
         {face === 'pleased' && (
           <>
-            <line x1="6" y1="8" x2="10" y2="10" stroke="white" strokeWidth="2" strokeLinecap="round" />
-            <line x1="14" y1="10" x2="18" y2="8" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            <line x1="5" y1="8" x2="10" y2="10" stroke="white" strokeWidth="2" strokeLinecap="round" />
+            <line x1="14" y1="10" x2="19" y2="8" stroke="white" strokeWidth="2" strokeLinecap="round" />
             <path
               d={`M 8 ${14} Q 12 ${14 + mouthSize/3} 16 ${14}`}
               stroke="white"

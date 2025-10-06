@@ -462,12 +462,12 @@ export const AccountMenu: React.FC = () => {
                         <ImageIcon className="w-4 h-4 inline mr-1" />
                         Avatar
                       </label>
-                      <div className="grid grid-cols-4 gap-3">
+                      <div className="grid grid-cols-4 gap-2">
                         {AVATAR_OPTIONS.map((avatar) => (
                           <button
                             key={avatar.id}
                             onClick={() => handleUpdateAvatar(avatar.id)}
-                            className={`p-1 rounded-lg border-2 transition-all ${
+                            className={`rounded-lg border-2 transition-all flex items-center justify-center ${
                               selectedAvatar === avatar.id
                                 ? 'border-pink-500 ring-2 ring-pink-500/30'
                                 : 'border-transparent hover:border-gray-300 dark:hover:border-gray-600'
