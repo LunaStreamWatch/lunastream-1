@@ -20,8 +20,8 @@ const ContinueWatching: React.FC = () => {
     loadItems();
   }, []);
 
-  const loadItems = () => {
-    const continueItems = continueWatchingService.getContinueWatchingItems();
+  const loadItems = async () => {
+    const continueItems = await continueWatchingService.getContinueWatchingItems();
     setItems(continueItems);
   };
 
@@ -33,10 +33,10 @@ const ContinueWatching: React.FC = () => {
     setIsPlaying(true);
   };
 
-  const handleRemoveItem = (e: React.MouseEvent, itemId: string) => {
+  const handleRemoveItem = async (e: React.MouseEvent, itemId: string) => {
     e.preventDefault();
     e.stopPropagation();
-    continueWatchingService.removeItem(itemId);
+    await continueWatchingService.removeItem(itemId);
     loadItems();
   };
 
@@ -124,8 +124,8 @@ const ContinueWatching: React.FC = () => {
           {t.continue_watching || 'Continue Watching'}
         </h2>
         <button
-          onClick={() => {
-            continueWatchingService.clearAll();
+          onClick={async () => {
+            await continueWatchingService.clearAll();
             loadItems();
           }}
           className="text-sm text-gray-500 dark:text-gray-400 hover:text-red-500 dark:hover:text-red-400 transition-colors"
