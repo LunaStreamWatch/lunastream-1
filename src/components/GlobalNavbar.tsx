@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { translations } from "../data/i18n";
 import { SettingsMenu } from "./SettingsMenu";
+import { AccountMenu } from "./AccountMenu";
 import { useLanguage } from "./LanguageContext";
 
 const GlobalNavbar: React.FC = () => {
@@ -69,7 +70,7 @@ const GlobalNavbar: React.FC = () => {
               })}
             </div>
 
-            {/* Right side: Donate + Settings (Desktop only) */}
+            {/* Right side: Donate + Account + Settings (Desktop only) */}
             <div className="hidden md:flex items-center ml-auto space-x-3 z-10">
               <Link
                 to="/donate"
@@ -79,6 +80,7 @@ const GlobalNavbar: React.FC = () => {
                 <Heart className="w-5 h-5" />
               </Link>
 
+              <AccountMenu />
               <SettingsMenu />
             </div>
 
@@ -139,7 +141,7 @@ const GlobalNavbar: React.FC = () => {
               })}
             </div>
 
-            {/* Mobile Bottom: Donate + Settings */}
+            {/* Mobile Bottom: Donate + Account + Settings */}
             <div className="mt-auto flex items-center justify-start space-x-3">
               <Link
                 to="/donate"
@@ -149,6 +151,10 @@ const GlobalNavbar: React.FC = () => {
               >
                 <Heart className="w-5 h-5" />
               </Link>
+
+              <div className="flex items-center h-full">
+                <AccountMenu />
+              </div>
 
               <div className="flex items-center h-full">
                 <SettingsMenu />

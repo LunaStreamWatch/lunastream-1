@@ -23,6 +23,7 @@ import AnimeTVDetail from './components/AnimeTVDetail';
 import IntroAnimation from './components/IntroAnimation';
 import { LanguageProvider } from './components/LanguageContext';
 import { AnimationProvider } from './components/AnimationContext';
+import { AuthProvider } from './contexts/AuthContext';
 import { TooltipProvider } from '@/components/ui/tooltip';
 
 function App() {
@@ -37,9 +38,10 @@ function App() {
   };
 
   return (
-    <LanguageProvider>
-      <AnimationProvider>
-        <Router>
+    <AuthProvider>
+      <LanguageProvider>
+        <AnimationProvider>
+          <Router>
           {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
           <ScrollToTopButton />
           <Routes>
@@ -64,9 +66,10 @@ function App() {
           <footer>
             <Footer />
           </footer>
-        </Router>
-      </AnimationProvider>
-    </LanguageProvider>
+          </Router>
+        </AnimationProvider>
+      </LanguageProvider>
+    </AuthProvider>
   );
 }
 

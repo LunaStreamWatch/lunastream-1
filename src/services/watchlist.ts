@@ -1,4 +1,5 @@
-// Watchlist service for managing user's watchlist
+import { supabase } from '../lib/supabase';
+
 export interface WatchlistMovie {
   id: number;
   title: string;
@@ -37,9 +38,30 @@ class WatchlistService {
   private readonly RECENTLY_VIEWED_MOVIES_KEY = 'recentlyViewedMovies';
   private readonly RECENTLY_VIEWED_TV_KEY = 'recentlyViewedTVEpisodes';
 
-  // Movies
-  getWatchlistMovies(): WatchlistMovie[] {
+  async getWatchlistMovies(): Promise<WatchlistMovie[]> {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        const { data, error } = await supabase
+          .from('watchlist')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('content_type', 'movie')
+          .order('added_at', { ascending: false });
+
+        if (error) throw error;
+
+        return (data || []).map(item => ({
+          id: item.tmdb_id,
+          title: item.title,
+          poster_path: item.poster_path,
+          release_date: item.release_date || '',
+          vote_average: item.vote_average || 0,
+          addedAt: new Date(item.added_at).getTime(),
+        }));
+      }
+
       const stored = localStorage.getItem(this.MOVIES_KEY);
       return stored ? JSON.parse(stored) : [];
     } catch (error) {
@@ -48,11 +70,39 @@ class WatchlistService {
     }
   }
 
-  addMovieToWatchlist(movie: Omit<WatchlistMovie, 'addedAt'>): void {
+  async addMovieToWatchlist(movie: Omit<WatchlistMovie, 'addedAt'>): Promise<void> {
     try {
-      const movies = this.getWatchlistMovies();
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        const { data: existing } = await supabase
+          .from('watchlist')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('content_type', 'movie')
+          .eq('tmdb_id', movie.id)
+          .maybeSingle();
+
+        if (!existing) {
+          await supabase
+            .from('watchlist')
+            .insert({
+              user_id: user.id,
+              content_type: 'movie',
+              tmdb_id: movie.id,
+              title: movie.title,
+              poster_path: movie.poster_path,
+              release_date: movie.release_date,
+              vote_average: movie.vote_average,
+            });
+        }
+
+        return;
+      }
+
+      const movies = await this.getWatchlistMovies();
       const exists = movies.some(m => m.id === movie.id);
-      
+
       if (!exists) {
         const newMovie: WatchlistMovie = {
           ...movie,
@@ -66,9 +116,22 @@ class WatchlistService {
     }
   }
 
-  removeMovieFromWatchlist(movieId: number): void {
+  async removeMovieFromWatchlist(movieId: number): Promise<void> {
     try {
-      const movies = this.getWatchlistMovies();
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        await supabase
+          .from('watchlist')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('content_type', 'movie')
+          .eq('tmdb_id', movieId);
+
+        return;
+      }
+
+      const movies = await this.getWatchlistMovies();
       const filtered = movies.filter(m => m.id !== movieId);
       localStorage.setItem(this.MOVIES_KEY, JSON.stringify(filtered));
     } catch (error) {
@@ -76,13 +139,48 @@ class WatchlistService {
     }
   }
 
-  isMovieInWatchlist(movieId: number): boolean {
-    return this.getWatchlistMovies().some(m => m.id === movieId);
+  async isMovieInWatchlist(movieId: number): Promise<boolean> {
+    const movies = await this.getWatchlistMovies();
+    return movies.some(m => m.id === movieId);
   }
 
-  // TV Shows
-  getWatchlistTV(): Record<number, WatchlistTVGroup> {
+  async getWatchlistTV(): Promise<Record<number, WatchlistTVGroup>> {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        const { data, error } = await supabase
+          .from('watchlist')
+          .select('*')
+          .eq('user_id', user.id)
+          .eq('content_type', 'tv')
+          .order('added_at', { ascending: false });
+
+        if (error) throw error;
+
+        const grouped: Record<number, WatchlistTVGroup> = {};
+
+        (data || []).forEach(item => {
+          const showId = item.tmdb_id;
+
+          if (!grouped[showId]) {
+            grouped[showId] = {
+              show: {
+                id: showId,
+                name: item.title,
+                poster_path: item.poster_path,
+                first_air_date: item.release_date || '',
+                vote_average: item.vote_average || 0,
+                addedAt: new Date(item.added_at).getTime(),
+              },
+              episodes: [],
+            };
+          }
+        });
+
+        return grouped;
+      }
+
       const stored = localStorage.getItem(this.TV_KEY);
       return stored ? JSON.parse(stored) : {};
     } catch (error) {
@@ -91,13 +189,41 @@ class WatchlistService {
     }
   }
 
-  addEpisodeToWatchlist(
+  async addEpisodeToWatchlist(
     show: Omit<WatchlistTVShow, 'addedAt'>,
     episode: Omit<WatchlistEpisode, 'watchedAt'>
-  ): void {
+  ): Promise<void> {
     try {
-      const tvShows = this.getWatchlistTV();
-      
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        const { data: existing } = await supabase
+          .from('watchlist')
+          .select('id')
+          .eq('user_id', user.id)
+          .eq('content_type', 'tv')
+          .eq('tmdb_id', show.id)
+          .maybeSingle();
+
+        if (!existing) {
+          await supabase
+            .from('watchlist')
+            .insert({
+              user_id: user.id,
+              content_type: 'tv',
+              tmdb_id: show.id,
+              title: show.name,
+              poster_path: show.poster_path,
+              release_date: show.first_air_date,
+              vote_average: show.vote_average,
+            });
+        }
+
+        return;
+      }
+
+      const tvShows = await this.getWatchlistTV();
+
       if (!tvShows[show.id]) {
         tvShows[show.id] = {
           show: { ...show, addedAt: Date.now() },
@@ -107,8 +233,8 @@ class WatchlistService {
 
       const episodes = tvShows[show.id].episodes;
       const exists = episodes.some(
-        ep => ep.season_number === episode.season_number && 
-              ep.episode_number === episode.episode_number
+        ep => ep.season_number === episode.season_number &&
+          ep.episode_number === episode.episode_number
       );
 
       if (!exists) {
@@ -117,8 +243,7 @@ class WatchlistService {
           watchedAt: Date.now()
         };
         episodes.unshift(newEpisode);
-        
-        // Keep only last 10 episodes per show
+
         tvShows[show.id].episodes = episodes.slice(0, 10);
         localStorage.setItem(this.TV_KEY, JSON.stringify(tvShows));
       }
@@ -127,9 +252,22 @@ class WatchlistService {
     }
   }
 
-  removeShowFromWatchlist(showId: number): void {
+  async removeShowFromWatchlist(showId: number): Promise<void> {
     try {
-      const tvShows = this.getWatchlistTV();
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        await supabase
+          .from('watchlist')
+          .delete()
+          .eq('user_id', user.id)
+          .eq('content_type', 'tv')
+          .eq('tmdb_id', showId);
+
+        return;
+      }
+
+      const tvShows = await this.getWatchlistTV();
       delete tvShows[showId];
       localStorage.setItem(this.TV_KEY, JSON.stringify(tvShows));
     } catch (error) {
@@ -137,13 +275,24 @@ class WatchlistService {
     }
   }
 
-  isShowInWatchlist(showId: number): boolean {
-    return showId in this.getWatchlistTV();
+  async isShowInWatchlist(showId: number): Promise<boolean> {
+    const tvShows = await this.getWatchlistTV();
+    return showId in tvShows;
   }
 
-  // Clear all
-  clearWatchlist(): void {
+  async clearWatchlist(): Promise<void> {
     try {
+      const { data: { user } } = await supabase.auth.getUser();
+
+      if (user) {
+        await supabase
+          .from('watchlist')
+          .delete()
+          .eq('user_id', user.id);
+
+        return;
+      }
+
       localStorage.removeItem(this.MOVIES_KEY);
       localStorage.removeItem(this.TV_KEY);
     } catch (error) {
@@ -151,10 +300,8 @@ class WatchlistService {
     }
   }
 
-  // Import from recently viewed (for migration)
   importFromRecentlyViewed(): void {
     try {
-      // Import movies
       const recentMovies = localStorage.getItem(this.RECENTLY_VIEWED_MOVIES_KEY);
       if (recentMovies) {
         const movies = JSON.parse(recentMovies);
@@ -169,7 +316,6 @@ class WatchlistService {
         });
       }
 
-      // Import TV episodes
       const recentTV = localStorage.getItem(this.RECENTLY_VIEWED_TV_KEY);
       if (recentTV) {
         const tvData = JSON.parse(recentTV);
@@ -199,19 +345,18 @@ class WatchlistService {
     }
   }
 
-  // Get combined watchlist for display
-  getCombinedWatchlist(): Array<{
+  async getCombinedWatchlist(): Promise<Array<{
     type: 'movie' | 'tv';
     data: WatchlistMovie | WatchlistTVShow;
     lastActivity: number;
-  }> {
-    const movies = this.getWatchlistMovies().map(movie => ({
+  }>> {
+    const movies = (await this.getWatchlistMovies()).map(movie => ({
       type: 'movie' as const,
       data: movie,
       lastActivity: movie.addedAt
     }));
 
-    const tvShows = Object.values(this.getWatchlistTV()).map(group => ({
+    const tvShows = Object.values(await this.getWatchlistTV()).map(group => ({
       type: 'tv' as const,
       data: group.show,
       lastActivity: Math.max(group.show.addedAt, ...group.episodes.map(ep => ep.watchedAt))
