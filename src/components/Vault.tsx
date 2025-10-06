@@ -26,11 +26,11 @@ const Vault: React.FC = () => {
   const { language, setLanguage } = useLanguage()
   const t = translations[language] || translations.en
 
-  const loadData = () => {
+  const loadData = async () => {
     setLoading(true);
-    const items = watchlistService.getCombinedWatchlist();
+    const items = await watchlistService.getCombinedWatchlist();
     setCombinedItems(items);
-    
+
     // Load favorites
     const storedMovies = JSON.parse(localStorage.getItem('favoriteMovies') || '[]');
     const storedShows = JSON.parse(localStorage.getItem('favoriteShows') || '[]');
@@ -48,7 +48,7 @@ const Vault: React.FC = () => {
 
     setFavoriteMovies(favoritesWithLastActivityMovies);
     setFavoriteShows(favoritesWithLastActivityShows);
-    
+
     setLoading(false);
   };
 
