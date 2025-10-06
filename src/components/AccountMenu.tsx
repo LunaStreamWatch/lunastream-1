@@ -2,21 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
 import { User, LogIn, LogOut, CircleUser as UserCircle, X, Mail, Lock, Image as ImageIcon } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
-
-const AVATAR_OPTIONS = [
-  { id: 'default', label: 'Default', emoji: '👤' },
-  { id: 'cat', label: 'Cat', emoji: '🐱' },
-  { id: 'dog', label: 'Dog', emoji: '🐶' },
-  { id: 'fox', label: 'Fox', emoji: '🦊' },
-  { id: 'panda', label: 'Panda', emoji: '🐼' },
-  { id: 'koala', label: 'Koala', emoji: '🐨' },
-  { id: 'lion', label: 'Lion', emoji: '🦁' },
-  { id: 'tiger', label: 'Tiger', emoji: '🐯' },
-  { id: 'bear', label: 'Bear', emoji: '🐻' },
-  { id: 'frog', label: 'Frog', emoji: '🐸' },
-  { id: 'penguin', label: 'Penguin', emoji: '🐧' },
-  { id: 'owl', label: 'Owl', emoji: '🦉' },
-];
+import { AVATAR_OPTIONS, AvatarIcon } from "../utils/avatars";
 
 export const AccountMenu: React.FC = () => {
   const { user, profile, loading, signUp, signIn, signOut, updateProfile } = useAuth();
@@ -176,15 +162,11 @@ export const AccountMenu: React.FC = () => {
 
     if (error) {
       setError(error.message);
-      setSelectedAvatar(profile?.avatar || 'default');
+      setSelectedAvatar(profile?.avatar || 'blue');
     } else {
       setSuccess('Avatar updated!');
       setTimeout(() => setSuccess(''), 2000);
     }
-  };
-
-  const getAvatarEmoji = (avatarId: string) => {
-    return AVATAR_OPTIONS.find(a => a.id === avatarId)?.emoji || '👤';
   };
 
   if (loading) {
@@ -206,7 +188,7 @@ export const AccountMenu: React.FC = () => {
         aria-label="Account menu"
       >
         {user && profile ? (
-          <div className="text-xl">{getAvatarEmoji(profile.avatar)}</div>
+          <AvatarIcon avatarId={profile.avatar} size="small" />
         ) : (
           <User className="w-5 h-5" />
         )}
@@ -262,7 +244,7 @@ export const AccountMenu: React.FC = () => {
                 {view === 'menu' && user && profile && (
                   <div className="space-y-4">
                     <div className="flex items-center gap-4 p-4 rounded-xl bg-gray-50 dark:bg-gray-800/50 border border-gray-200 dark:border-gray-700">
-                      <div className="text-4xl">{getAvatarEmoji(profile.avatar)}</div>
+                      <AvatarIcon avatarId={profile.avatar} size="large" />
                       <div className="flex-1 min-w-0">
                         <p className="font-semibold text-gray-900 dark:text-white truncate">{profile.username}</p>
                         <p className="text-sm text-gray-600 dark:text-gray-300 truncate">{user.email}</p>
@@ -480,19 +462,19 @@ export const AccountMenu: React.FC = () => {
                         <ImageIcon className="w-4 h-4 inline mr-1" />
                         Avatar
                       </label>
-                      <div className="grid grid-cols-4 gap-2">
+                      <div className="grid grid-cols-4 gap-3">
                         {AVATAR_OPTIONS.map((avatar) => (
                           <button
                             key={avatar.id}
                             onClick={() => handleUpdateAvatar(avatar.id)}
-                            className={`p-3 rounded-lg border-2 text-2xl transition-all ${
+                            className={`p-1 rounded-lg border-2 transition-all ${
                               selectedAvatar === avatar.id
-                                ? 'border-pink-500 bg-pink-50 dark:bg-pink-900/20'
-                                : 'border-gray-200 dark:border-gray-700 hover:border-gray-300 dark:hover:border-gray-600'
+                                ? 'border-pink-500 ring-2 ring-pink-500/30'
+                                : 'border-transparent hover:border-gray-300 dark:hover:border-gray-600'
                             }`}
                             title={avatar.label}
                           >
-                            {avatar.emoji}
+                            <AvatarIcon avatarId={avatar.id} size="medium" />
                           </button>
                         ))}
                       </div>

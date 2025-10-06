@@ -64,7 +64,7 @@
 CREATE TABLE IF NOT EXISTS public.profiles (
   id uuid PRIMARY KEY REFERENCES auth.users(id) ON DELETE CASCADE,
   username text UNIQUE NOT NULL,
-  avatar text NOT NULL DEFAULT 'default',
+  avatar text NOT NULL DEFAULT 'blue',
   created_at timestamptz DEFAULT now(),
   updated_at timestamptz DEFAULT now()
 );
@@ -239,7 +239,7 @@ BEGIN
   VALUES (
     new.id,
     COALESCE(new.raw_user_meta_data->>'username', split_part(new.email, '@', 1)),
-    COALESCE(new.raw_user_meta_data->>'avatar', 'default')
+    COALESCE(new.raw_user_meta_data->>'avatar', 'blue')
   );
   RETURN new;
 END;
