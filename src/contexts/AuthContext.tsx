@@ -17,6 +17,8 @@ interface AuthContextType {
   signUp: (email: string, password: string, username: string) => Promise<{ error: Error | null }>;
   signIn: (email: string, password: string) => Promise<{ error: Error | null }>;
   signOut: () => Promise<void>;
+  resetPassword: (email: string) => Promise<{ error: Error | null }>;
+  updatePassword: (newPassword: string) => Promise<{ error: Error | null }>;
   updateProfile: (updates: { username?: string; avatar?: string }) => Promise<{ error: Error | null }>;
 }
 
@@ -136,6 +138,32 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setProfile(null);
   };
 
+  const resetPassword = async (email: string) => {
+    try {
+      const { error } = await supabase.auth.resetPasswordForEmail(email, {
+        redirectTo: `${window.location.origin}/#/reset-password`,
+      });
+
+      if (error) return { error };
+      return { error: null };
+    } catch (error) {
+      return { error: error as Error };
+    }
+  };
+
+  const updatePassword = async (newPassword: string) => {
+    try {
+      const { error } = await supabase.auth.updateUser({
+        password: newPassword,
+      });
+
+      if (error) return { error };
+      return { error: null };
+    } catch (error) {
+      return { error: error as Error };
+    }
+  };
+
   const updateProfile = async (updates: { username?: string; avatar?: string }) => {
     if (!user) return { error: new Error('No user logged in') };
     try {
@@ -173,6 +201,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     signUp,
     signIn,
     signOut,
+    resetPassword,
+    updatePassword,
     updateProfile,
   };
 
