@@ -325,7 +325,7 @@ const Discover: React.FC = () => {
           >
             <option value="popularity.desc">{t.filter_popularity} ({t.filter_descending_short})</option>
             <option value="popularity.asc">{t.filter_popularity} ({t.filter_ascending_short})</option>
-            <option value="vote_average.desc">{t.filter_popularity} ({t.filter_descending_short})</option>
+            <option value="vote_average.desc">{t.filter_rating} ({t.filter_descending_short})</option>
             <option value="vote_average.asc">{t.filter_rating} ({t.filter_ascending_short})</option>
             <option value="release_date.desc">{t.filter_release_date} ({t.filter_newest})</option>
             <option value="release_date.asc">{t.filter_release_date} ({t.filter_oldest})</option>
