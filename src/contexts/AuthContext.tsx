@@ -126,6 +126,8 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       });
 
       if (error) return { error };
+
+      window.location.reload();
       return { error: null };
     } catch (error) {
       return { error: error as Error };
@@ -136,6 +138,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     await supabase.auth.signOut();
     setUser(null);
     setProfile(null);
+    window.location.reload();
   };
 
   const resetPassword = async (email: string) => {
