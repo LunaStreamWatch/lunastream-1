@@ -1,5 +1,3 @@
-import { supabase } from './supabase';
-
 export interface WatchStatEvent {
   event_type: 'watch' | 'continue_watching';
   media_type: 'movie' | 'tv' | 'anime';
@@ -11,20 +9,22 @@ export interface WatchStatEvent {
 }
 
 class WatchStatsService {
+  private apiUrl = '/api/watch-stats';
+
   async recordWatchEvent(event: WatchStatEvent): Promise<void> {
     try {
       const user_agent = navigator.userAgent;
 
-      const { error } = await supabase
-        .from('watch_stats')
-        .insert({
+      await fetch(this.apiUrl, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
           ...event,
           user_agent,
-        });
-
-      if (error) {
-        console.error('Failed to record watch stat:', error);
-      }
+        }),
+      });
     } catch (err) {
       console.error('Error recording watch stat:', err);
     }
@@ -36,30 +36,20 @@ class WatchStatsService {
     days?: number;
   }) {
     try {
-      let query = supabase.from('watch_stats').select('*');
+      const params = new URLSearchParams();
+      if (filters?.media_type) params.append('media_type', filters.media_type);
+      if (filters?.event_type) params.append('event_type', filters.event_type);
+      if (filters?.days) params.append('days', filters.days.toString());
 
-      if (filters?.media_type) {
-        query = query.eq('media_type', filters.media_type);
-      }
+      const response = await fetch(`${this.apiUrl}?${params.toString()}`);
 
-      if (filters?.event_type) {
-        query = query.eq('event_type', filters.event_type);
-      }
-
-      if (filters?.days) {
-        const date = new Date();
-        date.setDate(date.getDate() - filters.days);
-        query = query.gte('created_at', date.toISOString());
-      }
-
-      const { data, error } = await query.order('created_at', { ascending: false });
-
-      if (error) {
-        console.error('Failed to fetch watch stats:', error);
+      if (!response.ok) {
+        console.error('Failed to fetch watch stats');
         return [];
       }
 
-      return data || [];
+      const data = await response.json();
+      return data.stats || [];
     } catch (err) {
       console.error('Error fetching watch stats:', err);
       return [];

@@ -149,10 +149,75 @@ fastify.decorate('authenticate', async function(request, reply) {
   }
 });
 
+// In-memory storage for watch stats
+const watchStats = [];
+
 // API Routes
 async function registerRoutes() {
   fastify.get('/api/health', async () => {
     return { status: 'ok', timestamp: new Date().toISOString() };
+  });
+
+  // Watch stats endpoints
+  fastify.post('/api/watch-stats', async (request, reply) => {
+    try {
+      const event = request.body;
+      const timestamp = new Date().toISOString();
+
+      const statEntry = {
+        ...event,
+        created_at: timestamp,
+        id: uuidv4()
+      };
+
+      watchStats.push(statEntry);
+
+      return reply.send({ success: true, id: statEntry.id });
+    } catch (err) {
+      logger.error('Error recording watch stat:', err);
+      return reply.code(500).send({ error: 'Failed to record watch stat' });
+    }
+  });
+
+  fastify.get('/api/watch-stats', async (request, reply) => {
+    try {
+      const { media_type, event_type, days } = request.query;
+
+      let filtered = [...watchStats];
+
+      if (media_type) {
+        filtered = filtered.filter(stat => stat.media_type === media_type);
+      }
+
+      if (event_type) {
+        filtered = filtered.filter(stat => stat.event_type === event_type);
+      }
+
+      if (days) {
+        const cutoffDate = new Date();
+        cutoffDate.setDate(cutoffDate.getDate() - parseInt(days));
+        filtered = filtered.filter(stat => new Date(stat.created_at) >= cutoffDate);
+      }
+
+      const totalCount = filtered.length;
+
+      return reply.send({
+        success: true,
+        stats: filtered.reverse(),
+        total: totalCount,
+        summary: {
+          total_watches: totalCount,
+          by_type: {
+            movie: filtered.filter(s => s.media_type === 'movie').length,
+            tv: filtered.filter(s => s.media_type === 'tv').length,
+            anime: filtered.filter(s => s.media_type === 'anime').length
+          }
+        }
+      });
+    } catch (err) {
+      logger.error('Error fetching watch stats:', err);
+      return reply.code(500).send({ error: 'Failed to fetch watch stats' });
+    }
   });
 
   fastify.get('/api/subtitles/movie/:tmdbId', async (request, reply) => {
