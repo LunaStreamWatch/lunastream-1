@@ -162,7 +162,7 @@ export const AccountMenu: React.FC = () => {
 
     if (error) {
       setError(error.message);
-      setSelectedAvatar(profile?.avatar || 'blue');
+      setSelectedAvatar(profile?.avatar || 'fuchsia');
     } else {
       setSuccess('Avatar updated!');
       setTimeout(() => setSuccess(''), 2000);

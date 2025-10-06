@@ -22,7 +22,7 @@ DECLARE
   username_exists boolean;
 BEGIN
   username_to_use := COALESCE(new.raw_user_meta_data->>'username', split_part(new.email, '@', 1));
-  avatar_to_use := COALESCE(new.raw_user_meta_data->>'avatar', 'blue');
+  avatar_to_use := COALESCE(new.raw_user_meta_data->>'avatar', 'fuchsia');
   
   SELECT EXISTS(
     SELECT 1 FROM public.profiles WHERE username = username_to_use

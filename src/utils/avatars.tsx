@@ -1,14 +1,14 @@
 import React from 'react';
 
 export const AVATAR_OPTIONS = [
+  { id: 'fuchsia', label: 'Fuchsia', color: '#D946EF', face: 'smile' },
   { id: 'blue', label: 'Blue', color: '#1E88E5', face: 'smile' },
-  { id: 'red', label: 'Red', color: '#E53935', face: 'happy' },
-  { id: 'green', label: 'Green', color: '#43A047', face: 'cool' },
-  { id: 'yellow', label: 'Yellow', color: '#FDD835', face: 'cheerful' },
-  { id: 'orange', label: 'Orange', color: '#FB8C00', face: 'grin' },
-  { id: 'teal', label: 'Teal', color: '#00897B', face: 'wink' },
-  { id: 'fuchsia', label: 'Fuchsia', color: '#D946EF', face: 'joy' },
-  { id: 'cyan', label: 'Cyan', color: '#00ACC1', face: 'pleased' },
+  { id: 'red', label: 'Red', color: '#E53935', face: 'smile' },
+  { id: 'green', label: 'Green', color: '#43A047', face: 'smile' },
+  { id: 'yellow', label: 'Yellow', color: '#FDD835', face: 'smile' },
+  { id: 'orange', label: 'Orange', color: '#FB8C00', face: 'smile' },
+  { id: 'teal', label: 'Teal', color: '#00897B', face: 'smile' },
+  { id: 'cyan', label: 'Cyan', color: '#00ACC1', face: 'smile' },
 ] as const;
 
 export type AvatarId = typeof AVATAR_OPTIONS[number]['id'];
@@ -33,8 +33,8 @@ export const AvatarIcon: React.FC<{
 
   const sizeClass = {
     small: 'w-8 h-8',
-    medium: 'w-12 h-12',
-    large: 'w-16 h-16'
+    medium: 'w-16 h-16',
+    large: 'w-20 h-20'
   }[size];
 
   const eyeSize = {
