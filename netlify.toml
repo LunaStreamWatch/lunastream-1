@@ -1,0 +1,10 @@
+[[redirects]]
+  from = "/api/watch-stats"
+  to = "/.netlify/functions/watch-stats"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
