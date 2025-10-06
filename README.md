@@ -1,4 +1,4 @@
-https://lunastream.lol
+https://lunastream.gay
 
 Setup (Supabase + Auth)
 
