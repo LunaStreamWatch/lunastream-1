@@ -174,7 +174,7 @@ const AnimeMovieDetail: React.FC = () => {
 
         {/* Player iframe */}
         <iframe
-          src={getPlayerUrl("vidplus", {
+          src={getPlayerUrl("vidnest", {
             anilistId: id!,
             mediaType: "anime",
             episodeNumber: 1,

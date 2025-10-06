@@ -144,7 +144,7 @@ const AnimeTVDetail: React.FC = () => {
       "tv",
       currentAnime.id,
       anilist.getDisplayTitle(currentAnime),
-      poster,
+      anime.bannerImage,
       1,
       episodeNumber,
       episodeDuration
@@ -225,7 +225,7 @@ const AnimeTVDetail: React.FC = () => {
         </div>
 
         <iframe
-          src={getPlayerUrl("vidplus", {
+          src={getPlayerUrl("vidnest", {
             anilistId: currentAnime?.id.toString() || id!,
             mediaType: "anime",
             episodeNumber: currentEpisode,
@@ -268,18 +268,31 @@ const AnimeTVDetail: React.FC = () => {
               Episodes ({currentAnime?.episodes || 0})
             </h2>
             {seasons.length > 0 && (
-              <select
-                value={selectedSeason}
-                onChange={(e) => setSelectedSeason(Number(e.target.value))}
-                className="rounded-md border p-2 bg-gray-900 text-white"
-              >
-                <option value={0}>{anime.title.english || anime.title.romaji || anime.title.native}</option>
-                {seasons.map((season, index) => (
-                  <option key={season.id} value={index + 1}>
-                    {season.title.english || season.title.romaji || season.title.native}
-                  </option>
-                ))}
-              </select>
+              <div className="relative group w-full sm:w-auto">
+                <select
+                  value={selectedSeason}
+                  onChange={(e) => setSelectedSeason(Number(e.target.value))}
+                  className="pr-10 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl border border-pink-200/50 dark:border-gray-600/30 
+                            text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500 
+                            transition-all duration-200 appearance-none py-2 px-4 cursor-pointer font-semibold w-full sm:w-64"
+                >
+                  <option value={0}>{anime.title.english || anime.title.romaji || anime.title.native}</option>
+                  {seasons.map((season, index) => (
+                    <option key={season.id} value={index + 1}>
+                      {season.title.english || season.title.romaji || season.title.native}
+                    </option>
+                  ))}
+                </select>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400 pointer-events-none transition-transform duration-200 group-hover:rotate-180"
+                  fill="none"
+                  viewBox="0 0 24 24"
+                  stroke="currentColor"
+                >
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                </svg>
+              </div>
             )}
           </div>
           <div className={isMobile ? 'space-y-2' : 'space-y-3'}>

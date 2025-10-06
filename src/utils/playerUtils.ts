@@ -44,12 +44,11 @@ export const playerConfigs: PlayerConfig[] = [
     },
   },
   {
-    id: "vidplus",
-    name: "VidPlus",
+    id: "vidnest",
+    name: "Vidnest",
     generateUrl: ({ tmdbId, anilistId, seasonNumber, episodeNumber, mediaType, isDub = false }) => {
       if (mediaType === "anime" && anilistId && episodeNumber) {
-        const dubParam = isDub ? "/dub" : "";
-        return `https://vidplus.to/embed/anime/${anilistId}/${episodeNumber}${dubParam}`;
+        return `https://vidnest.fun/anime/${anilistId}/${episodeNumber}/${isDub ? "dub" : "sub"}`;
       } else if (mediaType === "movie" && tmdbId) {
         // Fallback to Vidify domain if needed for movies
         const params = new URLSearchParams({

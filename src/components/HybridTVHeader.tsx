@@ -102,9 +102,9 @@ const HybridTVHeader: React.FC<HybridTVHeaderProps> = ({
   const availableSeasons = show.seasons.filter((s) => s.season_number > 0)
 
   return (
-    <div className="relative overflow-hidden rounded-2xl bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900">
-      {/* Background */}
-      <div className="absolute inset-0">
+    <div className="relative rounded-2xl bg-gradient-to-br from-gray-900 via-purple-900 to-pink-900">
+      {/* Background wrapper with overflow-hidden */}
+      <div className="absolute inset-0 overflow-hidden rounded-2xl z-0">
         <img
           src={
             tmdb.getImageUrl(displayData.backdrop, "w1280") ||
@@ -116,7 +116,8 @@ const HybridTVHeader: React.FC<HybridTVHeaderProps> = ({
         <div className="absolute inset-0 bg-gradient-to-t from-gray-900 via-gray-900/50 to-transparent" />
       </div>
 
-      <div className="relative z-10 p-6 md:p-8">
+      {/* Main content with overflow visible */}
+      <div className="relative z-10 p-6 md:p-8 overflow-visible">
         <div className="flex flex-col md:flex-row gap-6">
           {/* Poster */}
           <div className="flex-shrink-0">
@@ -180,7 +181,7 @@ const HybridTVHeader: React.FC<HybridTVHeaderProps> = ({
               <label className="block text-sm font-medium text-gray-300 mb-2">
                 {t.select_season}
               </label>
-              <div className="relative w-full md:w-64 season-dropdown">
+              <div className="relative w-full md:w-64 season-dropdown overflow-visible z-30">
                 <button
                   onClick={() => setDropdownOpen((prev) => !prev)}
                   className="w-full bg-white/10 backdrop-blur-sm border border-white/20 rounded-lg px-4 py-2 text-white text-left focus:outline-none focus:ring-2 focus:ring-pink-500 flex justify-between items-center"
@@ -192,7 +193,7 @@ const HybridTVHeader: React.FC<HybridTVHeaderProps> = ({
                 </button>
 
                 {dropdownOpen && (
-                  <ul className="absolute z-20 mt-2 w-full bg-gray-900/95 border border-white/20 backdrop-blur-md rounded-lg shadow-xl max-h-96 overflow-y-auto">
+                  <ul className="absolute left-0 z-50 mt-2 w-full bg-gray-900/95 border border-white/20 backdrop-blur-md rounded-lg shadow-xl max-h-96 overflow-y-auto">
                     <li
                       onClick={() => {
                         onSeasonChange(0)
