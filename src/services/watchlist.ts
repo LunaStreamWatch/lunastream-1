@@ -73,9 +73,13 @@ class WatchlistService {
 
   async addMovieToWatchlist(movie: Omit<WatchlistMovie, 'addedAt'>): Promise<void> {
     if (await this.isAuthenticated()) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
       const { error } = await supabase
         .from('watchlist')
         .upsert({
+          user_id: user.id,
           content_type: 'movie',
           tmdb_id: movie.id,
           title: movie.title,
@@ -151,9 +155,13 @@ class WatchlistService {
 
   async addShowToWatchlist(show: Omit<WatchlistTVShow, 'addedAt'>): Promise<void> {
     if (await this.isAuthenticated()) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
       const { error } = await supabase
         .from('watchlist')
         .upsert({
+          user_id: user.id,
           content_type: 'tv',
           tmdb_id: show.id,
           title: show.name,
@@ -287,9 +295,13 @@ class WatchlistService {
 
   async addMovieToFavorites(movie: Omit<WatchlistMovie, 'addedAt'>): Promise<void> {
     if (await this.isAuthenticated()) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
       const { error } = await supabase
         .from('favorites')
         .upsert({
+          user_id: user.id,
           content_type: 'movie',
           tmdb_id: movie.id,
           title: movie.title,
@@ -319,9 +331,13 @@ class WatchlistService {
 
   async addShowToFavorites(show: Omit<WatchlistTVShow, 'addedAt'>): Promise<void> {
     if (await this.isAuthenticated()) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
       const { error } = await supabase
         .from('favorites')
         .upsert({
+          user_id: user.id,
           content_type: 'tv',
           tmdb_id: show.id,
           name: show.name,

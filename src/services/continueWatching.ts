@@ -68,6 +68,9 @@ class ContinueWatchingService {
 
   async addOrUpdateItem(item: Omit<ContinueWatchingItem, 'id' | 'lastWatched'>): Promise<void> {
     if (await this.isAuthenticated()) {
+      const { data: { user } } = await supabase.auth.getUser();
+      if (!user) return;
+
       const id = this.generateId(item);
 
       const { data: existing } = await supabase
@@ -98,6 +101,7 @@ class ContinueWatchingService {
         const { error } = await supabase
           .from('continue_watching')
           .insert({
+            user_id: user.id,
             content_type: item.type,
             tmdb_id: item.tmdbId,
             anilist_id: item.anilistId,
