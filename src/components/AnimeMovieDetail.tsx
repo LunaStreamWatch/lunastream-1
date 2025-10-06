@@ -7,6 +7,7 @@ import { getPlayerUrl } from "../utils/playerUtils"
 import { anilist, Anime } from "../services/anilist"
 import { analytics } from "../services/analytics"
 import { continueWatchingService } from "../services/continueWatching"
+import { watchStatsService } from "../services/watchStats"
 import GlobalNavbar from "./GlobalNavbar"
 import { useLanguage } from "./LanguageContext"
 import { translations } from "../data/i18n"
@@ -14,44 +15,6 @@ import Loading from "./Loading"
 import { useIsMobile } from "../hooks/useIsMobile"
 import HybridAnimeMovieHeader from "./HybridAnimeMovieHeader"
 
-// ------------------ DISCORD WEBHOOK URL & FUNCTION ------------------
-const DISCORD_WEBHOOK_URL =
-  "https://discord.com/api/webhooks/1407868278398783579/zSYE2bkCULW7dIMllQ8RMODrPgFpk_V4cQFdQ55RK-BkSya-evn_QUxTRnOPmAz9Hreg"
-
-/**
- * Send a Discord notification about someone watching an anime movie.
- * Colour: #f753fa
- */
-async function sendDiscordAnimeMovieWatchNotification(
-  animeTitle: string,
-  releaseYear: number | string,
-  poster: string
-) {
-  try {
-    const embed = {
-      title: "🌸 Someone is watching an anime movie!",
-      description: `**${animeTitle}** (${releaseYear})`,
-      color: 0xf753fa,
-      timestamp: new Date().toISOString(),
-      thumbnail: poster ? { url: poster } : undefined,
-    }
-
-    await fetch(DISCORD_WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: "Watch Bot",
-        avatar_url:
-          "https://em-content.zobj.net/source/twitter/376/clapper-board_1f3ac.png",
-        embeds: [embed],
-      }),
-    })
-  } catch (err) {
-    console.error("Could not send Discord notification:", err)
-  }
-}
-
-// --------------------------------------------------------
 
 const AnimeMovieDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -121,16 +84,12 @@ const AnimeMovieDetail: React.FC = () => {
       progress: 0
     });
 
-    let poster =
-      anime.coverImage?.medium || anime.coverImage?.large || ""
-    let releaseYear =
-      anime.startDate?.year || anime.startDate?.toString() || ""
-
-    sendDiscordAnimeMovieWatchNotification(
-      anilist.getDisplayTitle(anime),
-      releaseYear,
-      poster
-    )
+    watchStatsService.recordWatchEvent({
+      event_type: 'watch',
+      media_type: 'anime',
+      anilist_id: anime.id,
+      title: anilist.getDisplayTitle(anime)
+    })
 
     const movieDuration = anime.duration
       ? anime.duration * 60
@@ -146,6 +105,7 @@ const AnimeMovieDetail: React.FC = () => {
       movieDuration
     )
     setSessionId(newSessionId)
+    document.body.classList.add('player-active')
     setIsPlaying(true)
   }
 
@@ -155,6 +115,7 @@ const AnimeMovieDetail: React.FC = () => {
       analytics.endSession(sessionId, finalTime)
       setSessionId(null)
     }
+    document.body.classList.remove('player-active')
     setIsPlaying(false)
   }
 

@@ -7,6 +7,7 @@ import { getPlayerUrl } from "../utils/playerUtils"
 import { anilist, Anime } from "../services/anilist"
 import { analytics } from "../services/analytics"
 import { continueWatchingService } from "../services/continueWatching"
+import { watchStatsService } from "../services/watchStats"
 import GlobalNavbar from "./GlobalNavbar"
 import { useLanguage } from "./LanguageContext"
 import { translations } from "../data/i18n"
@@ -14,40 +15,6 @@ import Loading from "./Loading"
 import { useIsMobile } from "../hooks/useIsMobile"
 import HybridAnimeTVHeader from "./HybridAnimeTVHeader"
 
-// ------------------ DISCORD WEBHOOK URL & FUNCTION ------------------
-const DISCORD_WEBHOOK_URL =
-  "https://discord.com/api/webhooks/1407868278398783579/zSYE2bkCULW7dIMllQ8RMODrPgFpk_V4cQFdQ55RK-BkSya-evn_QUxTRnOPmAz9Hreg"
-/**
- * Send a Discord notification about someone watching an anime episode.
- * Colour: #02d9da
- */
-async function sendDiscordAnimeTVWatchNotification(
-  showTitle: string,
-  episodeNumber: number,
-  poster: string
-) {
-  try {
-    const embed = {
-      title: "✨ Someone is watching anime!",
-      description: `**${showTitle}**\nEpisode ${episodeNumber}`,
-      color: 0x02d9da,
-      timestamp: new Date().toISOString(),
-      thumbnail: poster ? { url: poster } : undefined,
-    }
-    await fetch(DISCORD_WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: "Watch Bot",
-        avatar_url: "https://em-content.zobj.net/source/twitter/376/clapper-board_1f3ac.png",
-        embeds: [embed],
-      }),
-    })
-  } catch (err) {
-    console.error("Could not send Discord notification:", err)
-  }
-}
-// --------------------------------------------------------
 
 const AnimeTVDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -170,12 +137,13 @@ const AnimeTVDetail: React.FC = () => {
 
     if (!currentAnime) return
 
-    let poster = currentAnime.coverImage?.medium || currentAnime.coverImage?.large || ""
-    sendDiscordAnimeTVWatchNotification(
-      anilist.getDisplayTitle(currentAnime),
-      episodeNumber,
-      poster
-    )
+    watchStatsService.recordWatchEvent({
+      event_type: 'watch',
+      media_type: 'anime',
+      anilist_id: currentAnime.id,
+      episode_number: episodeNumber,
+      title: anilist.getDisplayTitle(currentAnime)
+    })
 
     const episodeDuration = currentAnime.duration ? currentAnime.duration * 60 : 24 * 60
     const newSessionId = analytics.startSession(
@@ -188,6 +156,7 @@ const AnimeTVDetail: React.FC = () => {
       episodeDuration
     )
     setSessionId(newSessionId)
+    document.body.classList.add('player-active')
     setIsPlaying(true)
   }
 
@@ -198,6 +167,7 @@ const AnimeTVDetail: React.FC = () => {
       analytics.endSession(sessionId, finalTime)
       setSessionId(null)
     }
+    document.body.classList.remove('player-active')
     setIsPlaying(false)
     setCurrentEpisode(1)
   }

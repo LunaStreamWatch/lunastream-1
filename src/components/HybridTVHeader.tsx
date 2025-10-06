@@ -192,7 +192,7 @@ const HybridTVHeader: React.FC<HybridTVHeaderProps> = ({
                 </button>
 
                 {dropdownOpen && (
-                  <ul className="absolute z-20 mt-2 w-full bg-gray-900/95 border border-white/20 backdrop-blur-md rounded-lg shadow-xl max-h-80 overflow-y-auto">
+                  <ul className="absolute z-20 mt-2 w-full bg-gray-900/95 border border-white/20 backdrop-blur-md rounded-lg shadow-xl max-h-96 overflow-y-auto">
                     <li
                       onClick={() => {
                         onSeasonChange(0)

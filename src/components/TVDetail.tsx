@@ -8,6 +8,7 @@ import { analytics } from "../services/analytics"
 import type { TVDetails, Episode } from "../types"
 import { watchlistService } from "../services/watchlist"
 import { continueWatchingService } from "../services/continueWatching"
+import { watchStatsService } from "../services/watchStats"
 import GlobalNavbar from "./GlobalNavbar"
 import { playerConfigs, getPlayerUrl } from "../utils/playerUtils"
 import { useLanguage } from "./LanguageContext"
@@ -17,41 +18,6 @@ import { useIsMobile } from "../hooks/useIsMobile"
 import HybridTVHeader from "./HybridTVHeader"
 import EmbeddedFrame from "./player/EmbeddedFrame"
 
-// ------------------ DISCORD WEBHOOK URL ------------------
-const DISCORD_WEBHOOK_URL =
-  "https://discord.com/api/webhooks/1407868278398783579/zSYE2bkCULW7dIMllQ8RMODrPgFpk_V4cQFdQ55RK-BkSya-evn_QUxTRnOPmAz9Hreg" // <------ PUT YOUR WEBHOOK URL HERE
-
-// Function to send a watch event to Discord
-async function sendDiscordWatchNotification(
-  showName: string,
-  seasonNumber: number,
-  episodeNumber: number,
-  episodeTitle: string,
-  posterPath: string,
-) {
-  try {
-    const embed = {
-      title: `🎬 Someone is watching!`,
-      description: `**${showName}**\nSeason **${seasonNumber}** Episode **${episodeNumber}${episodeTitle ? `: ${episodeTitle}` : ""}**`,
-      color: 0x9a3dce,
-      timestamp: new Date().toISOString(),
-      thumbnail: posterPath ? { url: tmdb.getImageUrl(posterPath, "w185") } : undefined,
-    }
-
-    await fetch(DISCORD_WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: "Watch Bot",
-        avatar_url: "https://em-content.zobj.net/source/twitter/376/clapper-board_1f3ac.png",
-        embeds: [embed],
-      }),
-    })
-  } catch (err) {
-    console.error("Could not send Discord notification:", err)
-  }
-}
-// --------------------------------------------------------
 
 const TVDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -269,15 +235,14 @@ const TVDetail: React.FC = () => {
       localStorage.setItem("recentlyViewedTVEpisodes", JSON.stringify(updated))
       setRecentlyViewedTVEpisodes(updated)
 
-      // ------------ DISCORD NOTIFICATION -------------
-      sendDiscordWatchNotification(
-        show.name,
-        episode.season_number,
-        episode.episode_number,
-        episode.name,
-        show.poster_path,
-      )
-      // ----------------------------------------------
+      watchStatsService.recordWatchEvent({
+        event_type: 'watch',
+        media_type: 'tv',
+        tmdb_id: show.id,
+        season_number: episode.season_number,
+        episode_number: episode.episode_number,
+        title: show.name
+      })
 
       const episodeDuration =
         show.episode_run_time && show.episode_run_time.length > 0 ? show.episode_run_time[0] * 60 : 45 * 60
@@ -292,6 +257,7 @@ const TVDetail: React.FC = () => {
         episodeDuration,
       )
       setSessionId(newSessionId)
+      document.body.classList.add('player-active')
       setCurrentEpisode(episode)
       setIsPlaying(true)
     }
@@ -305,6 +271,7 @@ const TVDetail: React.FC = () => {
       analytics.endSession(sessionId, finalTime)
       setSessionId(null)
     }
+    document.body.classList.remove('player-active')
     setIsPlaying(false)
     setCurrentEpisode(null)
   }

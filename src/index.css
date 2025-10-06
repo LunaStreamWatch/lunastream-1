@@ -308,3 +308,16 @@ html {
   background: rgb(219, 39, 119);
   color: white;
 }
+
+body.player-active {
+  overflow: hidden;
+}
+
+body.player-active::-webkit-scrollbar {
+  display: none;
+}
+
+body.player-active {
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+}

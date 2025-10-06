@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { Play, X, Clock, ChevronRight } from 'lucide-react';
 import { getPlayerUrl } from '../utils/playerUtils';
 import { continueWatchingService, ContinueWatchingItem } from '../services/continueWatching';
+import { watchStatsService } from '../services/watchStats';
 import { useLanguage } from './LanguageContext';
 import { translations } from '../data/i18n';
 import { useIsMobile } from '../hooks/useIsMobile';
@@ -25,6 +26,17 @@ const ContinueWatching: React.FC = () => {
   };
 
   const handleContinueWatching = (item: ContinueWatchingItem) => {
+    watchStatsService.recordWatchEvent({
+      event_type: 'continue_watching',
+      media_type: item.type,
+      tmdb_id: item.tmdbId,
+      anilist_id: item.anilistId,
+      season_number: item.season,
+      episode_number: item.episode,
+      title: item.title
+    });
+
+    document.body.classList.add('player-active');
     setCurrentItem(item);
     setIsPlaying(true);
   };
@@ -37,6 +49,7 @@ const ContinueWatching: React.FC = () => {
   };
 
   const handleClosePlayer = () => {
+    document.body.classList.remove('player-active');
     setIsPlaying(false);
     setCurrentItem(null);
   };

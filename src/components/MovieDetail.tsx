@@ -9,6 +9,7 @@ import { analytics } from "../services/analytics"
 import type { MovieDetails } from "../types"
 import { watchlistService } from "../services/watchlist"
 import { continueWatchingService } from "../services/continueWatching"
+import { watchStatsService } from "../services/watchStats"
 import GlobalNavbar from "./GlobalNavbar"
 import { getPlayerUrl } from "../utils/playerUtils"
 import { useLanguage } from "./LanguageContext"
@@ -17,36 +18,6 @@ import Loading from "./Loading"
 import HybridMovieHeader from "./HybridMovieHeader"
 import EmbeddedFrame from "./player/EmbeddedFrame"
 
-const DISCORD_WEBHOOK_URL =
-  "https://discord.com/api/webhooks/1407868278398783579/zSYE2bkCULW7dIMllQ8RMODrPgFpk_V4cQFdQ55RK-BkSya-evn_QUxTRnOPmAz9Hreg"
-
-async function sendDiscordMovieWatchNotification(
-  movieTitle: string,
-  releaseYear: number,
-  posterPath: string
-) {
-  try {
-    const embed = {
-      title: `🍿 Someone is watching a movie!`,
-      description: `**${movieTitle}** (${releaseYear})`,
-      color: 0xf28c28,
-      timestamp: new Date().toISOString(),
-      thumbnail: posterPath ? { url: tmdb.getImageUrl(posterPath, "w185") } : undefined,
-    }
-
-    await fetch(DISCORD_WEBHOOK_URL, {
-      method: "POST",
-      headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({
-        username: "Watch Bot",
-        avatar_url: "https://em-content.zobj.net/source/twitter/376/clapper-board_1f3ac.png",
-        embeds: [embed],
-      }),
-    })
-  } catch (err) {
-    console.error("Could not send Discord notification:", err)
-  }
-}
 
 const MovieDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>()
@@ -163,11 +134,12 @@ const MovieDetail: React.FC = () => {
       vote_average: movie.vote_average,
     })
 
-    sendDiscordMovieWatchNotification(
-      movie.title,
-      movie.release_date ? new Date(movie.release_date).getFullYear() : 0,
-      movie.poster_path
-    )
+    watchStatsService.recordWatchEvent({
+      event_type: 'watch',
+      media_type: 'movie',
+      tmdb_id: movie.id,
+      title: movie.title
+    })
 
     const newSessionId = analytics.startSession(
       "movie",
@@ -179,6 +151,7 @@ const MovieDetail: React.FC = () => {
       movie.runtime ? movie.runtime * 60 : undefined
     )
     setSessionId(newSessionId)
+    document.body.classList.add('player-active')
     setIsPlaying(true)
 
     const existing = JSON.parse(localStorage.getItem("recentlyViewedMovies") || "[]")
@@ -202,6 +175,7 @@ const MovieDetail: React.FC = () => {
       analytics.endSession(sessionId, finalTime)
       setSessionId(null)
     }
+    document.body.classList.remove('player-active')
     setIsPlaying(false)
   }
 
