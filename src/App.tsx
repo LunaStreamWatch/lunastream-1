@@ -23,8 +23,9 @@ import AnimeTVDetail from './components/AnimeTVDetail';
 import IntroAnimation from './components/IntroAnimation';
 import { LanguageProvider } from './components/LanguageContext';
 import { AnimationProvider } from './components/AnimationContext';
-import { AuthProvider } from './contexts/AuthContext';
 import { TooltipProvider } from '@/components/ui/tooltip';
+import { AuthProvider } from './contexts/AuthContext';
+import AuthCallback from './components/AuthCallback';
 
 function App() {
   const [showIntro, setShowIntro] = useState(() => {
@@ -38,14 +39,15 @@ function App() {
   };
 
   return (
-    <AuthProvider>
-      <LanguageProvider>
-        <AnimationProvider>
-          <Router>
+      <AuthProvider>
+        <LanguageProvider>
+          <AnimationProvider>
+            <Router>
           {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
           <ScrollToTopButton />
           <Routes>
             <Route path="/" element={<HomePageWrapper />} />
+            <Route path="/auth/callback" element={<AuthCallback />} />
             <Route path="/search" element={<SearchResults />} />
             <Route path="/movie/:id" element={<MovieDetail />} />
             <Route path="/tv/:id" element={<TVDetail />} />

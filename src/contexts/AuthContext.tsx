@@ -88,6 +88,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       const { data, error } = await supabase.auth.signUp({
         email,
         password,
+        options: {
+          emailRedirectTo: `${window.location.origin}/#/auth/callback`,
+          data: { username, avatar: 'default' }
+        }
       });
 
       if (error) return { error };
@@ -134,7 +138,6 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const updateProfile = async (updates: { username?: string; avatar?: string }) => {
     if (!user) return { error: new Error('No user logged in') };
-
     try {
       if (updates.username) {
         const { data: existingProfile } = await supabase

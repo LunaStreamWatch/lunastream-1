@@ -1,5 +1,3 @@
-import { supabase } from '../lib/supabase';
-
 export interface WatchlistMovie {
   id: number;
   title: string;
@@ -30,212 +28,68 @@ export interface FavoriteItem {
 }
 
 class WatchlistService {
+  private MOVIES_KEY = 'watchlistMovies';
+  private SHOWS_KEY = 'watchlistShows';
+  private FAV_MOVIES_KEY = 'favoriteMovies';
+  private FAV_SHOWS_KEY = 'favoriteShows';
+
   async getWatchlistMovies(): Promise<WatchlistMovie[]> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return [];
-
-      const { data, error } = await supabase
-        .from('watchlist')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('content_type', 'movie')
-        .order('added_at', { ascending: false });
-
-      if (error) throw error;
-
-      return (data || []).map(item => ({
-        id: item.tmdb_id,
-        title: item.title,
-        poster_path: item.poster_path,
-        release_date: item.release_date || '',
-        vote_average: item.vote_average || 0,
-        addedAt: new Date(item.added_at).getTime(),
-      }));
-    } catch (error) {
-      console.error('Failed to load watchlist movies:', error);
-      return [];
-    }
+    const stored = localStorage.getItem(this.MOVIES_KEY);
+    const items: any[] = stored ? JSON.parse(stored) : [];
+    return items.map((m) => ({
+      ...m,
+      addedAt: m.addedAt ?? Date.now(),
+    }));
   }
 
   async addMovieToWatchlist(movie: Omit<WatchlistMovie, 'addedAt'>): Promise<void> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        console.warn('User not authenticated. Cannot add to watchlist.');
-        return;
-      }
-
-      const { error } = await supabase
-        .from('watchlist')
-        .upsert({
-          user_id: user.id,
-          content_type: 'movie',
-          tmdb_id: movie.id,
-          title: movie.title,
-          poster_path: movie.poster_path,
-          release_date: movie.release_date,
-          vote_average: movie.vote_average,
-          added_at: new Date().toISOString(),
-        }, {
-          onConflict: 'user_id,content_type,tmdb_id'
-        });
-
-      if (error) throw error;
-    } catch (error) {
-      console.error('Failed to add movie to watchlist:', error);
-    }
+    const items = await this.getWatchlistMovies();
+    const filtered = items.filter(i => i.id !== movie.id);
+    const updated = [{ ...movie, addedAt: Date.now() }, ...filtered];
+    localStorage.setItem(this.MOVIES_KEY, JSON.stringify(updated));
   }
 
   async removeMovieFromWatchlist(movieId: number): Promise<void> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { error } = await supabase
-        .from('watchlist')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('content_type', 'movie')
-        .eq('tmdb_id', movieId);
-
-      if (error) throw error;
-    } catch (error) {
-      console.error('Failed to remove movie from watchlist:', error);
-    }
+    const items = await this.getWatchlistMovies();
+    const filtered = items.filter(i => i.id !== movieId);
+    localStorage.setItem(this.MOVIES_KEY, JSON.stringify(filtered));
   }
 
   async isMovieInWatchlist(movieId: number): Promise<boolean> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return false;
-
-      const { data, error } = await supabase
-        .from('watchlist')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('content_type', 'movie')
-        .eq('tmdb_id', movieId)
-        .maybeSingle();
-
-      if (error) throw error;
-      return !!data;
-    } catch (error) {
-      console.error('Failed to check movie in watchlist:', error);
-      return false;
-    }
+    const items = await this.getWatchlistMovies();
+    return items.some(i => i.id === movieId);
   }
 
   async getWatchlistTV(): Promise<WatchlistTVShow[]> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return [];
-
-      const { data, error } = await supabase
-        .from('watchlist')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('content_type', 'tv')
-        .order('added_at', { ascending: false });
-
-      if (error) throw error;
-
-      return (data || []).map(item => ({
-        id: item.tmdb_id,
-        name: item.title,
-        poster_path: item.poster_path,
-        first_air_date: item.release_date || '',
-        vote_average: item.vote_average || 0,
-        addedAt: new Date(item.added_at).getTime(),
-      }));
-    } catch (error) {
-      console.error('Failed to load watchlist TV:', error);
-      return [];
-    }
+    const stored = localStorage.getItem(this.SHOWS_KEY);
+    const items: any[] = stored ? JSON.parse(stored) : [];
+    return items.map((s) => ({
+      ...s,
+      addedAt: s.addedAt ?? Date.now(),
+    }));
   }
 
   async addShowToWatchlist(show: Omit<WatchlistTVShow, 'addedAt'>): Promise<void> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        console.warn('User not authenticated. Cannot add to watchlist.');
-        return;
-      }
-
-      const { error } = await supabase
-        .from('watchlist')
-        .upsert({
-          user_id: user.id,
-          content_type: 'tv',
-          tmdb_id: show.id,
-          title: show.name,
-          poster_path: show.poster_path,
-          release_date: show.first_air_date,
-          vote_average: show.vote_average,
-          added_at: new Date().toISOString(),
-        }, {
-          onConflict: 'user_id,content_type,tmdb_id'
-        });
-
-      if (error) throw error;
-    } catch (error) {
-      console.error('Failed to add show to watchlist:', error);
-    }
+    const items = await this.getWatchlistTV();
+    const filtered = items.filter(i => i.id !== show.id);
+    const updated = [{ ...show, addedAt: Date.now() }, ...filtered];
+    localStorage.setItem(this.SHOWS_KEY, JSON.stringify(updated));
   }
 
   async removeShowFromWatchlist(showId: number): Promise<void> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { error } = await supabase
-        .from('watchlist')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('content_type', 'tv')
-        .eq('tmdb_id', showId);
-
-      if (error) throw error;
-    } catch (error) {
-      console.error('Failed to remove show from watchlist:', error);
-    }
+    const items = await this.getWatchlistTV();
+    const filtered = items.filter(i => i.id !== showId);
+    localStorage.setItem(this.SHOWS_KEY, JSON.stringify(filtered));
   }
 
   async isShowInWatchlist(showId: number): Promise<boolean> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return false;
-
-      const { data, error } = await supabase
-        .from('watchlist')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('content_type', 'tv')
-        .eq('tmdb_id', showId)
-        .maybeSingle();
-
-      if (error) throw error;
-      return !!data;
-    } catch (error) {
-      console.error('Failed to check show in watchlist:', error);
-      return false;
-    }
+    const items = await this.getWatchlistTV();
+    return items.some(i => i.id === showId);
   }
 
   async clearWatchlist(): Promise<void> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { error } = await supabase
-        .from('watchlist')
-        .delete()
-        .eq('user_id', user.id);
-
-      if (error) throw error;
-    } catch (error) {
-      console.error('Failed to clear watchlist:', error);
-    }
+    localStorage.removeItem(this.MOVIES_KEY);
+    localStorage.removeItem(this.SHOWS_KEY);
   }
 
   async getCombinedWatchlist(): Promise<Array<{
@@ -259,211 +113,68 @@ class WatchlistService {
   }
 
   async getFavoriteMovies(): Promise<FavoriteItem[]> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return [];
-
-      const { data, error } = await supabase
-        .from('favorites')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('content_type', 'movie')
-        .order('added_at', { ascending: false });
-
-      if (error) throw error;
-
-      return (data || []).map(item => ({
-        id: item.tmdb_id,
-        title: item.title,
-        poster_path: item.poster_path,
-        release_date: item.release_date || '',
-        vote_average: item.vote_average || 0,
-        addedAt: new Date(item.added_at).getTime(),
-      }));
-    } catch (error) {
-      console.error('Failed to load favorite movies:', error);
-      return [];
-    }
+    const stored = localStorage.getItem(this.FAV_MOVIES_KEY);
+    return stored ? JSON.parse(stored) : [];
   }
 
   async getFavoriteShows(): Promise<FavoriteItem[]> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return [];
-
-      const { data, error } = await supabase
-        .from('favorites')
-        .select('*')
-        .eq('user_id', user.id)
-        .eq('content_type', 'tv')
-        .order('added_at', { ascending: false });
-
-      if (error) throw error;
-
-      return (data || []).map(item => ({
-        id: item.tmdb_id,
-        name: item.name,
-        poster_path: item.poster_path,
-        first_air_date: item.first_air_date || '',
-        vote_average: item.vote_average || 0,
-        addedAt: new Date(item.added_at).getTime(),
-      }));
-    } catch (error) {
-      console.error('Failed to load favorite shows:', error);
-      return [];
-    }
+    const stored = localStorage.getItem(this.FAV_SHOWS_KEY);
+    return stored ? JSON.parse(stored) : [];
   }
 
   async addMovieToFavorites(movie: Omit<WatchlistMovie, 'addedAt'>): Promise<void> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        console.warn('User not authenticated. Cannot add to favorites.');
-        return;
-      }
-
-      const { error } = await supabase
-        .from('favorites')
-        .upsert({
-          user_id: user.id,
-          content_type: 'movie',
-          tmdb_id: movie.id,
-          title: movie.title,
-          poster_path: movie.poster_path,
-          release_date: movie.release_date,
-          vote_average: movie.vote_average,
-          added_at: new Date().toISOString(),
-        }, {
-          onConflict: 'user_id,content_type,tmdb_id'
-        });
-
-      if (error) throw error;
-    } catch (error) {
-      console.error('Failed to add movie to favorites:', error);
-    }
+    const items = await this.getFavoriteMovies();
+    const filtered = items.filter(i => i.id !== movie.id);
+    const updated = [{
+      id: movie.id,
+      title: movie.title,
+      poster_path: movie.poster_path,
+      release_date: movie.release_date,
+      vote_average: movie.vote_average,
+      addedAt: Date.now(),
+    }, ...filtered];
+    localStorage.setItem(this.FAV_MOVIES_KEY, JSON.stringify(updated));
   }
 
   async addShowToFavorites(show: Omit<WatchlistTVShow, 'addedAt'>): Promise<void> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) {
-        console.warn('User not authenticated. Cannot add to favorites.');
-        return;
-      }
-
-      const { error } = await supabase
-        .from('favorites')
-        .upsert({
-          user_id: user.id,
-          content_type: 'tv',
-          tmdb_id: show.id,
-          name: show.name,
-          poster_path: show.poster_path,
-          first_air_date: show.first_air_date,
-          vote_average: show.vote_average,
-          added_at: new Date().toISOString(),
-        }, {
-          onConflict: 'user_id,content_type,tmdb_id'
-        });
-
-      if (error) throw error;
-    } catch (error) {
-      console.error('Failed to add show to favorites:', error);
-    }
+    const items = await this.getFavoriteShows();
+    const filtered = items.filter(i => i.id !== show.id);
+    const updated = [{
+      id: show.id,
+      name: show.name,
+      poster_path: show.poster_path,
+      first_air_date: show.first_air_date,
+      vote_average: show.vote_average,
+      addedAt: Date.now(),
+    }, ...filtered];
+    localStorage.setItem(this.FAV_SHOWS_KEY, JSON.stringify(updated));
   }
 
   async removeMovieFromFavorites(movieId: number): Promise<void> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { error } = await supabase
-        .from('favorites')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('content_type', 'movie')
-        .eq('tmdb_id', movieId);
-
-      if (error) throw error;
-    } catch (error) {
-      console.error('Failed to remove movie from favorites:', error);
-    }
+    const items = await this.getFavoriteMovies();
+    const filtered = items.filter(i => i.id !== movieId);
+    localStorage.setItem(this.FAV_MOVIES_KEY, JSON.stringify(filtered));
   }
 
   async removeShowFromFavorites(showId: number): Promise<void> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { error } = await supabase
-        .from('favorites')
-        .delete()
-        .eq('user_id', user.id)
-        .eq('content_type', 'tv')
-        .eq('tmdb_id', showId);
-
-      if (error) throw error;
-    } catch (error) {
-      console.error('Failed to remove show from favorites:', error);
-    }
+    const items = await this.getFavoriteShows();
+    const filtered = items.filter(i => i.id !== showId);
+    localStorage.setItem(this.FAV_SHOWS_KEY, JSON.stringify(filtered));
   }
 
   async isMovieInFavorites(movieId: number): Promise<boolean> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return false;
-
-      const { data, error } = await supabase
-        .from('favorites')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('content_type', 'movie')
-        .eq('tmdb_id', movieId)
-        .maybeSingle();
-
-      if (error) throw error;
-      return !!data;
-    } catch (error) {
-      console.error('Failed to check movie in favorites:', error);
-      return false;
-    }
+    const items = await this.getFavoriteMovies();
+    return items.some(i => i.id === movieId);
   }
 
   async isShowInFavorites(showId: number): Promise<boolean> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return false;
-
-      const { data, error } = await supabase
-        .from('favorites')
-        .select('id')
-        .eq('user_id', user.id)
-        .eq('content_type', 'tv')
-        .eq('tmdb_id', showId)
-        .maybeSingle();
-
-      if (error) throw error;
-      return !!data;
-    } catch (error) {
-      console.error('Failed to check show in favorites:', error);
-      return false;
-    }
+    const items = await this.getFavoriteShows();
+    return items.some(i => i.id === showId);
   }
 
   async clearFavorites(): Promise<void> {
-    try {
-      const { data: { user } } = await supabase.auth.getUser();
-      if (!user) return;
-
-      const { error } = await supabase
-        .from('favorites')
-        .delete()
-        .eq('user_id', user.id);
-
-      if (error) throw error;
-    } catch (error) {
-      console.error('Failed to clear favorites:', error);
-    }
+    localStorage.removeItem(this.FAV_MOVIES_KEY);
+    localStorage.removeItem(this.FAV_SHOWS_KEY);
   }
 }
 
