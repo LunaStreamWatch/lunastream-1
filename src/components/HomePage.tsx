@@ -10,6 +10,7 @@ import { filterBannedContent } from "../utils/banList"
 import { languages, translations } from '../data/i18n'
 
 import { useLanguage } from "./LanguageContext"
+import { watchlistService } from "../services/watchlist"
 
 const HomePage: React.FC = () => {
   const { id } = useParams<{ id: string }>()
