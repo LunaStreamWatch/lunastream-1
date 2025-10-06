@@ -108,7 +108,7 @@ for each row execute function public.set_updated_at();
 3) Auth settings
 
 - Enable Email confirmations
-- Site URL: your deployed URL or `https://localhost:3000`
+- Site URL: your deployed URL (lunastream.gay) or `https://localhost:3000`
 - Redirect URLs: add `/#/auth/callback`
 
 4) Run the app
