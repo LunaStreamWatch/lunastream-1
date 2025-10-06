@@ -137,13 +137,7 @@ const AnimeTVDetail: React.FC = () => {
 
     if (!currentAnime) return
 
-    watchStatsService.recordWatchEvent({
-      event_type: 'watch',
-      media_type: 'anime',
-      anilist_id: currentAnime.id,
-      episode_number: episodeNumber,
-      title: anilist.getDisplayTitle(currentAnime)
-    })
+    watchStatsService.recordWatch()
 
     const episodeDuration = currentAnime.duration ? currentAnime.duration * 60 : 24 * 60
     const newSessionId = analytics.startSession(

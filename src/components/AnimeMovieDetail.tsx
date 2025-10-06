@@ -84,12 +84,7 @@ const AnimeMovieDetail: React.FC = () => {
       progress: 0
     });
 
-    watchStatsService.recordWatchEvent({
-      event_type: 'watch',
-      media_type: 'anime',
-      anilist_id: anime.id,
-      title: anilist.getDisplayTitle(anime)
-    })
+    watchStatsService.recordWatch()
 
     const movieDuration = anime.duration
       ? anime.duration * 60

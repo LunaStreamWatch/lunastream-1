@@ -26,15 +26,7 @@ const ContinueWatching: React.FC = () => {
   };
 
   const handleContinueWatching = (item: ContinueWatchingItem) => {
-    watchStatsService.recordWatchEvent({
-      event_type: 'continue_watching',
-      media_type: item.type,
-      tmdb_id: item.tmdbId,
-      anilist_id: item.anilistId,
-      season_number: item.season,
-      episode_number: item.episode,
-      title: item.title
-    });
+    watchStatsService.recordWatch();
 
     document.body.classList.add('player-active');
     setCurrentItem(item);

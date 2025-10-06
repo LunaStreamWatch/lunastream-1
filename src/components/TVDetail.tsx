@@ -235,14 +235,7 @@ const TVDetail: React.FC = () => {
       localStorage.setItem("recentlyViewedTVEpisodes", JSON.stringify(updated))
       setRecentlyViewedTVEpisodes(updated)
 
-      watchStatsService.recordWatchEvent({
-        event_type: 'watch',
-        media_type: 'tv',
-        tmdb_id: show.id,
-        season_number: episode.season_number,
-        episode_number: episode.episode_number,
-        title: show.name
-      })
+      watchStatsService.recordWatch()
 
       const episodeDuration =
         show.episode_run_time && show.episode_run_time.length > 0 ? show.episode_run_time[0] * 60 : 45 * 60

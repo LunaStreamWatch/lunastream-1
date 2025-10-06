@@ -134,12 +134,7 @@ const MovieDetail: React.FC = () => {
       vote_average: movie.vote_average,
     })
 
-    watchStatsService.recordWatchEvent({
-      event_type: 'watch',
-      media_type: 'movie',
-      tmdb_id: movie.id,
-      title: movie.title
-    })
+    watchStatsService.recordWatch()
 
     const newSessionId = analytics.startSession(
       "movie",
