@@ -37,10 +37,13 @@ const MovieDetail: React.FC = () => {
   const t = translations[language]
 
   useEffect(() => {
-    if (movie) {
-      const favorites = JSON.parse(localStorage.getItem("favoriteMovies") || "[]")
-      setIsFavorited(favorites.some((fav) => fav.id === movie.id))
+    const checkFavorite = async () => {
+      if (movie) {
+        const isFav = await watchlistService.isMovieInFavorites(movie.id)
+        setIsFavorited(isFav)
+      }
     }
+    checkFavorite()
   }, [movie])
 
   useEffect(() => {
@@ -95,23 +98,21 @@ const MovieDetail: React.FC = () => {
     fetchMovie()
   }, [id])
 
-  const toggleFavorite = () => {
+  const toggleFavorite = async () => {
     if (!movie) return
-    const favorites = JSON.parse(localStorage.getItem("favoriteMovies") || "[]")
-    const exists = favorites.some((fav: any) => fav.id === movie.id)
-    const updatedFavorites = exists
-      ? favorites.filter((fav: any) => fav.id !== movie.id)
-      : [
-          ...favorites,
-          {
-            id: movie.id,
-            title: movie.title,
-            poster_path: movie.poster_path,
-            release_date: movie.release_date,
-          },
-        ]
-    localStorage.setItem("favoriteMovies", JSON.stringify(updatedFavorites))
-    setIsFavorited(!exists)
+    if (isFavorited) {
+      await watchlistService.removeMovieFromFavorites(movie.id)
+      setIsFavorited(false)
+    } else {
+      await watchlistService.addMovieToFavorites({
+        id: movie.id,
+        title: movie.title,
+        poster_path: movie.poster_path,
+        release_date: movie.release_date,
+        vote_average: movie.vote_average,
+      })
+      setIsFavorited(true)
+    }
   }
 
   const handleWatchMovie = () => {

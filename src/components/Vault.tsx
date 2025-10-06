@@ -31,73 +31,50 @@ const Vault: React.FC = () => {
     const items = await watchlistService.getCombinedWatchlist();
     setCombinedItems(items);
 
-    // Load favorites
-    const storedMovies = JSON.parse(localStorage.getItem('favoriteMovies') || '[]');
-    const storedShows = JSON.parse(localStorage.getItem('favoriteShows') || '[]');
+    const movies = await watchlistService.getFavoriteMovies();
+    const shows = await watchlistService.getFavoriteShows();
 
-    // Add lastActivity timestamp if missing
-    const now = Date.now();
-    const favoritesWithLastActivityMovies = storedMovies.map(movie => ({
-      ...movie,
-      lastActivity: movie.lastActivity ?? now,
-    }));
-    const favoritesWithLastActivityShows = storedShows.map(show => ({
-      ...show,
-      lastActivity: show.lastActivity ?? now,
-    }));
-
-    setFavoriteMovies(favoritesWithLastActivityMovies);
-    setFavoriteShows(favoritesWithLastActivityShows);
+    setFavoriteMovies(movies);
+    setFavoriteShows(shows);
 
     setLoading(false);
   };
 
   useEffect(() => {
     loadData();
-    
-    // Auto-import from recently viewed on first load
-    const hasImported = localStorage.getItem('lunastream-watchlist-imported');
-    if (!hasImported) {
-      watchlistService.importFromRecentlyViewed();
-      localStorage.setItem('lunastream-watchlist-imported', 'true');
-      loadData(); // Reload after import
-    }
   }, []);
 
-  const clearWatchlist = () => {
+  const clearWatchlist = async () => {
     if (confirm('Are you sure you want to clear your entire watchlist?')) {
-      watchlistService.clearWatchlist();
+      await watchlistService.clearWatchlist();
       setCombinedItems([]);
     }
   };
 
-  const clearFavorites = () => {
+  const clearFavorites = async () => {
     if (confirm('Are you sure you want to clear all favorites?')) {
-      localStorage.removeItem('favoriteMovies');
-      localStorage.removeItem('favoriteShows');
+      await watchlistService.clearFavorites();
       setFavoriteMovies([]);
       setFavoriteShows([]);
     }
   };
 
-  const removeItem = (item: CombinedItem) => {
+  const removeItem = async (item: CombinedItem) => {
     if (item.type === 'movie') {
-      watchlistService.removeMovieFromWatchlist(item.data.id);
+      await watchlistService.removeMovieFromWatchlist(item.data.id);
     } else {
-      watchlistService.removeShowFromWatchlist(item.data.id);
+      await watchlistService.removeShowFromWatchlist(item.data.id);
     }
     loadData();
   };
 
-  const removeFavorite = (id: number, type: 'movie' | 'tv') => {
+  const removeFavorite = async (id: number, type: 'movie' | 'tv') => {
     if (type === 'movie') {
-      const updated = favoriteMovies.filter(movie => movie.id !== id);
-      localStorage.setItem('favoriteMovies', JSON.stringify(updated));
-      setFavoriteMovies(updated);
+      await watchlistService.removeMovieFromFavorites(id);
+      setFavoriteMovies(favoriteMovies.filter(movie => movie.id !== id));
     } else {
-      const updated = favoriteShows.filter(show => show.id !== id);
-      localStorage.setItem('favoriteShows', JSON.stringify(updated));
-      setFavoriteShows(updated);
+      await watchlistService.removeShowFromFavorites(id);
+      setFavoriteShows(favoriteShows.filter(show => show.id !== id));
     }
   };
 

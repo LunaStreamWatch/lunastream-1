@@ -89,22 +89,13 @@ const SeasonDetail: React.FC = () => {
       progress: 0
     });
 
-    watchlistService.addEpisodeToWatchlist(
-      {
-        id: show.id,
-        name: show.name,
-        poster_path: show.poster_path,
-        first_air_date: show.first_air_date,
-        vote_average: show.vote_average,
-      },
-      {
-        id: episode.id,
-        season_number: episode.season_number,
-        episode_number: episode.episode_number,
-        name: episode.name,
-        air_date: episode.air_date,
-      }
-    );
+    watchlistService.addShowToWatchlist({
+      id: show.id,
+      name: show.name,
+      poster_path: show.poster_path,
+      first_air_date: show.first_air_date,
+      vote_average: show.vote_average,
+    });
 
     const episodeDuration = show.episode_run_time && show.episode_run_time.length > 0 
       ? show.episode_run_time[0] * 60 

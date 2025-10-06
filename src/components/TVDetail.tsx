@@ -62,25 +62,30 @@ const TVDetail: React.FC = () => {
   }, [show?.id, selectedSeason]);
 
   useEffect(() => {
-    if (!show) return
-    const favorites = JSON.parse(localStorage.getItem("favoriteShows") || "[]")
-    const isFav = favorites.some((fav: any) => fav.id === show.id)
-    setIsFavorited(isFav)
+    const checkFavorite = async () => {
+      if (show) {
+        const isFav = await watchlistService.isShowInFavorites(show.id)
+        setIsFavorited(isFav)
+      }
+    }
+    checkFavorite()
   }, [show])
 
-  const toggleFavorite = () => {
+  const toggleFavorite = async () => {
     if (!show) return
-    const favorites = JSON.parse(localStorage.getItem("favoriteShows") || "[]")
-    const index = favorites.findIndex((fav: any) => fav.id === show.id)
-
-    if (index !== -1) {
-      favorites.splice(index, 1)
+    if (isFavorited) {
+      await watchlistService.removeShowFromFavorites(show.id)
       setIsFavorited(false)
     } else {
-      favorites.unshift(show)
+      await watchlistService.addShowToFavorites({
+        id: show.id,
+        name: show.name,
+        poster_path: show.poster_path,
+        first_air_date: show.first_air_date,
+        vote_average: show.vote_average,
+      })
       setIsFavorited(true)
     }
-    localStorage.setItem("favoriteShows", JSON.stringify(favorites))
   }
 
   useEffect(() => {
@@ -184,22 +189,13 @@ const TVDetail: React.FC = () => {
         progress: 0
       });
 
-      watchlistService.addEpisodeToWatchlist(
-        {
-          id: show.id,
-          name: show.name,
-          poster_path: show.poster_path,
-          first_air_date: show.first_air_date,
-          vote_average: show.vote_average,
-        },
-        {
-          id: episode.id,
-          season_number: episode.season_number,
-          episode_number: episode.episode_number,
-          name: episode.name,
-          air_date: episode.air_date,
-        },
-      )
+      watchlistService.addShowToWatchlist({
+        id: show.id,
+        name: show.name,
+        poster_path: show.poster_path,
+        first_air_date: show.first_air_date,
+        vote_average: show.vote_average,
+      });
 
       const existing = JSON.parse(localStorage.getItem("recentlyViewedTVEpisodes") || "{}")
 

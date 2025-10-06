@@ -30,45 +30,51 @@ const HomePage: React.FC = () => {
   }>({})
 
   // State
-  const [favoriteShows, setFavoriteShows] = useState(() => {
-    const stored = localStorage.getItem("favoriteShows")
-    return stored ? JSON.parse(stored) : []
-  })
+  const [favoriteShows, setFavoriteShows] = useState<number[]>([])
+  const [favoriteMovies, setFavoriteMovies] = useState<number[]>([])
 
-  const [favoriteMovies, setFavoriteMovies] = useState(() => {
-    const stored = localStorage.getItem("favoriteMovies")
-    return stored ? JSON.parse(stored) : []
-  })
-
-  // Load favorites from localStorage on mount
+  // Load favorites from database on mount
   useEffect(() => {
-    const storedShows = JSON.parse(localStorage.getItem("favoriteShows") || "[]")
-    const storedMovies = JSON.parse(localStorage.getItem("favoriteMovies") || "[]")
-    setFavoriteShows(storedShows)
-    setFavoriteMovies(storedMovies)
+    const loadFavorites = async () => {
+      const shows = await watchlistService.getFavoriteShows()
+      const movies = await watchlistService.getFavoriteMovies()
+      setFavoriteShows(shows.map(s => s.id))
+      setFavoriteMovies(movies.map(m => m.id))
+    }
+    loadFavorites()
   }, [])
 
-  const toggleFavorite = (item: any) => {
+  const toggleFavorite = async (item: any) => {
     if (item.type === "tv") {
-      let updatedShows = [...favoriteShows]
       if (favoriteShows.includes(item.show.id)) {
-        updatedShows = updatedShows.filter((id) => id !== item.show.id)
+        await watchlistService.removeShowFromFavorites(item.show.id)
+        setFavoriteShows(favoriteShows.filter((id) => id !== item.show.id))
       } else {
-        updatedShows.unshift(item.show.id)
+        await watchlistService.addShowToFavorites({
+          id: item.show.id,
+          name: item.show.name,
+          poster_path: item.show.poster_path,
+          first_air_date: item.show.first_air_date,
+          vote_average: item.show.vote_average,
+        })
+        setFavoriteShows([item.show.id, ...favoriteShows])
       }
-      setFavoriteShows(updatedShows)
-      localStorage.setItem("favoriteShows", JSON.stringify(updatedShows))
     }
 
     if (item.type === "movie") {
-      let updatedMovies = [...favoriteMovies]
       if (favoriteMovies.includes(item.movie.id)) {
-        updatedMovies = updatedMovies.filter((id) => id !== item.movie.id)
+        await watchlistService.removeMovieFromFavorites(item.movie.id)
+        setFavoriteMovies(favoriteMovies.filter((id) => id !== item.movie.id))
       } else {
-        updatedMovies.unshift(item.movie.id)
+        await watchlistService.addMovieToFavorites({
+          id: item.movie.id,
+          title: item.movie.title,
+          poster_path: item.movie.poster_path,
+          release_date: item.movie.release_date,
+          vote_average: item.movie.vote_average,
+        })
+        setFavoriteMovies([item.movie.id, ...favoriteMovies])
       }
-      setFavoriteMovies(updatedMovies)
-      localStorage.setItem("favoriteMovies", JSON.stringify(updatedMovies))
     }
   }
 
