@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { User, LogIn, LogOut, UserCircle, X, Mail, Lock, ImageIcon } from "lucide-react";
+import { User, LogIn, LogOut, CircleUser as UserCircle, X, Mail, Lock, Image as ImageIcon } from "lucide-react";
 import { useAuth } from "../contexts/AuthContext";
 
 const AVATAR_OPTIONS = [
