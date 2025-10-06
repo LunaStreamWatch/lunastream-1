@@ -77,13 +77,11 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const signUp = async (email: string, password: string, username: string) => {
     try {
-      const { data: existingProfile } = await supabase
-        .from('profiles')
-        .select('username')
-        .eq('username', username)
-        .maybeSingle();
+      const { data: usernameCheck } = await supabase.rpc('is_username_available', {
+        username_check: username
+      });
 
-      if (existingProfile) {
+      if (usernameCheck === false) {
         return { error: new Error('Username already taken') };
       }
 
@@ -96,25 +94,27 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         }
       });
 
-      if (error) return { error };
-      if (!data.user) return { error: new Error('Failed to create user') };
+      if (error) {
+        if (error.message.includes('already registered')) {
+          return { error: new Error('Email already registered') };
+        }
+        if (error.message.includes('User already registered')) {
+          return { error: new Error('Email already registered') };
+        }
+        return { error };
+      }
 
-      const { error: profileError } = await supabase
-        .from('profiles')
-        .insert({
-          id: data.user.id,
-          username,
-          avatar: 'default',
-        });
-
-      if (profileError) {
-        await supabase.auth.signOut();
-        return { error: profileError };
+      if (!data.user) {
+        return { error: new Error('Failed to create account') };
       }
 
       return { error: null };
     } catch (error) {
-      return { error: error as Error };
+      const err = error as Error;
+      if (err.message.includes('already registered')) {
+        return { error: new Error('Email already registered') };
+      }
+      return { error: err };
     }
   };
 
