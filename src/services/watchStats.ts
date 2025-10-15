@@ -1,22 +1,14 @@
-const SUPABASE_URL = import.meta.env.VITE_SUPABASE_URL;
-const SUPABASE_ANON_KEY = import.meta.env.VITE_SUPABASE_ANON_KEY;
-
 class WatchStatsService {
-  private watchStatsUrl = `${SUPABASE_URL}/functions/v1/watch-stats`;
-  private uniqueVisitorUrl = `${SUPABASE_URL}/functions/v1/unique`;
-
-  private getHeaders() {
-    return {
-      'Authorization': `Bearer ${SUPABASE_ANON_KEY}`,
-      'Content-Type': 'application/json',
-    };
-  }
+  private watchStatsUrl = '/api/watch-stats';
+  private uniqueVisitorUrl = '/api/unique';
 
   async recordWatch(): Promise<void> {
     try {
       await fetch(this.watchStatsUrl, {
         method: 'POST',
-        headers: this.getHeaders(),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
     } catch (err) {
       console.error('Error recording watch:', err);
@@ -25,9 +17,7 @@ class WatchStatsService {
 
   async getTotal(): Promise<number> {
     try {
-      const response = await fetch(this.watchStatsUrl, {
-        headers: this.getHeaders(),
-      });
+      const response = await fetch(this.watchStatsUrl);
 
       if (!response.ok) {
         console.error('Failed to fetch watch stats');
@@ -46,7 +36,9 @@ class WatchStatsService {
     try {
       const response = await fetch(this.uniqueVisitorUrl, {
         method: 'POST',
-        headers: this.getHeaders(),
+        headers: {
+          'Content-Type': 'application/json',
+        },
       });
 
       if (!response.ok) {
@@ -67,9 +59,7 @@ class WatchStatsService {
 
   async getUniqueVisitorCount(): Promise<number> {
     try {
-      const response = await fetch(this.uniqueVisitorUrl, {
-        headers: this.getHeaders(),
-      });
+      const response = await fetch(this.uniqueVisitorUrl);
 
       if (!response.ok) {
         console.error('Failed to fetch unique visitor count');

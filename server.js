@@ -149,8 +149,38 @@ fastify.decorate('authenticate', async function(request, reply) {
   }
 });
 
-// In-memory storage for watch stats
-const watchStats = [];
+// File-based persistent storage paths
+const DATA_DIR = path.join(__dirname, 'data');
+const WATCH_STATS_FILE = path.join(DATA_DIR, 'watch-stats.json');
+const UNIQUE_VISITORS_FILE = path.join(DATA_DIR, 'unique-visitors.json');
+
+if (!fs.existsSync(DATA_DIR)) {
+  fs.mkdirSync(DATA_DIR, { recursive: true });
+}
+
+function loadJSON(filePath, defaultValue = []) {
+  try {
+    if (fs.existsSync(filePath)) {
+      const data = fs.readFileSync(filePath, 'utf8');
+      return JSON.parse(data);
+    }
+  } catch (err) {
+    logger.error(`Error loading ${filePath}:`, err);
+  }
+  return defaultValue;
+}
+
+function saveJSON(filePath, data) {
+  try {
+    fs.writeFileSync(filePath, JSON.stringify(data, null, 2), 'utf8');
+  } catch (err) {
+    logger.error(`Error saving ${filePath}:`, err);
+  }
+}
+
+const watchStats = loadJSON(WATCH_STATS_FILE, { total: 0, entries: [] });
+const uniqueVisitors = loadJSON(UNIQUE_VISITORS_FILE, { total: 0, ips: new Set() });
+uniqueVisitors.ips = new Set(uniqueVisitors.ips || []);
 
 // API Routes
 async function registerRoutes() {
@@ -161,18 +191,26 @@ async function registerRoutes() {
   // Watch stats endpoints
   fastify.post('/api/watch-stats', async (request, reply) => {
     try {
-      const event = request.body;
+      watchStats.total = (watchStats.total || 0) + 1;
       const timestamp = new Date().toISOString();
 
       const statEntry = {
-        ...event,
         created_at: timestamp,
         id: uuidv4()
       };
 
-      watchStats.push(statEntry);
+      if (!watchStats.entries) {
+        watchStats.entries = [];
+      }
 
-      return reply.send({ success: true, id: statEntry.id });
+      watchStats.entries.push(statEntry);
+
+      saveJSON(WATCH_STATS_FILE, {
+        total: watchStats.total,
+        entries: watchStats.entries.slice(-1000)
+      });
+
+      return reply.send({ success: true, total: watchStats.total });
     } catch (err) {
       logger.error('Error recording watch stat:', err);
       return reply.code(500).send({ error: 'Failed to record watch stat' });
@@ -181,42 +219,52 @@ async function registerRoutes() {
 
   fastify.get('/api/watch-stats', async (request, reply) => {
     try {
-      const { media_type, event_type, days } = request.query;
-
-      let filtered = [...watchStats];
-
-      if (media_type) {
-        filtered = filtered.filter(stat => stat.media_type === media_type);
-      }
-
-      if (event_type) {
-        filtered = filtered.filter(stat => stat.event_type === event_type);
-      }
-
-      if (days) {
-        const cutoffDate = new Date();
-        cutoffDate.setDate(cutoffDate.getDate() - parseInt(days));
-        filtered = filtered.filter(stat => new Date(stat.created_at) >= cutoffDate);
-      }
-
-      const totalCount = filtered.length;
-
       return reply.send({
         success: true,
-        stats: filtered.reverse(),
-        total: totalCount,
-        summary: {
-          total_watches: totalCount,
-          by_type: {
-            movie: filtered.filter(s => s.media_type === 'movie').length,
-            tv: filtered.filter(s => s.media_type === 'tv').length,
-            anime: filtered.filter(s => s.media_type === 'anime').length
-          }
-        }
+        total: watchStats.total || 0
       });
     } catch (err) {
       logger.error('Error fetching watch stats:', err);
       return reply.code(500).send({ error: 'Failed to fetch watch stats' });
+    }
+  });
+
+  fastify.post('/api/unique', async (request, reply) => {
+    try {
+      const clientIP = request.ip || request.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
+
+      const isNewVisitor = !uniqueVisitors.ips.has(clientIP);
+
+      if (isNewVisitor) {
+        uniqueVisitors.ips.add(clientIP);
+        uniqueVisitors.total = (uniqueVisitors.total || 0) + 1;
+
+        saveJSON(UNIQUE_VISITORS_FILE, {
+          total: uniqueVisitors.total,
+          ips: Array.from(uniqueVisitors.ips)
+        });
+      }
+
+      return reply.send({
+        success: true,
+        new_visitor: isNewVisitor,
+        total: uniqueVisitors.total
+      });
+    } catch (err) {
+      logger.error('Error recording unique visitor:', err);
+      return reply.code(500).send({ error: 'Failed to record unique visitor' });
+    }
+  });
+
+  fastify.get('/api/unique', async (request, reply) => {
+    try {
+      return reply.send({
+        success: true,
+        total: uniqueVisitors.total || 0
+      });
+    } catch (err) {
+      logger.error('Error fetching unique visitor count:', err);
+      return reply.code(500).send({ error: 'Failed to fetch unique visitor count' });
     }
   });
 
