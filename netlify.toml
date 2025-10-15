@@ -5,6 +5,12 @@
   force = true
 
 [[redirects]]
+  from = "/api/unique"
+  to = "/.netlify/functions/unique"
+  status = 200
+  force = true
+
+[[redirects]]
   from = "/*"
   to = "/index.html"
   status = 200
