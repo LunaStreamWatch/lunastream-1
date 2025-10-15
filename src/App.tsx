@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { HashRouter as Router, Routes, Route } from 'react-router-dom';
 import HomePageWrapper from './components/HomePageWrapper';
 import SearchResults from './components/SearchResults';
@@ -26,10 +26,10 @@ import { AnimationProvider } from './components/AnimationContext';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { AuthProvider } from './contexts/AuthContext';
 import AuthCallback from './components/AuthCallback';
+import { watchStatsService } from './services/watchStats';
 
 function App() {
   const [showIntro, setShowIntro] = useState(() => {
-    // Only show intro on first visit per session
     return sessionStorage.getItem('hasShownIntro') !== 'true';
   });
 
@@ -37,6 +37,17 @@ function App() {
     sessionStorage.setItem('hasShownIntro', 'true');
     setShowIntro(false);
   };
+
+  useEffect(() => {
+    const trackVisitor = async () => {
+      const hasTracked = sessionStorage.getItem('visitorTracked');
+      if (!hasTracked) {
+        await watchStatsService.recordUniqueVisitor();
+        sessionStorage.setItem('visitorTracked', 'true');
+      }
+    };
+    trackVisitor();
+  }, []);
 
   return (
       <AuthProvider>
