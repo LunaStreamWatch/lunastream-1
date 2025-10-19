@@ -48,7 +48,7 @@ export const playerConfigs: PlayerConfig[] = [
     name: "Videasy (Ads)",
     generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
       const playerParams = new URLSearchParams({
-        color: "8B5CF6",
+        color: "fbc9ff",
         overlay: "true",
         nextEpisode: "true",
         autoplayNextEpisode: "true",
