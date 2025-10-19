@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
-import { ChevronLeft, Calendar, Star, Film, Tv } from "lucide-react"
+import { ChevronLeft, Calendar, Star, Film, Tv, ChevronDown, ChevronUp } from "lucide-react"
 import { tmdb } from "../services/tmdb"
 import { useLanguage } from "./LanguageContext"
 import { translations } from "../data/i18n"
@@ -39,6 +39,7 @@ const PersonDetail: React.FC = () => {
   const [person, setPerson] = useState<PersonDetails | null>(null)
   const [credits, setCredits] = useState<PersonCredits | null>(null)
   const [loading, setLoading] = useState(true)
+  const [showAllFilmography, setShowAllFilmography] = useState(false)
   const { language } = useLanguage()
   const t = translations[language] || translations.en
 
@@ -113,6 +114,18 @@ const PersonDetail: React.FC = () => {
       return dateB.getTime() - dateA.getTime()
     }) || []
 
+  // Sort credits by popularity for "Known For" section
+  const knownForCredits = credits?.cast
+    .filter(item => item.release_date || item.first_air_date)
+    .sort((a, b) => {
+      // Try to sort by some popularity metric, fallback to recency
+      // For now, we'll sort by release date (most recent first) as a proxy for popularity
+      const dateA = new Date(a.release_date || a.first_air_date || '')
+      const dateB = new Date(b.release_date || b.first_air_date || '')
+      return dateB.getTime() - dateA.getTime()
+    })
+    .slice(0, 6) || []
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-indigo-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
       <GlobalNavbar />
@@ -182,7 +195,7 @@ const PersonDetail: React.FC = () => {
                   Known For
                 </h2>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  {sortedCredits.slice(0, 6).map((item) => {
+                  {knownForCredits.map((item) => {
                     const title = item.title || item.name || 'Unknown'
                     const releaseDate = item.release_date || item.first_air_date
                     const year = releaseDate ? formatDate(releaseDate) : 'Unknown'
@@ -236,7 +249,7 @@ const PersonDetail: React.FC = () => {
                 </h2>
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 max-h-96 overflow-y-auto">
-                  {sortedCredits.slice(0, 50).map((item) => {
+                  {sortedCredits.slice(0, showAllFilmography ? sortedCredits.length : 50).map((item) => {
                     const title = item.title || item.name || 'Unknown'
                     const releaseDate = item.release_date || item.first_air_date
                     const year = releaseDate ? formatDate(releaseDate) : 'Unknown'
@@ -269,9 +282,19 @@ const PersonDetail: React.FC = () => {
                 </div>
 
                 {sortedCredits.length > 50 && (
-                  <p className="text-sm text-gray-500 dark:text-gray-400 mt-4 text-center">
-                    And {sortedCredits.length - 50} more...
-                  </p>
+                  <div className="mt-4 text-center">
+                    <button
+                      onClick={() => setShowAllFilmography(!showAllFilmography)}
+                      className="inline-flex items-center space-x-2 px-4 py-2 text-sm text-pink-600 dark:text-pink-400 hover:text-pink-700 dark:hover:text-pink-300 transition-colors"
+                    >
+                      <span>{showAllFilmography ? 'Show Less' : `Show All ${sortedCredits.length} Credits`}</span>
+                      {showAllFilmography ? (
+                        <ChevronUp className="w-4 h-4" />
+                      ) : (
+                        <ChevronDown className="w-4 h-4" />
+                      )}
+                    </button>
+                  </div>
                 )}
               </div>
             )}
