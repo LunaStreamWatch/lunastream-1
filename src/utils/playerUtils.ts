@@ -71,7 +71,8 @@ export const playerConfigs: PlayerConfig[] = [
         autoPlay: "true",
         nextButton: "true",
         autoNext: "true",
-        theme: "16A085",
+        theme: "fbc9ff",
+        chromecast: "false",
       });
 
       if (mediaType === "movie" && tmdbId) {
