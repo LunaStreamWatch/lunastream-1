@@ -323,8 +323,8 @@ const EpisodeDetail: React.FC = () => {
                           member.profile_path
                             ? tmdb.getImageUrl(member.profile_path, 'w185')
                             : (() => {
-                                if (member.gender === 1) return "/female.png"
-                                if (member.gender === 2) return "/male.png"
+                                if (member.gender === 1) return "/unknown.png"
+                                if (member.gender === 2) return "/unknown.png"
                                 return "/unknown.png"
                               })()
                         }

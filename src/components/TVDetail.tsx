@@ -390,8 +390,8 @@ const TVDetail: React.FC = () => {
                       actor.profile_path
                         ? tmdb.getImageUrl(actor.profile_path, "w185")
                         : (() => {
-                            if (actor.gender === 1) return "/female.png"
-                            if (actor.gender === 2) return "/male.png"
+                            if (actor.gender === 1) return "/unknown.png"
+                            if (actor.gender === 2) return "/unknown.png"
                             return "/unknown.png"
                           })()
                     }

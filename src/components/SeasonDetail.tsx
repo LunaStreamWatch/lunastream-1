@@ -301,9 +301,9 @@ const SeasonDetail: React.FC = () => {
                     const profileImage = castMember.profile_path
                       ? tmdb.getImageUrl(castMember.profile_path, "w185")
                       : castMember.gender === 1
-                      ? "/female.png"
+                      ? "/unknown.png"
                       : castMember.gender === 2
-                      ? "/male.png"
+                      ? "/unknown.png"
                       : "/unknown.png";
 
                     return (

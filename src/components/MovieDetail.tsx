@@ -25,8 +25,6 @@ const MovieDetail: React.FC = () => {
   const [loading, setLoading] = useState(true)
   const [isPlaying, setIsPlaying] = useState(false)
   const [sessionId, setSessionId] = useState<string | null>(null)
-  const [frogBoops, setFrogBoops] = useState(0)
-  const [showBoopAnimation, setShowBoopAnimation] = useState(false)
   const [recentlyViewedMovies, setRecentlyViewedMovies] = useState<any[]>([])
   const [recentlyViewedTVEpisodes, setRecentlyViewedTVEpisodes] = useState({})
   const [isFavorited, setIsFavorited] = useState(false)
@@ -191,11 +189,6 @@ const MovieDetail: React.FC = () => {
     return () => clearInterval(interval)
   }, [isPlaying, sessionId, movie?.runtime])
 
-  const handleFrogBoop = () => {
-    setFrogBoops((prev) => prev + 1)
-    setShowBoopAnimation(true)
-    setTimeout(() => setShowBoopAnimation(false), 600)
-  }
 
   if (loading) {
     return <Loading message={t.status_loading_movie_details || "Loading movie details..."} />
@@ -279,9 +272,9 @@ const MovieDetail: React.FC = () => {
                   const profileImage = actor.profile_path
                     ? tmdb.getImageUrl(actor.profile_path, "w185")
                     : actor.gender === 1
-                    ? "/female.png"
+                    ? "/unknown.png"
                     : actor.gender === 2
-                    ? "/male.png"
+                    ? "/unknown.png"
                     : "/unknown.png"
 
                   return (
@@ -306,29 +299,6 @@ const MovieDetail: React.FC = () => {
         </div>
       </div>
 
-      {/* Easter Egg */}
-      {movie && [816, 817, 818].includes(movie.id) && (
-        <div
-          className="fixed bottom-4 right-4 z-50 flex items-center space-x-3 bg-pink-600/90 dark:bg-pink-700/90 rounded-full px-4 py-2 shadow-lg cursor-pointer"
-          onClick={handleFrogBoop}
-          role="button"
-          tabIndex={0}
-          aria-label={t.boop_the_frog || "Boop the frog"}
-          onKeyDown={(e) => e.key === "Enter" && handleFrogBoop()}
-        >
-          <div className="flex items-center space-x-2">
-            <img
-              src="/frog.png"
-              alt="Frog icon"
-              className="w-6 h-6"
-              draggable={false}
-            />
-            <span className="text-white font-semibold text-lg">
-              {frogBoops} {t.boops || "Boops"}
-            </span>
-          </div>
-        </div>
-      )}
     </div>
   )
 }
