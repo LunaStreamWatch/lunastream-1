@@ -32,14 +32,54 @@ export const playerConfigs: PlayerConfig[] = [
         secondarycolor: "f8b4ff",
         iconcolor: "fbc9ff",
       });
-      
+
       if (mediaType === "movie" && tmdbId) {
         return `https://player.vidify.top/embed/movie/${tmdbId}?${playerParams.toString()}`;
       } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
         playerParams.set("hidenextButton", "false");
         return `https://player.vidify.top/embed/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
       }
-      
+
+      throw new Error(`Invalid parameters for ${mediaType}`);
+    },
+  },
+  {
+    id: "videasy",
+    name: "Videasy (Ads)",
+    generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
+      const playerParams = new URLSearchParams({
+        color: "8B5CF6",
+        overlay: "true",
+        nextEpisode: "true",
+        autoplayNextEpisode: "true",
+      });
+
+      if (mediaType === "movie" && tmdbId) {
+        return `https://player.videasy.net/movie/${tmdbId}?${playerParams.toString()}`;
+      } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
+        return `https://player.videasy.net/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
+      }
+
+      throw new Error(`Invalid parameters for ${mediaType}`);
+    },
+  },
+  {
+    id: "vidfast",
+    name: "VidFast (Ads)",
+    generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
+      const playerParams = new URLSearchParams({
+        autoPlay: "true",
+        nextButton: "true",
+        autoNext: "true",
+        theme: "16A085",
+      });
+
+      if (mediaType === "movie" && tmdbId) {
+        return `https://vidfast.pro/movie/${tmdbId}?${playerParams.toString()}`;
+      } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
+        return `https://vidfast.pro/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
+      }
+
       throw new Error(`Invalid parameters for ${mediaType}`);
     },
   },
@@ -88,7 +128,7 @@ export const playerConfigs: PlayerConfig[] = [
         });
         return `https://player.vidify.top/embed/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${params.toString()}`;
       }
-      
+
       throw new Error(`Invalid parameters for ${mediaType}`);
     },
   }

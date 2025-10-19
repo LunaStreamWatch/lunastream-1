@@ -1,9 +1,10 @@
 import React, { useEffect, useMemo, useRef, useState } from "react";
 import { createPortal } from "react-dom";
-import { Cog, Moon, Sun, Palette, Globe, Type, Wand2, X } from "lucide-react";
+import { Cog, Moon, Sun, Palette, Globe, Type, Wand2, X, Play } from "lucide-react";
 import { languages } from "../data/i18n";
 import { useLanguage } from "./LanguageContext";
 import { AnimationSettingsService, type AnimationSettings } from "../services/animationSettings";
+import { playerConfigs } from "../utils/playerUtils";
 
 // Persist helpers
 const storage = {
@@ -124,10 +125,11 @@ export const SettingsMenu: React.FC = () => {
   const [customHex, setCustomHex] = useState<string>(() => storage.get("accentHex") || "#ec4899");
   const ref = useRef<HTMLDivElement>(null);
   // new: simple tabs for a cleaner layout
-  const [tab, setTab] = useState<"theme" | "accent" | "font" | "language" | "visuals">("accent");
+  const [tab, setTab] = useState<"theme" | "accent" | "font" | "player" | "language" | "visuals">("accent");
   const [animationSettings, setAnimationSettings] = useState<AnimationSettings>(
     AnimationSettingsService.getSettings()
   );
+  const [player, setPlayer] = useState<string>(() => storage.get("player") || "vidify");
 
   const handleAnimationSettingChange = (
     key: keyof AnimationSettings,
@@ -143,6 +145,7 @@ export const SettingsMenu: React.FC = () => {
     setAccent("default");
     setFont("Inter");
     setCustomHex("#ec4899");
+    setPlayer("vidify");
     setLanguage("en");
     const newAnimationSettings = { enableWelcomeAnimation: false };
     setAnimationSettings(newAnimationSettings);
@@ -152,6 +155,7 @@ export const SettingsMenu: React.FC = () => {
       localStorage.removeItem("accent");
       localStorage.removeItem("accentHex");
       localStorage.removeItem("font");
+      localStorage.removeItem("player");
       // language persistence (if any) will be overwritten by setLanguage("en")
     } catch {}
   };
@@ -255,7 +259,7 @@ export const SettingsMenu: React.FC = () => {
                   </div>
                 </div>
                 {/* Tabs */}
-                <div className="mt-3 grid grid-cols-5 gap-2 sm:hidden">
+                <div className="mt-3 grid grid-cols-6 gap-2 sm:hidden">
                   <button onClick={() => setTab('theme')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='theme'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                     <Moon className="w-4 h-4"/> Theme
                   </button>
@@ -264,6 +268,9 @@ export const SettingsMenu: React.FC = () => {
                   </button>
                   <button onClick={() => setTab('font')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='font'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                     <Type className="w-4 h-4"/> Font
+                  </button>
+                  <button onClick={() => setTab('player')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='player'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
+                    <Play className="w-4 h-4"/> Player
                   </button>
                   <button onClick={() => setTab('visuals')} className={`flex items-center justify-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='visuals'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                     <Wand2 className="w-4 h-4"/> Visuals
@@ -287,6 +294,9 @@ export const SettingsMenu: React.FC = () => {
                     </button>
                     <button onClick={() => setTab('font')} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='font'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                       <Type className="w-4 h-4"/> Font
+                    </button>
+                    <button onClick={() => setTab('player')} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='player'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
+                      <Play className="w-4 h-4"/> Player
                     </button>
                     <button onClick={() => setTab('visuals')} className={`flex items-center gap-2 px-3 py-2 rounded-xl border text-sm text-gray-700 dark:text-gray-200 ${tab==='visuals'? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                       <Wand2 className="w-4 h-4"/> Visuals
@@ -370,6 +380,24 @@ export const SettingsMenu: React.FC = () => {
                               className="h-5 w-5 rounded border-gray-300 text-pink-600 focus:ring-pink-500"
                             />
                           </label>
+                        </div>
+                      </div>
+                    )}
+
+                    {tab === 'player' && (
+                      <div className="space-y-3">
+                        <div className="text-sm font-semibold text-gray-700 dark:text-white">Player</div>
+                        <div className="grid grid-cols-1 gap-2">
+                          {playerConfigs.map(p => (
+                            <button key={p.id} onClick={() => { setPlayer(p.id); storage.set("player", p.id); }} className={`px-3 py-2 rounded-xl border text-left text-gray-700 dark:text-gray-200 ${player===p.id? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
+                              {p.name}
+                            </button>
+                          ))}
+                        </div>
+                        <div className="mt-4">
+                          <a href="https://ublockorigin.com/" target="_blank" rel="noopener noreferrer" className="text-pink-600 dark:text-pink-400 hover:underline">
+                            Use adblocker if you don't already. Get uBlock Origin here
+                          </a>
                         </div>
                       </div>
                     )}

@@ -339,11 +339,11 @@ const TVDetail: React.FC = () => {
 
         {/* Player iframe */}
         <EmbeddedFrame
-          src={getPlayerUrl("vidify", { 
-            tmdbId: id!, 
-            mediaType: "tv", 
-            seasonNumber: currentEpisode.season_number, 
-            episodeNumber: currentEpisode.episode_number 
+          src={getPlayerUrl(localStorage.getItem("player") || "vidify", {
+            tmdbId: id!,
+            mediaType: "tv",
+            seasonNumber: currentEpisode.season_number,
+            episodeNumber: currentEpisode.episode_number
           })}
           className="fixed top-0 left-0 w-full h-full border-0"
           title={`${show.name} - S${currentEpisode.season_number}E${currentEpisode.episode_number}`}

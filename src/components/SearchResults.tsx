@@ -9,6 +9,7 @@ import MobileSearchResults from './SearchResultsMobile';
 import * as useIsMobile from '../hooks/useIsMobile';
 import { translations } from '../data/i18n';
 import { useLanguage } from "./LanguageContext";
+import { isBanned } from '../utils/banList';
 
 type MediaItem = (Movie | TVShow) & { media_type: 'movie' | 'tv'; popularity: number };
 
@@ -111,7 +112,8 @@ const SearchResults: React.FC = () => {
           ...tvResults.results.map(t => ({ ...t, media_type: 'tv', popularity: t.popularity || 0 })),
         ];
 
-        const filteredResults = combinedResults.filter(item => item.poster_path);
+        const bannedFilteredResults = combinedResults.filter(item => !(item.media_type === 'movie' && isBanned(item.id)));
+        const filteredResults = bannedFilteredResults.filter(item => item.poster_path);
         const fuse = new Fuse(filteredResults, fuseOptions);
         const fuseResults = fuse.search(query);
 
@@ -162,7 +164,8 @@ const SearchResults: React.FC = () => {
         ...tvResults.results.map(t => ({ ...t, media_type: 'tv', popularity: t.popularity || 0 })),
       ];
 
-      const newFilteredResults = newResults.filter(item => item.poster_path);
+      const bannedFilteredNewResults = newResults.filter(item => !(item.media_type === 'movie' && isBanned(item.id)));
+      const newFilteredResults = bannedFilteredNewResults.filter(item => item.poster_path);
       
       const combined = [...results, ...newFilteredResults];
       const fuse = new Fuse(combined, fuseOptions);

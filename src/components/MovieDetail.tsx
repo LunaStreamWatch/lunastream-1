@@ -232,7 +232,7 @@ const MovieDetail: React.FC = () => {
           </button>
         </div>
         <EmbeddedFrame
-          src={getPlayerUrl("vidify", { tmdbId: id!, mediaType: "movie" })}
+          src={getPlayerUrl(localStorage.getItem("player") || "vidify", { tmdbId: id!, mediaType: "movie" })}
           className="fixed top-0 left-0 w-full h-full border-0"
           title={movie.title}
         />
