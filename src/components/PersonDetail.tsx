@@ -172,14 +172,49 @@ const PersonDetail: React.FC = () => {
                   </div>
                 )}
 
-                {person.popularity && (
-                  <div className="flex items-center space-x-2">
-                    <Star className="w-4 h-4" />
-                    <span>Popularity: {Math.round(person.popularity)}</span>
-                  </div>
-                )}
               </div>
             </div>
+
+            {/* Known For */}
+            {person.known_for_department && (
+              <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-pink-200/50 dark:border-gray-700/50 p-6">
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white mb-4">
+                  Known For
+                </h2>
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  {sortedCredits.slice(0, 6).map((item) => {
+                    const title = item.title || item.name || 'Unknown'
+                    const releaseDate = item.release_date || item.first_air_date
+                    const year = releaseDate ? formatDate(releaseDate) : 'Unknown'
+
+                    return (
+                      <Link
+                        key={`${item.id}-${item.media_type}`}
+                        to={item.media_type === 'movie' ? `/movie/${item.id}` : `/tv/${item.id}`}
+                        className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group"
+                      >
+                        <div className="flex-shrink-0">
+                          {item.media_type === 'movie' ? (
+                            <Film className="w-5 h-5 text-pink-500" />
+                          ) : (
+                            <Tv className="w-5 h-5 text-purple-500" />
+                          )}
+                        </div>
+
+                        <div className="flex-1 min-w-0">
+                          <p className="text-sm font-medium text-gray-900 dark:text-white truncate group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
+                            {title}
+                          </p>
+                          <p className="text-xs text-gray-500 dark:text-gray-400">
+                            {year} • {item.character && `as ${item.character}`}
+                          </p>
+                        </div>
+                      </Link>
+                    )
+                  })}
+                </div>
+              </div>
+            )}
 
             {/* Biography */}
             {person.biography && (
@@ -207,7 +242,11 @@ const PersonDetail: React.FC = () => {
                     const year = releaseDate ? formatDate(releaseDate) : 'Unknown'
 
                     return (
-                      <div key={`${item.id}-${item.media_type}`} className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors">
+                      <Link
+                        key={`${item.id}-${item.media_type}`}
+                        to={item.media_type === 'movie' ? `/movie/${item.id}` : `/tv/${item.id}`}
+                        className="flex items-center space-x-3 p-3 rounded-lg bg-gray-50 dark:bg-gray-700/50 hover:bg-gray-100 dark:hover:bg-gray-700 transition-colors group"
+                      >
                         <div className="flex-shrink-0">
                           {item.media_type === 'movie' ? (
                             <Film className="w-5 h-5 text-pink-500" />
@@ -217,14 +256,14 @@ const PersonDetail: React.FC = () => {
                         </div>
 
                         <div className="flex-1 min-w-0">
-                          <p className="text-sm font-medium text-gray-900 dark:text-white truncate">
+                          <p className="text-sm font-medium text-gray-900 dark:text-white truncate group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
                             {title}
                           </p>
                           <p className="text-xs text-gray-500 dark:text-gray-400">
                             {year} • {item.character && `as ${item.character}`}
                           </p>
                         </div>
-                      </div>
+                      </Link>
                     )
                   })}
                 </div>
