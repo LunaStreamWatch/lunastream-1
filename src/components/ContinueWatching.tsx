@@ -47,20 +47,25 @@ const ContinueWatching: React.FC = () => {
   };
 
   const getPlayerUrlForItem = (item: ContinueWatchingItem): string => {
+    // Get stored player preference, default to vidify
+    const storedPlayer = localStorage.getItem('player') || 'vidify';
+
     if (item.type === 'movie' && item.tmdbId) {
-      return getPlayerUrl('vidify', {
+      return getPlayerUrl(storedPlayer, {
         tmdbId: item.tmdbId.toString(),
         mediaType: 'movie'
       });
     } else if (item.type === 'tv' && item.tmdbId && item.season && item.episode) {
-      return getPlayerUrl('vidify', {
+      return getPlayerUrl(storedPlayer, {
         tmdbId: item.tmdbId.toString(),
         mediaType: 'tv',
         seasonNumber: item.season,
         episodeNumber: item.episode
       });
     } else if (item.type === 'anime' && item.anilistId && item.episode) {
-      return getPlayerUrl('vidnest', {
+      // For anime, use vidnest if stored player is vidnest, otherwise fallback to vidify
+      const animePlayer = storedPlayer === 'vidnest' ? 'vidnest' : 'vidify';
+      return getPlayerUrl(animePlayer, {
         anilistId: item.anilistId.toString(),
         mediaType: 'anime',
         episodeNumber: item.episode,
