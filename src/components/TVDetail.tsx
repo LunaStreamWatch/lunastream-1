@@ -384,23 +384,19 @@ const TVDetail: React.FC = () => {
               <p className="text-gray-700 dark:text-gray-300">{t.status_no_cast_info || 'No cast information available.'}</p>
             ) : (
               (seasonCast.length > 0 ? seasonCast : cast).slice(0, 12).map((actor: any) => (
-                <div key={actor.id} className="flex-shrink-0 w-28 text-center">
+                <Link key={actor.id} to={`/person/${actor.id}`} className="flex-shrink-0 w-28 text-center group cursor-pointer">
                   <img
                     src={
                       actor.profile_path
                         ? tmdb.getImageUrl(actor.profile_path, "w185")
-                        : (() => {
-                            if (actor.gender === 1) return "/unknown.png"
-                            if (actor.gender === 2) return "/unknown.png"
-                            return "/unknown.png"
-                          })()
+                        : "/unknown.png"
                     }
                     alt={actor.name}
-                    className="w-28 h-28 object-cover rounded-full shadow-md mb-2 border border-gray-300 dark:border-gray-600"
+                    className="w-28 h-28 object-cover rounded-full shadow-md mb-2 border border-gray-300 dark:border-gray-600 group-hover:border-pink-400 transition-colors"
                   />
-                  <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">{actor.name}</p>
+                  <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">{actor.name}</p>
                   <p className="text-xs text-gray-500 dark:text-gray-400 truncate">{actor.character}</p>
-                </div>
+                </Link>
               ))
             ))}
           </div>

@@ -297,29 +297,22 @@ const SeasonDetail: React.FC = () => {
               ) : (
                 <div className="flex flex-wrap gap-6 justify-start">
                   {seasonCast.slice(0, 12).map((castMember) => {
-                    // Determine profile image with gender fallback
-                    const profileImage = castMember.profile_path
-                      ? tmdb.getImageUrl(castMember.profile_path, "w185")
-                      : castMember.gender === 1
-                      ? "/unknown.png"
-                      : castMember.gender === 2
-                      ? "/unknown.png"
-                      : "/unknown.png";
-
                     return (
-                      <div key={castMember.id} className="w-28 text-center">
+                      <Link key={castMember.id} to={`/person/${castMember.id}`} className="w-28 text-center group cursor-pointer">
                         <img
-                          src={profileImage}
+                          src={castMember.profile_path
+                            ? tmdb.getImageUrl(castMember.profile_path, "w185")
+                            : "/unknown.png"}
                           alt={castMember.name}
-                          className="w-28 h-28 object-cover rounded-full shadow-sm mb-2 border border-gray-300 dark:border-gray-600"
+                          className="w-28 h-28 object-cover rounded-full shadow-sm mb-2 border border-gray-300 dark:border-gray-600 group-hover:border-pink-400 transition-colors"
                         />
-                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
+                        <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
                           {castMember.name}
                         </p>
                         <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                           {castMember.character}
                         </p>
-                      </div>
+                      </Link>
                     );
                   })}
                 </div>

@@ -317,27 +317,21 @@ const EpisodeDetail: React.FC = () => {
                 </h4>
                 <div className="flex flex-wrap gap-4 overflow-x-auto">
                   {cast.slice(0, 12).map((member) => (
-                    <div key={member.id} className="w-20 text-center">
+                    <Link key={member.id} to={`/person/${member.id}`} className="w-20 text-center group cursor-pointer">
                       <img
-                        src={
-                          member.profile_path
-                            ? tmdb.getImageUrl(member.profile_path, 'w185')
-                            : (() => {
-                                if (member.gender === 1) return "/unknown.png"
-                                if (member.gender === 2) return "/unknown.png"
-                                return "/unknown.png"
-                              })()
-                        }
+                        src={member.profile_path
+                          ? tmdb.getImageUrl(member.profile_path, 'w185')
+                          : "/unknown.png"}
                         alt={member.name}
-                        className="w-20 h-28 rounded-lg object-cover mb-1"
+                        className="w-20 h-28 rounded-lg object-cover mb-1 group-hover:border-pink-400 transition-colors"
                       />
-                      <div className="text-xs font-semibold text-gray-900 dark:text-white truncate">
+                      <div className="text-xs font-semibold text-gray-900 dark:text-white truncate group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
                         {member.name}
                       </div>
                       <div className="text-xs text-gray-600 dark:text-gray-400 truncate">
                         {member.character}
                       </div>
-                    </div>
+                    </Link>
                   ))}
                 </div>
               </div>

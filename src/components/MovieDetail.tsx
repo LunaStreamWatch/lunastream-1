@@ -278,19 +278,19 @@ const MovieDetail: React.FC = () => {
                     : "/unknown.png"
 
                   return (
-                    <div key={actor.id} className="w-28 text-center">
+                    <Link key={actor.id} to={`/person/${actor.id}`} className="w-28 text-center group cursor-pointer">
                       <img
                         src={profileImage}
                         alt={actor.name}
-                        className="w-28 h-28 object-cover rounded-full shadow-sm mb-2 border border-gray-300 dark:border-gray-600"
+                        className="w-28 h-28 object-cover rounded-full shadow-sm mb-2 border border-gray-300 dark:border-gray-600 group-hover:border-pink-400 transition-colors"
                       />
-                      <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate">
+                      <p className="text-sm font-medium text-gray-800 dark:text-gray-200 truncate group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors">
                         {actor.name}
                       </p>
                       <p className="text-xs text-gray-500 dark:text-gray-400 truncate">
                         {actor.character}
                       </p>
-                    </div>
+                    </Link>
                   )
                 })}
               </div>

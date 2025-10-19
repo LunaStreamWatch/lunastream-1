@@ -141,6 +141,11 @@ export const tmdb = {
   getPersonDetails: async (id: number) => {
     const response = await fetch(`${BASE_URL}/person/${id}?api_key=${API_KEY}`);
     return response.json();
+  },
+
+  getPersonCredits: async (id: number) => {
+    const response = await fetch(`${BASE_URL}/person/${id}/combined_credits?api_key=${API_KEY}`);
+    return response.json();
   }
 };
 

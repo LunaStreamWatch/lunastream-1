@@ -20,6 +20,7 @@ import EpisodeDetail from './components/EpisodeDetail';
 import AnimeSection from './components/AnimeSection';
 import AnimeMovieDetail from './components/AnimeMovieDetail';
 import AnimeTVDetail from './components/AnimeTVDetail';
+import PersonDetail from './components/PersonDetail';
 import IntroAnimation from './components/IntroAnimation';
 import { LanguageProvider } from './components/LanguageContext';
 import { AnimationProvider } from './components/AnimationContext';
@@ -74,6 +75,7 @@ function App() {
             <Route path="/anime" element={<AnimeSection />} />
             <Route path="/anime/movie/:id" element={<AnimeMovieDetail />} />
             <Route path="/anime/tv/:id" element={<AnimeTVDetail />} />
+            <Route path="/person/:id" element={<PersonDetail />} />
             <Route path="*" element={<NotFoundPage />} />
           </Routes>
           <footer>
