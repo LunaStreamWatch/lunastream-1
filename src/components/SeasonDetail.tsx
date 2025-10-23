@@ -289,22 +289,22 @@ const SeasonDetail: React.FC = () => {
           </div>
         </div>
 
-        <div className="mt-4 flex space-x-2">
+        <div className="mt-6 w-full"> 
           <button
             onClick={() => setIsTrailerOpen(true)}
             disabled={!seasonTrailerKey}
-            className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-semibold transition-all
+            className={`w-full flex justify-center items-center space-x-2 px-6 py-4 rounded-xl font-semibold transition-all
               ${seasonTrailerKey
                 ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700"
                 : "bg-gray-300 text-gray-500 cursor-not-allowed"
               }`}
           >
-            <Play className="w-4 h-4" />
+            <Play className="w-5 h-5" />
             <span>Watch Season Trailer</span>
           </button>
         </div>
-
-
+        
+        <br/>
 
         {/* Cast Section */}
         {seasonCast.length > 0 && (
