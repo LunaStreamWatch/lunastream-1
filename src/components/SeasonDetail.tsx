@@ -43,6 +43,8 @@ const SeasonDetail: React.FC = () => {
   const [currentEpisode, setCurrentEpisode] = useState<Episode | null>(null);
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [showDescriptions, setShowDescriptions] = useState<{ [key: number]: boolean }>({});
+  const [seasonTrailerKey, setSeasonTrailerKey] = useState<string | null>(null)
+  const [isTrailerOpen, setIsTrailerOpen] = useState(false)
   const [seasonCast, setSeasonCast] = useState<any[]>([]);
   
   const { language } = useLanguage();
@@ -55,15 +57,19 @@ const SeasonDetail: React.FC = () => {
 
       setLoading(true);
       try {
-        const [showData, seasonData, creditsData] = await Promise.all([
+        const [showData, seasonData, creditsData, seasonVideos] = await Promise.all([
           tmdb.getTVDetails(parseInt(id)),
           tmdb.getTVSeasons(parseInt(id), parseInt(seasonNumber)),
-          tmdb.getTVSeasonCredits(parseInt(id), parseInt(seasonNumber))
+          tmdb.getTVSeasonCredits(parseInt(id), parseInt(seasonNumber)),
+          tmdb.getTVSeasonVideos(parseInt(id), parseInt(seasonNumber))
         ]);
 
         setShow(showData);
         setSeason(seasonData);
         setSeasonCast(creditsData.cast || []);
+
+        const trailer = seasonVideos.results?.find((v: any) => v.type === "Trailer" && v.site === "YouTube");
+        setSeasonTrailerKey(trailer ? trailer.key : null);
       } catch (error) {
         console.error('Failed to fetch season data:', error);
       } finally {
@@ -73,6 +79,7 @@ const SeasonDetail: React.FC = () => {
 
     fetchData();
   }, [id, seasonNumber]);
+
 
   const handleWatchEpisode = (episode: Episode) => {
     if (!show || !id) return;
@@ -282,6 +289,23 @@ const SeasonDetail: React.FC = () => {
           </div>
         </div>
 
+        <div className="mt-4 flex space-x-2">
+          <button
+            onClick={() => setIsTrailerOpen(true)}
+            disabled={!seasonTrailerKey}
+            className={`flex items-center space-x-2 px-4 py-2 rounded-xl font-semibold transition-all
+              ${seasonTrailerKey
+                ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
+          >
+            <Play className="w-4 h-4" />
+            <span>Watch Season Trailer</span>
+          </button>
+        </div>
+
+
+
         {/* Cast Section */}
         {seasonCast.length > 0 && (
           <div className={`bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-pink-200/50 dark:border-gray-700/50 p-6 mb-8 ${isMobile ? 'rounded-xl p-4' : ''}`}>
@@ -409,6 +433,26 @@ const SeasonDetail: React.FC = () => {
           </div>
         </div>
       </div>
+
+      {isTrailerOpen && seasonTrailerKey && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+          <div className="relative w-full max-w-4xl aspect-video">
+            <button
+              onClick={() => setIsTrailerOpen(false)}
+              className="absolute top-2 right-2 text-white z-10 hover:text-pink-400"
+            >
+              <X className="w-8 h-8" />
+            </button>
+            <iframe
+              src={`https://www.youtube.com/embed/${seasonTrailerKey}`}
+              allowFullScreen
+              className="w-full h-full rounded-2xl border-0"
+              title="Season Trailer"
+            />
+          </div>
+        </div>
+      )}
+
     </div>
   );
 };

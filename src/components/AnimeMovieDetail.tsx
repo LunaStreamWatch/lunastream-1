@@ -232,11 +232,16 @@ const AnimeMovieDetail: React.FC = () => {
           <button
             onClick={() => setShowTrailer(true)}
             disabled={!trailerUrl}
-            className="w-full flex justify-center items-center space-x-2 px-6 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg mb-8 bg-gradient-to-r from-indigo-500 to-purple-600 text-white"
+            className={`w-full flex justify-center items-center space-x-2 px-6 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg mb-8
+              ${trailerUrl
+                ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:from-indigo-600 hover:to-purple-700"
+                : "bg-gray-300 text-gray-500 cursor-not-allowed"
+              }`}
           >
             <Play className="w-5 h-5" />
             <span>{t.action_watch_trailer || "Watch Trailer"}</span>
           </button>
+
         )}
 
         {/* Show episode list if not a movie */}
