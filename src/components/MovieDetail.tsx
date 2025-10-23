@@ -31,6 +31,9 @@ const MovieDetail: React.FC = () => {
   const [cast, setCast] = useState<
     { id: number; name: string; character: string; profile_path: string | null; gender?: number }[]
   >([])
+  const [trailerUrl, setTrailerUrl] = useState<string | null>(null)
+  const [showTrailer, setShowTrailer] = useState(false)
+
   const { language } = useLanguage()
   const t = translations[language]
 
@@ -67,6 +70,35 @@ const MovieDetail: React.FC = () => {
     }
     fetchCredits()
   }, [movie?.id])
+
+  useEffect(() => {
+      const fetchTrailer = async () => {
+        if (!movie?.id) return
+        try {
+          const videos = await tmdb.getMovieVideos(movie.id)
+          if (videos?.results?.length) {
+            // Prefer official YouTube trailers
+            const trailer =
+              videos.results.find(
+                (v: any) =>
+                  v.type === "Trailer" &&
+                  v.site === "YouTube" &&
+                  /official/i.test(v.name)
+              ) ||
+              videos.results.find(
+                (v: any) => v.type === "Trailer" && v.site === "YouTube"
+              )
+  
+            if (trailer) {
+              setTrailerUrl(`https://www.youtube.com/embed/${trailer.key}`)
+            }
+          }
+        } catch (error) {
+          console.error("Failed to fetch trailer:", error)
+        }
+      }
+      fetchTrailer()
+    }, [movie?.id])
 
   useEffect(() => {
     const items = JSON.parse(localStorage.getItem("recentlyViewedMovies") || "[]")
@@ -233,6 +265,27 @@ const MovieDetail: React.FC = () => {
     )
   }
 
+  if (showTrailer && trailerUrl) {
+    return (
+      <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center">
+        <button
+          onClick={() => setShowTrailer(false)}
+          className="absolute top-6 right-6 text-white hover:text-gray-300 transition-colors"
+        >
+          <X className="w-8 h-8" />
+        </button>
+        <iframe
+          src={trailerUrl}
+          className="w-11/12 md:w-3/4 h-3/4 rounded-2xl border-0 shadow-2xl"
+          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+          allowFullScreen
+          title={`${movie.title} Trailer`}
+        />
+      </div>
+    )
+  }
+
+
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-indigo-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
       <GlobalNavbar />
@@ -254,6 +307,17 @@ const MovieDetail: React.FC = () => {
               <Play className="w-5 h-5" />
               <span>{t.action_watch_movie || "Watch Movie"}</span>
             </button>
+
+            {trailerUrl && (
+              <button
+                onClick={() => setShowTrailer(true)}
+                className="w-full flex justify-center items-center space-x-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-95 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
+              >
+                <Play className="w-5 h-5" />
+                <span>{t.action_watch_trailer || "Watch Trailer"}</span>
+              </button>
+            )}
+
             
             {/* Comments Section removed */}
           </div>

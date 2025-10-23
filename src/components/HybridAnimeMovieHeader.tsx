@@ -10,12 +10,18 @@ interface HybridAnimeMovieHeaderProps {
   anime: Anime
   isFavorited: boolean
   onToggleFavorite: () => void
+  seasons?: Anime[]
+  selectedSeason?: number
+  onSeasonChange?: (season: number) => void
 }
 
 const HybridAnimeMovieHeader: React.FC<HybridAnimeMovieHeaderProps> = ({
   anime,
   isFavorited,
   onToggleFavorite,
+  seasons,
+  selectedSeason = 0,
+  onSeasonChange,
 }) => {
   const { language } = useLanguage()
   const t = translations[language] || translations.en
@@ -106,7 +112,7 @@ const HybridAnimeMovieHeader: React.FC<HybridAnimeMovieHeaderProps> = ({
               </div>
             </div>
           )}
-
+          
           {/* Source Material */}
           <div className="mb-4">
             <div className="flex items-center text-gray-300 text-sm">
@@ -114,6 +120,42 @@ const HybridAnimeMovieHeader: React.FC<HybridAnimeMovieHeaderProps> = ({
               <span className="ml-2">{anime.source || 'Unknown'}</span>
             </div>
           </div>
+
+          {/* Season / Movie Selector */}
+          {seasons && seasons.length > 0 && onSeasonChange && (
+            <div className="mb-4 relative w-full sm:w-64">
+              <select
+                value={selectedSeason}
+                onChange={(e) => onSeasonChange(Number(e.target.value))}
+                className="pr-10 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl border border-purple-200/50 dark:border-gray-600/30
+                           text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-purple-500
+                           transition-all duration-200 appearance-none py-2 px-4 cursor-pointer font-semibold w-full"
+              >
+                {/* Main anime */}
+                <option value={0}>
+                  {anime.title.english || anime.title.romaji || anime.title.native}
+                </option>
+
+                {/* Related seasons */}
+                {seasons.map((season, idx) => (
+                  <option key={season.id} value={idx + 1}>
+                    {season.title.english || season.title.romaji || season.title.native}
+                  </option>
+                ))}
+              </select>
+
+              {/* Dropdown arrow */}
+              <svg
+                xmlns="http://www.w3.org/2000/svg"
+                className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400 pointer-events-none transition-transform duration-200"
+                fill="none"
+                viewBox="0 0 24 24"
+                stroke="currentColor"
+              >
+                <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+              </svg>
+            </div>
+          )}
 
           {/* Overview */}
           <div className="mb-6">

@@ -36,6 +36,10 @@ const TVDetail: React.FC = () => {
   const [isFavorited, setIsFavorited] = useState(false)
   const [cast, setCast] = React.useState([])
   const [seasonCast, setSeasonCast] = React.useState<any[]>([])
+  const [showTrailerKey, setShowTrailerKey] = useState<string | null>(null)
+  const [seasonTrailerKey, setSeasonTrailerKey] = useState<string | null>(null)
+  const [isTrailerOpen, setIsTrailerOpen] = useState(false)
+  const [activeTrailerType, setActiveTrailerType] = useState<"show" | "season" | null>(null)
   const { language } = useLanguage()
 
   const isMobile = useIsMobile()
@@ -124,6 +128,11 @@ const TVDetail: React.FC = () => {
       setLoading(true)
       try {
         const showData = await tmdb.getTVDetails(showId)
+        // Fetch Show Trailer
+        const videos = await tmdb.getTVVideos(showData.id)
+        const trailer = videos.results?.find((v: any) => v.type === "Trailer" && v.site === "YouTube")
+        setShowTrailerKey(trailer ? trailer.key : null)
+
         setShow(showData)
         if (showData.seasons && showData.seasons.length > 0) {
           const firstSeason = showData.seasons.find((s: any) => s.season_number > 0) || showData.seasons[0]
@@ -143,6 +152,11 @@ const TVDetail: React.FC = () => {
     const fetchEpisodesAndRating = async () => {
       if (!id || selectedSeason === 0) return
       setEpisodesLoading(true)
+      // Fetch Season Trailer
+      const seasonVideos = await tmdb.getTVSeasonVideos(Number(id), selectedSeason)
+      const trailer = seasonVideos.results?.find((v: any) => v.type === "Trailer" && v.site === "YouTube")
+      setSeasonTrailerKey(trailer ? trailer.key : null)
+
       try {
         const seasonData = await tmdb.getTVSeasons(Number.parseInt(id), selectedSeason)
         setEpisodes(seasonData.episodes || [])
@@ -173,6 +187,17 @@ const TVDetail: React.FC = () => {
       setRecentlyViewedTV(updated.slice(0, 5))
     }
   }, [show])
+
+  const openTrailer = (type: "show" | "season") => {
+    setActiveTrailerType(type)
+    setIsTrailerOpen(true)
+  }
+
+  const closeTrailer = () => {
+    setActiveTrailerType(null)
+    setIsTrailerOpen(false)
+  }
+
 
   // -------------- UPDATED: Send Discord notification on watch -------------
   const handleWatchEpisode = (episode: Episode) => {
@@ -374,6 +399,35 @@ const TVDetail: React.FC = () => {
           />
         </div>
 
+        <div className="flex space-x-4 mt-6 mb-6">
+          <button
+            onClick={() => openTrailer("show")}
+            disabled={!showTrailerKey}
+            className={`flex-1 flex justify-center items-center space-x-2 px-6 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg ${
+              showTrailerKey
+                ? "bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white hover:opacity-95 hover:shadow-xl"
+                : "bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            <Play className="w-5 h-5" />
+            <span>{t.action_watch_trailer || "Watch Show Trailer"}</span>
+          </button>
+
+          <button
+            onClick={() => openTrailer("season")}
+            disabled={!seasonTrailerKey}
+            className={`flex-1 flex justify-center items-center space-x-2 px-6 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg ${
+              seasonTrailerKey
+                ? "bg-gradient-to-r from-indigo-500 to-purple-600 text-white hover:opacity-95 hover:shadow-xl"
+                : "bg-gray-300 dark:bg-gray-700 text-gray-500 cursor-not-allowed"
+            }`}
+          >
+            <Play className="w-5 h-5" />
+            <span>{t.action_watch_trailer || `Watch Season ${selectedSeason} Trailer`}</span>
+          </button>
+        </div>
+
+
         {/* Cast Overview */}
         <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm mobile-card rounded-2xl shadow-xl border border-purple-200/50 dark:border-gray-700/50 overflow-hidden mb-8 transition-colors duration-300">
           <h2 className="text-2xl font-bold text-gray-900 dark:text-white px-8 pt-8 mb-4">{t.cast_overview || 'Cast Overview'}</h2>
@@ -522,6 +576,22 @@ const TVDetail: React.FC = () => {
           )}
         </div>
       </div>
+      {isTrailerOpen && (
+        <div className="fixed inset-0 bg-black/80 flex items-center justify-center z-50">
+          <div className="relative w-full max-w-4xl aspect-video">
+            <button onClick={closeTrailer} className="absolute top-2 right-2 text-white z-10 hover:text-pink-400">
+              <X className="w-8 h-8" />
+            </button>
+            <iframe
+              src={`https://www.youtube.com/embed/${activeTrailerType === "show" ? showTrailerKey : seasonTrailerKey}`}
+              allowFullScreen
+              className="w-full h-full rounded-2xl border-0"
+              title="Trailer"
+            />
+          </div>
+        </div>
+      )}
+
     </div>
   )
 }

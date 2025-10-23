@@ -98,7 +98,28 @@ export const tmdb = {
     return response.json();
   },
 
+  getMovieVideos: async (id: number) => {
+    const response = await fetch(
+      `${BASE_URL}/movie/${id}/videos?api_key=${API_KEY}`
+    );
+    return response.json();
+  },
 
+  getTVVideos: async (id: number) => {
+    const response = await fetch(
+      `${BASE_URL}/tv/${id}/videos?api_key=${API_KEY}`
+    );
+    return response.json();
+  },
+
+   getTVSeasonVideos: async (tvId: number, seasonNumber: number) => {
+    const response = await fetch(
+      `${BASE_URL}/tv/${tvId}/season/${seasonNumber}/videos?api_key=${API_KEY}`
+    );
+    return response.json();
+  },
+
+  
   discoverMovies: async (params: string) => {
     const response = await fetch(`${BASE_URL}/discover/movie?api_key=${API_KEY}&${params}`);
     const data = await response.json();

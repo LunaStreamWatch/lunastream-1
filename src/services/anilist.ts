@@ -150,6 +150,11 @@ export interface Anime {
       mediaRecommendation: AnimeRecommendation;
     }>;
   };
+  trailer?: {
+    id: string;
+    site: string;
+    thumbnail?: string;
+  }
 }
 
 export interface AnimeSearchResponse {
@@ -419,6 +424,11 @@ class AniListService {
             day
           }
           source
+          trailer {
+            id
+            site
+            thumbnail
+          }
           characters(sort: [ROLE, RELEVANCE], perPage: 12) {
             edges {
               role
@@ -488,9 +498,9 @@ class AniListService {
         }
       }
     `;
-
     return this.query(query, { id });
   }
+
 
   // Helper methods
   getDisplayTitle(anime: Anime | { title?: AnimeTitle } | null | undefined): string {

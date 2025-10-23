@@ -15,7 +15,6 @@ import Loading from "./Loading"
 import { useIsMobile } from "../hooks/useIsMobile"
 import HybridAnimeTVHeader from "./HybridAnimeTVHeader"
 
-
 const AnimeTVDetail: React.FC = () => {
   const { id } = useParams<{ id: string }>()
   const [anime, setAnime] = useState<Anime | null>(null)
@@ -27,7 +26,26 @@ const AnimeTVDetail: React.FC = () => {
   const [selectedSeason, setSelectedSeason] = useState(0)
   const [isDub, setIsDub] = useState<boolean>(false)
   const [episodes, setEpisodes] = useState<{ id: number; episode_number: number; name: string }[]>([])
+  const [trailerUrl, setTrailerUrl] = useState<string | null>(null)
+  const [showTrailer, setShowTrailer] = useState(false)
   const [seasonData, setSeasonData] = useState<Anime[]>([])
+
+  // currentAnime depending on selected season
+  const currentAnime = selectedSeason === 0 ? anime : seasonData[selectedSeason - 1]
+  const isMovie = currentAnime ? anilist.isMovie(currentAnime) : false
+
+  useEffect(() => {
+    if (!currentAnime) {
+      setTrailerUrl(null)
+      return
+    }
+
+    if (currentAnime.trailer && currentAnime.trailer.site === "youtube" && currentAnime.trailer.id) {
+      setTrailerUrl(`https://www.youtube.com/embed/${currentAnime.trailer.id}`)
+    } else {
+      setTrailerUrl(null)
+    }
+  }, [currentAnime])
 
   const seasons = useMemo(() => {
     return anime?.relations?.edges
@@ -46,10 +64,6 @@ const AnimeTVDetail: React.FC = () => {
       try {
         const response = await anilist.getAnimeDetails(parseInt(id))
         const animeData = response.data.Media
-        if (anilist.isMovie(animeData)) {
-          window.location.href = `/anime/movie/${id}`
-          return
-        }
         setAnime(animeData)
       } catch (error) {
         console.error("Failed to fetch anime:", error)
@@ -94,6 +108,16 @@ const AnimeTVDetail: React.FC = () => {
     let targetAnime = seasonIndex === 0 ? animeData : seasonsDetails[seasonIndex - 1]
     if (!targetAnime) return []
 
+    // If movie, treat as a single episode with the movie title
+    if (anilist.isMovie(targetAnime)) {
+      const title = targetAnime.title.english || targetAnime.title.romaji || targetAnime.title.native
+      return [{
+        id: 1,
+        episode_number: 1,
+        name: title,
+      }]
+    }
+
     const totalEpisodes = targetAnime.episodes || 0
     return Array.from({ length: totalEpisodes }, (_, i) => ({
       id: i + 1,
@@ -103,6 +127,7 @@ const AnimeTVDetail: React.FC = () => {
         : `Episode ${i + 1}`,
     }))
   }
+
 
   useEffect(() => {
     if (anime) {
@@ -114,19 +139,17 @@ const AnimeTVDetail: React.FC = () => {
   const handleWatchEpisode = (episodeNumber: number) => {
     if (!anime || !id) return
 
-    // Pick correct anime depending on season
-    let currentAnime = anime
+    let currentAnimeRef = anime
     if (selectedSeason > 0 && seasonData[selectedSeason - 1]) {
-      currentAnime = seasonData[selectedSeason - 1]
+      currentAnimeRef = seasonData[selectedSeason - 1]
     }
 
-    // Save to continue watching
-    if (currentAnime) {
+    if (currentAnimeRef) {
       continueWatchingService.addOrUpdateItem({
         type: 'anime',
-        anilistId: currentAnime.id,
-        title: anilist.getDisplayTitle(currentAnime),
-        poster: currentAnime.coverImage?.large || currentAnime.coverImage?.medium || '',
+        anilistId: currentAnimeRef.id,
+        title: anilist.getDisplayTitle(currentAnimeRef),
+        poster: currentAnimeRef.coverImage?.large || currentAnimeRef.coverImage?.medium || '',
         episode: episodeNumber,
         isDub: isDub,
         progress: 0
@@ -135,15 +158,15 @@ const AnimeTVDetail: React.FC = () => {
 
     setCurrentEpisode(episodeNumber)
 
-    if (!currentAnime) return
+    if (!currentAnimeRef) return
 
     watchStatsService.recordWatch()
 
-    const episodeDuration = currentAnime.duration ? currentAnime.duration * 60 : 24 * 60
+    const episodeDuration = currentAnimeRef.duration ? currentAnimeRef.duration * 60 : 24 * 60
     const newSessionId = analytics.startSession(
       "tv",
-      currentAnime.id,
-      anilist.getDisplayTitle(currentAnime),
+      currentAnimeRef.id,
+      anilist.getDisplayTitle(currentAnimeRef),
       anime.bannerImage,
       1,
       episodeNumber,
@@ -188,8 +211,6 @@ const AnimeTVDetail: React.FC = () => {
     )
   }
 
-  const currentAnime = selectedSeason === 0 ? anime : seasonData[selectedSeason - 1]
-
   if (isPlaying) {
     return (
       <div className="fixed inset-0 bg-black z-50">
@@ -203,7 +224,6 @@ const AnimeTVDetail: React.FC = () => {
           </button>
         </div>
 
-        {/* Language selector (only shows on hover) */}
         <div className="absolute top-6 left-6 z-10 group">
           <div className="opacity-0 group-hover:opacity-100 transition-opacity duration-300 bg-black/70 backdrop-blur-sm rounded-lg shadow-xl p-2 w-28 text-center text-white">
             <div className="text-xs text-gray-300 mb-2">Audio</div>
@@ -244,7 +264,6 @@ const AnimeTVDetail: React.FC = () => {
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-indigo-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950 transition-colors duration-300">
       <GlobalNavbar />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        {/* Back Navigation */}
         <div className="mb-8">
           <Link
             to="/anime"
@@ -261,79 +280,118 @@ const AnimeTVDetail: React.FC = () => {
             onSeasonChange={setSelectedSeason}
           />
         </div>
-        {/* Episodes Section */}
+
+        {trailerUrl && (
+          <button
+            onClick={() => setShowTrailer(true)}
+            disabled={!trailerUrl}
+            className={`w-full flex justify-center items-center space-x-2 px-6 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg mt-4
+              ${trailerUrl 
+                ? 'bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-95 text-white hover:shadow-xl' 
+                : 'bg-gray-400 text-gray-200 cursor-not-allowed'
+              }`}
+          >
+            <Play className="w-5 h-5" />
+            <span>{t.action_watch_trailer || "Watch Trailer"}</span>
+          </button>
+        )}
+
+        <br/>
+
         <div className="bg-white/80 dark:bg-gray-800/80 backdrop-blur-sm rounded-2xl shadow-xl border border-pink-200/50 dark:border-gray-700/50 p-6 transition-colors duration-300">
-          <div className={`flex items-center justify-between mb-6 ${isMobile ? "flex-col space-y-4" : ""}`}>
-            <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">
-              Episodes ({currentAnime?.episodes || 0})
-            </h2>
-            {seasons.length > 0 && (
-              <div className="relative group w-full sm:w-auto">
-                <select
-                  value={selectedSeason}
-                  onChange={(e) => setSelectedSeason(Number(e.target.value))}
-                  className="pr-10 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl border border-pink-200/50 dark:border-gray-600/30 
-                            text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500 
-                            transition-all duration-200 appearance-none py-2 px-4 cursor-pointer font-semibold w-full sm:w-64"
-                >
-                  <option value={0}>{anime.title.english || anime.title.romaji || anime.title.native}</option>
-                  {seasons.map((season, index) => (
-                    <option key={season.id} value={index + 1}>
-                      {season.title.english || season.title.romaji || season.title.native}
-                    </option>
-                  ))}
-                </select>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400 pointer-events-none transition-transform duration-200 group-hover:rotate-180"
-                  fill="none"
-                  viewBox="0 0 24 24"
-                  stroke="currentColor"
-                >
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
-                </svg>
+          {(
+            <>
+              <div className={`flex items-center justify-between mb-6 ${isMobile ? "flex-col space-y-4" : ""}`}>
+                <h2 className="text-2xl font-bold text-gray-900 dark:text-white transition-colors duration-300">
+                  Episodes ({currentAnime?.episodes || 0})
+                </h2>
+                {seasons.length > 0 && (
+                  <div className="relative group w-full sm:w-auto">
+                    <select
+                      value={selectedSeason}
+                      onChange={(e) => setSelectedSeason(Number(e.target.value))}
+                      className="pr-10 bg-white/95 dark:bg-gray-800/95 backdrop-blur-md rounded-xl border border-pink-200/50 dark:border-gray-600/30 
+                                text-gray-900 dark:text-gray-100 focus:outline-none focus:ring-2 focus:ring-pink-500 
+                                transition-all duration-200 appearance-none py-2 px-4 cursor-pointer font-semibold w-full sm:w-64"
+                    >
+                      <option value={0}>{anime.title.english || anime.title.romaji || anime.title.native}</option>
+                      {seasons.map((season, index) => (
+                        <option key={season.id} value={index + 1}>
+                          {season.title.english || season.title.romaji || season.title.native}
+                        </option>
+                      ))}
+                    </select>
+                    <svg
+                      xmlns="http://www.w3.org/2000/svg"
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-500 dark:text-gray-400 pointer-events-none transition-transform duration-200 group-hover:rotate-180"
+                      fill="none"
+                      viewBox="0 0 24 24"
+                      stroke="currentColor"
+                    >
+                      <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 9l-7 7-7-7" />
+                    </svg>
+                  </div>
+                )}
               </div>
-            )}
-          </div>
-          <div className={isMobile ? 'space-y-2' : 'space-y-3'}>
-            {episodes.map((episode) => (
-              <div
-                key={episode.id}
-                className={`group bg-gradient-to-br from-pink-50 to-purple-50 dark:from-gray-700 dark:to-gray-600 
-                  border border-pink-200/50 dark:border-gray-600/50 overflow-hidden hover:shadow-lg 
-                  transition-all duration-300 ${isMobile ? 'rounded-lg' : 'rounded-xl'}`}
-              >
-                <div className={isMobile ? 'p-3' : 'p-4'}>
-                  <div className="flex items-center justify-between mb-2">
-                    <div className="flex items-center space-x-3">
-                      <span className="bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white px-3 py-1 
-                                     rounded-full text-sm font-semibold">
-                        {episode.episode_number}
-                      </span>
-                      <h3 className={`font-semibold ${isMobile ? 'text-sm' : 'text-base'} text-gray-900 dark:text-white 
-                                     group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors`}>
-                        {episode.name}
-                      </h3>
-                    </div>
-                    <div className={`flex items-center space-x-2 ${isMobile ? 'flex-col' : ''}`}>
-                      <button
-                        onClick={() => handleWatchEpisode(episode.episode_number)}
-                        className="bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white px-3 py-1 rounded-lg 
-                                 font-semibold hover:opacity-95 transition-colors 
-                                 flex items-center space-x-2"
-                        title="Watch Episode"
-                      >
-                        <Play className="w-4 h-4" />
-                        <span>Watch</span>
-                      </button>
+              <div className={isMobile ? 'space-y-2' : 'space-y-3'}>
+                {episodes.map((episode) => (
+                  <div
+                    key={episode.id}
+                    className={`group bg-gradient-to-br from-pink-50 to-purple-50 dark:from-gray-700 dark:to-gray-600 
+                      border border-pink-200/50 dark:border-gray-600/50 overflow-hidden hover:shadow-lg 
+                      transition-all duration-300 ${isMobile ? 'rounded-lg' : 'rounded-xl'}`}
+                  >
+                    <div className={isMobile ? 'p-3' : 'p-4'}>
+                      <div className="flex items-center justify-between mb-2">
+                        <div className="flex items-center space-x-3">
+                          <span className="bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white px-3 py-1 
+                                         rounded-full text-sm font-semibold">
+                            {episode.episode_number}
+                          </span>
+                          <h3 className={`font-semibold ${isMobile ? 'text-sm' : 'text-base'} text-gray-900 dark:text-white 
+                                         group-hover:text-pink-600 dark:group-hover:text-pink-400 transition-colors`}>
+                            {episode.name}
+                          </h3>
+                        </div>
+                        <div className={`flex items-center space-x-2 ${isMobile ? 'flex-col' : ''}`}>
+                          <button
+                            onClick={() => handleWatchEpisode(episode.episode_number)}
+                            className="bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] text-white px-3 py-1 rounded-lg 
+                                     font-semibold hover:opacity-95 transition-colors 
+                                     flex items-center space-x-2"
+                            title="Watch Episode"
+                          >
+                            <Play className="w-4 h-4" />
+                            <span>Watch</span>
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
-                </div>
+                ))}
               </div>
-            ))}
-          </div>
+            </>
+          )}
         </div>
       </div>
+
+      {showTrailer && trailerUrl && (
+        <div className="fixed inset-0 bg-black/95 z-50 flex items-center justify-center">
+          <button
+            onClick={() => setShowTrailer(false)}
+            className="absolute top-6 right-6 text-white hover:text-gray-300 transition-colors"
+          >
+            <X className="w-8 h-8" />
+          </button>
+          <iframe
+            src={trailerUrl}
+            className="w-11/12 md:w-3/4 h-3/4 rounded-2xl border-0 shadow-2xl"
+            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; fullscreen"
+            allowFullScreen
+            title={`${anime.title.english || anime.title.romaji || anime.title.native} Trailer`}
+          />
+        </div>
+      )}
     </div>
   )
 }
