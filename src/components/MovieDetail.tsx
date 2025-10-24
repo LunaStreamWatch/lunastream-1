@@ -336,11 +336,10 @@ const MovieDetail: React.FC = () => {
                   const profileImage = actor.profile_path
                     ? tmdb.getImageUrl(actor.profile_path, "w185")
                     : actor.gender === 1
-                    ? "/unknown.png"
+                    ? "/female.png"
                     : actor.gender === 2
-                    ? "/unknown.png"
-                    : "/unknown.png"
-
+                    ? "/male.png"
+                    : "/unknown.png";
                   return (
                     <Link key={actor.id} to={`/person/${actor.id}`} className="w-28 text-center group cursor-pointer">
                       <img

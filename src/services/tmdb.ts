@@ -167,6 +167,38 @@ export const tmdb = {
   getPersonCredits: async (id: number) => {
     const response = await fetch(`${BASE_URL}/person/${id}/combined_credits?api_key=${API_KEY}`);
     return response.json();
+  },
+
+  searchPeople: async (query: string) => {
+    const response = await fetch(
+      `${BASE_URL}/search/person?api_key=${API_KEY}&query=${encodeURIComponent(query)}`
+    );
+    const data = await response.json();
+    return data;
+  },
+
+  fetchPeoplePages: async (query: string, startPage = 1, pagesToFetch = 10) => {
+    const results = [];
+    const firstResponse = await fetch(`${BASE_URL}/search/person?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=1`);
+    const firstData = await firstResponse.json();
+    const totalPagesAvailable = firstData.total_pages || 1;
+
+    let currentPage = startPage;
+    for (let i = 0; i < pagesToFetch && currentPage <= totalPagesAvailable; i++, currentPage++) {
+      const response = await fetch(
+        `${BASE_URL}/search/person?api_key=${API_KEY}&query=${encodeURIComponent(query)}&page=${currentPage}`
+      );
+      const data = await response.json();
+      if (data.results) {
+        results.push(...data.results);
+      }
+    }
+
+    return {
+      results,
+      nextPage: currentPage,
+      totalPages: totalPagesAvailable,
+    };
   }
 };
 

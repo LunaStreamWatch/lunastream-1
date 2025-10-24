@@ -443,6 +443,10 @@ const TVDetail: React.FC = () => {
                     src={
                       actor.profile_path
                         ? tmdb.getImageUrl(actor.profile_path, "w185")
+                        : actor.gender === 1
+                        ? "/female.png"
+                        : actor.gender === 2
+                        ? "/male.png"
                         : "/unknown.png"
                     }
                     alt={actor.name}

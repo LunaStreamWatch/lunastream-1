@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
-import { ChevronLeft, Calendar, Star, Film, Tv, ChevronDown, ChevronUp } from "lucide-react"
+import { ChevronLeft, Calendar, Star, Film, Tv, ChevronDown, ChevronUp, PersonStanding } from "lucide-react"
 import { tmdb } from "../services/tmdb"
 import { useLanguage } from "./LanguageContext"
 import { translations } from "../data/i18n"
@@ -11,6 +11,7 @@ import GlobalNavbar from "./GlobalNavbar"
 
 interface PersonDetails {
   id: number
+  gender: number
   name: string
   biography: string
   birthday?: string
@@ -79,6 +80,20 @@ const PersonDetail: React.FC = () => {
     const age = end.getFullYear() - birth.getFullYear()
     return deathday ? ` (${age})` : ` (${age} years old)`
   }
+
+  const getGender = (gender?: string | number): string => {
+    switch (gender) {
+      case 1:
+      case '1':
+        return 'Female'
+      case 2:
+      case '2':
+        return 'Male'
+      default:
+        return 'Unknown'
+    }
+  }
+
 
   if (loading) {
     return <Loading message="Loading person details..." />
@@ -157,8 +172,14 @@ const PersonDetail: React.FC = () => {
                 {person.name}
               </h1>
 
+              <div className="flex items-center space-y-3 space-x-2 text-gray-700 dark:text-gray-300">
+                <PersonStanding className="w-4 h-4" />
+                <span>Gender: {getGender(person.gender)}</span>
+              </div>
+
+
               <div className="space-y-3 text-gray-700 dark:text-gray-300">
-                {person.birthday && (
+                {person.birthday ? (
                   <div className="flex items-center space-x-2">
                     <Calendar className="w-4 h-4" />
                     <span>
@@ -167,7 +188,12 @@ const PersonDetail: React.FC = () => {
                       {getAge(person.birthday, person.deathday)}
                     </span>
                   </div>
+                ) : (
+                  <div className="flex items-center space-x-2 text-gray-500 dark:text-gray-400">
+                    <Calendar className="w-4 h-4" /> <span>Birthday unknown</span>
+                  </div>
                 )}
+
 
                 {person.deathday && (
                   <div className="flex items-center space-x-2">
