@@ -1,5 +1,6 @@
 import { defineConfig } from 'vite';
 import react from '@vitejs/plugin-react';
+import path from 'path';
 import { componentTaggerPlugin } from "./src/visual-edits/component-tagger-plugin.js";
 
 // Minimal plugin to log build-time and dev-time errors to console
@@ -80,6 +81,11 @@ export default defineConfig(({ mode }) => ({
     mode === 'development' && componentTaggerPlugin(),
   ].filter(Boolean),
   base: './',
+  resolve: {
+    alias: {
+      '@': path.resolve(__dirname, './src'),
+    },
+  },
   optimizeDeps: {
     exclude: ['lucide-react'],
   },

@@ -28,9 +28,13 @@
     "@fastify/jwt": "^6.7.1",
     "@fastify/rate-limit": "^7.6.0",
     "@fastify/static": "^6.12.0",
+    "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-slot": "^1.2.3",
     "@supabase/supabase-js": "^2.58.0",
     "@types/node-fetch": "^2.6.13",
     "@types/uuid": "^10.0.0",
+    "class-variance-authority": "^0.7.1",
+    "clsx": "^2.1.1",
     "dotenv": "^17.2.0",
     "fastify": "^4.29.1",
     "fuse.js": "^7.1.0",
@@ -42,6 +46,7 @@
     "react": "^18.3.1",
     "react-dom": "^18.3.1",
     "react-router-dom": "^6.8.1",
+    "tailwind-merge": "^3.3.1",
     "uuid": "^13.0.0"
   },
   "devDependencies": {
