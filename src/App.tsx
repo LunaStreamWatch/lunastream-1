@@ -22,7 +22,6 @@ import AnimeMovieDetail from './components/AnimeMovieDetail';
 import AnimeTVDetail from './components/AnimeTVDetail';
 import PersonDetail from './components/PersonDetail';
 import IntroAnimation from './components/IntroAnimation';
-import AdNotificationPopup from './components/AdNotificationPopup';
 import { LanguageProvider } from './components/LanguageContext';
 import { AnimationProvider } from './components/AnimationContext';
 import { TooltipProvider } from '@/components/ui/tooltip';
@@ -57,7 +56,6 @@ function App() {
           <AnimationProvider>
             <Router>
           {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
-          <AdNotificationPopup />
           <ScrollToTopButton />
           <Routes>
             <Route path="/" element={<HomePageWrapper />} />
