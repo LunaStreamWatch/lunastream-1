@@ -66,7 +66,6 @@ export default defineConfig(({ mode }) => ({
   server: {
     host: "::",
     port: 3000,
-    https: mode === 'production',
     proxy: {
       '/api': {
         target: 'http://localhost:3000',
@@ -80,7 +79,7 @@ export default defineConfig(({ mode }) => ({
     logErrorsPlugin(),
     mode === 'development' && componentTaggerPlugin(),
   ].filter(Boolean),
-  base: mode === 'production' ? './' : '/',
+  base: '/',
   resolve: {
     alias: {
       '@': path.resolve(__dirname, './src'),
