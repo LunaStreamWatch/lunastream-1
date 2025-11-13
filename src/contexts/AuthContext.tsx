@@ -38,6 +38,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   const [loading, setLoading] = useState(true);
 
   const loadProfile = async (userId: string) => {
+    if (!supabase) return;
     try {
       const { data, error } = await supabase
         .from('profiles')
@@ -53,6 +54,10 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   useEffect(() => {
+    if (!supabase) {
+      setLoading(false);
+      return;
+    }
     supabase.auth.getSession().then(({ data: { session } }) => {
       setUser(session?.user ?? null);
       if (session?.user) {
@@ -76,6 +81,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   }, []);
 
   const signUp = async (email: string, password: string, username: string) => {
+    if (!supabase) {
+      return { error: new Error('Authentication service is not available') };
+    }
     try {
       const { data: usernameCheck } = await supabase.rpc('is_username_available', {
         username_check: username
@@ -119,6 +127,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signIn = async (email: string, password: string) => {
+    if (!supabase) {
+      return { error: new Error('Authentication service is not available') };
+    }
     try {
       const { error } = await supabase.auth.signInWithPassword({
         email,
@@ -134,12 +145,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const signOut = async () => {
+    if (!supabase) return;
     await supabase.auth.signOut();
     setUser(null);
     setProfile(null);
   };
 
   const resetPassword = async (email: string) => {
+    if (!supabase) {
+      return { error: new Error('Authentication service is not available') };
+    }
     try {
       const { error } = await supabase.auth.resetPasswordForEmail(email, {
         redirectTo: `${window.location.origin}/#/reset-password`,
@@ -153,6 +168,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
   };
 
   const updatePassword = async (newPassword: string) => {
+    if (!supabase) {
+      return { error: new Error('Authentication service is not available') };
+    }
     try {
       const { error } = await supabase.auth.updateUser({
         password: newPassword,
@@ -167,6 +185,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
 
   const updateProfile = async (updates: { username?: string; avatar?: string }) => {
     if (!user) return { error: new Error('No user logged in') };
+    if (!supabase) {
+      return { error: new Error('Authentication service is not available') };
+    }
     try {
       if (updates.username) {
         const { data: existingProfile } = await supabase
