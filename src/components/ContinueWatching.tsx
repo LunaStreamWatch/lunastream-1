@@ -1,24 +1,39 @@
 import React, { useState, useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { Play, X, Clock, ChevronRight } from 'lucide-react';
-import { getPlayerUrl } from '../utils/playerUtils';
+import { getPlayerUrl, playerConfigs } from '../utils/playerUtils';
 import { continueWatchingService, ContinueWatchingItem } from '../services/continueWatching';
 import { watchStatsService } from '../services/watchStats';
 import { useLanguage } from './LanguageContext';
 import { translations } from '../data/i18n';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { usePlayer } from '../contexts/PlayerContext';
 
 const ContinueWatching: React.FC = () => {
   const [items, setItems] = useState<ContinueWatchingItem[]>([]);
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentItem, setCurrentItem] = useState<ContinueWatchingItem | null>(null);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const { language } = useLanguage();
+  const { currentPlayer, setCurrentPlayer } = usePlayer();
   const t = translations[language] || translations.en;
   const isMobile = useIsMobile();
 
   useEffect(() => {
     loadItems();
   }, []);
+
+  // Fullscreen detection
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
 
   const loadItems = async () => {
     const continueItems = await continueWatchingService.getContinueWatchingItems();
@@ -47,25 +62,21 @@ const ContinueWatching: React.FC = () => {
   };
 
   const getPlayerUrlForItem = (item: ContinueWatchingItem): string => {
-    // Get stored player preference, default to vidify
-    const storedPlayer = localStorage.getItem('player') || 'vidify';
-
     if (item.type === 'movie' && item.tmdbId) {
-      return getPlayerUrl(storedPlayer, {
+      return getPlayerUrl(currentPlayer, {
         tmdbId: item.tmdbId.toString(),
         mediaType: 'movie'
       });
     } else if (item.type === 'tv' && item.tmdbId && item.season && item.episode) {
-      return getPlayerUrl(storedPlayer, {
+      return getPlayerUrl(currentPlayer, {
         tmdbId: item.tmdbId.toString(),
         mediaType: 'tv',
         seasonNumber: item.season,
         episodeNumber: item.episode
       });
     } else if (item.type === 'anime' && item.anilistId && item.episode) {
-      // For anime, use vidnest if stored player is vidnest, otherwise fallback to vidify
-      const animePlayer = storedPlayer === 'vidnest' ? 'vidnest' : 'vidify';
-      return getPlayerUrl(animePlayer, {
+      // For anime, fallback to vidify since vidnest is not available
+      return getPlayerUrl('vidify', {
         anilistId: item.anilistId.toString(),
         mediaType: 'anime',
         episodeNumber: item.episode,
@@ -99,7 +110,21 @@ const ContinueWatching: React.FC = () => {
   if (isPlaying && currentItem) {
     return (
       <div className="fixed inset-0 bg-black z-50">
-        <div className="absolute top-6 right-6 z-10">
+        <div className="absolute top-6 right-6 z-10 flex items-center gap-3">
+          {!isFullscreen && (
+            <Select value={currentPlayer} onValueChange={setCurrentPlayer}>
+              <SelectTrigger className="w-[140px] bg-black/70 border-white/20 text-white hover:bg-black/80">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-black/90 border-white/20">
+                {playerConfigs.map((config) => (
+                  <SelectItem key={config.id} value={config.id} className="text-white hover:bg-white/10">
+                    {config.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
+          )}
           <button
             onClick={handleClosePlayer}
             className="text-white hover:text-gray-300 transition-colors"

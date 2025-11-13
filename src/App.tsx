@@ -26,6 +26,7 @@ import { LanguageProvider } from './components/LanguageContext';
 import { AnimationProvider } from './components/AnimationContext';
 import { TooltipProvider } from '@/components/ui/tooltip';
 import { AuthProvider } from './contexts/AuthContext';
+import { PlayerProvider } from './contexts/PlayerContext';
 import AuthCallback from './components/AuthCallback';
 import { watchStatsService } from './services/watchStats';
 
@@ -51,10 +52,11 @@ function App() {
   }, []);
 
   return (
-      <AuthProvider>
-        <LanguageProvider>
-          <AnimationProvider>
-            <Router>
+      <PlayerProvider>
+        <AuthProvider>
+          <LanguageProvider>
+            <AnimationProvider>
+              <Router>
           {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
           <ScrollToTopButton />
           <Routes>
@@ -81,10 +83,11 @@ function App() {
           <footer>
             <Footer />
           </footer>
-          </Router>
-        </AnimationProvider>
-      </LanguageProvider>
-    </AuthProvider>
+              </Router>
+            </AnimationProvider>
+          </LanguageProvider>
+        </AuthProvider>
+      </PlayerProvider>
   );
 }
 

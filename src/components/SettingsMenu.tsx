@@ -5,6 +5,7 @@ import { languages } from "../data/i18n";
 import { useLanguage } from "./LanguageContext";
 import { AnimationSettingsService, type AnimationSettings } from "../services/animationSettings";
 import { playerConfigs } from "../utils/playerUtils";
+import { usePlayer } from "../contexts/PlayerContext";
 
 // Persist helpers
 const storage = {
@@ -118,6 +119,7 @@ function generateGradientStops(hex: string): { from: string; to: string } {
 
 export const SettingsMenu: React.FC = () => {
   const { language, setLanguage } = useLanguage();
+  const { currentPlayer, setCurrentPlayer } = usePlayer();
   const [open, setOpen] = useState(false);
   const [theme, setTheme] = useState<"light" | "dark">(() => (document.documentElement.classList.contains("dark") ? "dark" : (storage.get("theme") as any) || "light"));
   const [accent, setAccent] = useState<string>(() => storage.get("accent") || "default");
@@ -129,7 +131,6 @@ export const SettingsMenu: React.FC = () => {
   const [animationSettings, setAnimationSettings] = useState<AnimationSettings>(
     AnimationSettingsService.getSettings()
   );
-  const [player, setPlayer] = useState<string>(() => storage.get("player") || "vidify");
 
   const handleAnimationSettingChange = (
     key: keyof AnimationSettings,
@@ -145,7 +146,7 @@ export const SettingsMenu: React.FC = () => {
     setAccent("default");
     setFont("Inter");
     setCustomHex("#ec4899");
-    setPlayer("vidify");
+    setCurrentPlayer("vidzy");
     setLanguage("en");
     const newAnimationSettings = { enableWelcomeAnimation: false };
     setAnimationSettings(newAnimationSettings);
@@ -389,7 +390,7 @@ export const SettingsMenu: React.FC = () => {
                         <div className="text-sm font-semibold text-gray-700 dark:text-white">Player</div>
                         <div className="grid grid-cols-1 gap-2">
                           {playerConfigs.map(p => (
-                            <button key={p.id} onClick={() => { setPlayer(p.id); storage.set("player", p.id); }} className={`px-3 py-2 rounded-xl border text-left text-gray-700 dark:text-gray-200 ${player===p.id? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
+                            <button key={p.id} onClick={() => setCurrentPlayer(p.id as any)} className={`px-3 py-2 rounded-xl border text-left text-gray-700 dark:text-gray-200 ${currentPlayer===p.id? 'bg-gray-100 dark:bg-gray-800 border-gray-300 dark:border-gray-600' : 'border-gray-200 dark:border-gray-600 hover:bg-gray-50 dark:hover:bg-gray-800'}`}>
                               {p.name}
                             </button>
                           ))}

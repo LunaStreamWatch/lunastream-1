@@ -17,6 +17,8 @@ import { translations } from "../data/i18n"
 import Loading from "./Loading"
 import HybridMovieHeader from "./HybridMovieHeader"
 import EmbeddedFrame from "./player/EmbeddedFrame"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
+import { usePlayer } from "../contexts/PlayerContext"
 
 
 const MovieDetail: React.FC = () => {
@@ -33,8 +35,10 @@ const MovieDetail: React.FC = () => {
   >([])
   const [trailerUrl, setTrailerUrl] = useState<string | null>(null)
   const [showTrailer, setShowTrailer] = useState(false)
+  const [isFullscreen, setIsFullscreen] = useState(false);
 
   const { language } = useLanguage()
+  const { currentPlayer, setCurrentPlayer } = usePlayer();
   const t = translations[language]
 
   useEffect(() => {
@@ -205,6 +209,17 @@ const MovieDetail: React.FC = () => {
     setIsPlaying(false)
   }
 
+  // Fullscreen detection
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
+
   useEffect(() => {
     if (!isPlaying || !sessionId || !movie?.runtime) return
     const interval = setInterval(() => {
@@ -247,7 +262,21 @@ const MovieDetail: React.FC = () => {
   if (isPlaying) {
     return (
       <div className="fixed inset-0 bg-black z-50">
-        <div className="absolute top-6 right-6 z-10">
+        <div className="absolute top-6 right-6 z-10 flex items-center gap-3">
+          {!isFullscreen && (
+            <Select value={currentPlayer} onValueChange={setCurrentPlayer}>
+              <SelectTrigger className="w-[140px] bg-black/70 border-white/20 text-white hover:bg-black/80">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-black/90 border-white/20">
+                <SelectItem value="vidzy" className="text-white hover:bg-white/10">Vidzy</SelectItem>
+                <SelectItem value="vidify" className="text-white hover:bg-white/10">Vidify</SelectItem>
+                <SelectItem value="videasy" className="text-white hover:bg-white/10">Videasy (Ads)</SelectItem>
+                <SelectItem value="vidfast" className="text-white hover:bg-white/10">VidFast (Ads)</SelectItem>
+                <SelectItem value="vidnest" className="text-white hover:bg-white/10">Vidnest</SelectItem>
+              </SelectContent>
+            </Select>
+          )}
           <button
             onClick={handleClosePlayer}
             className="text-white hover:text-gray-300"
@@ -257,7 +286,7 @@ const MovieDetail: React.FC = () => {
           </button>
         </div>
         <EmbeddedFrame
-          src={getPlayerUrl(localStorage.getItem("player") || "vidify", { tmdbId: id!, mediaType: "movie" })}
+          src={getPlayerUrl(currentPlayer, { tmdbId: id!, mediaType: "movie" })}
           className="fixed top-0 left-0 w-full h-full border-0"
           title={movie.title}
         />

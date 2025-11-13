@@ -7,11 +7,22 @@ import { watchlistService } from '../services/watchlist';
 import { continueWatchingService } from '../services/continueWatching';
 import GlobalNavbar from './GlobalNavbar';
 import { playerConfigs, getPlayerUrl } from '../utils/playerUtils';
+
+// Helper to get stored player preference
+const getStoredPlayer = () => {
+  try {
+    return localStorage.getItem("player") || "vidzy";
+  } catch {
+    return "vidzy";
+  }
+};
 import EmbeddedFrame from './player/EmbeddedFrame';
 import { useLanguage } from './LanguageContext';
 import { translations } from '../data/i18n';
 import Loading from './Loading';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { usePlayer } from '../contexts/PlayerContext';
 
 interface Episode {
   id: number;
@@ -48,8 +59,10 @@ const EpisodeDetail: React.FC = () => {
   const [sessionId, setSessionId] = useState<string | null>(null);
   const [showDescriptions, setShowDescriptions] = useState<{ [key: number]: boolean }>({});
   const [seasonCast, setSeasonCast] = useState<any[]>([]);
-  
+  const [isFullscreen, setIsFullscreen] = useState(false);
+
   const { language } = useLanguage();
+  const { currentPlayer, setCurrentPlayer } = usePlayer();
   const t = translations[language];
   const isMobile = useIsMobile();
 
@@ -105,6 +118,17 @@ const EpisodeDetail: React.FC = () => {
     };
     fetchCastDetails();
   }, [cast]);
+
+  // Fullscreen detection
+  useEffect(() => {
+    const handleFullscreenChange = () => {
+      setIsFullscreen(!!document.fullscreenElement);
+    };
+
+    document.addEventListener('fullscreenchange', handleFullscreenChange);
+    return () => document.removeEventListener('fullscreenchange', handleFullscreenChange);
+  }, []);
+
 
   const handleWatchEpisode = () => {
     if (!show || !episode || !id) return;
@@ -185,8 +209,22 @@ const EpisodeDetail: React.FC = () => {
   if (isPlaying) {
     return (
         <div className="fixed inset-0 bg-black z-50">
-          {/* Close button */}
-          <div className="absolute top-6 right-6 z-10">
+          {/* Controls */}
+          <div className="absolute top-6 right-6 z-10 flex items-center gap-3">
+            {!isFullscreen && (
+              <Select value={currentPlayer} onValueChange={setCurrentPlayer}>
+                <SelectTrigger className="w-[140px] bg-black/70 border-white/20 text-white hover:bg-black/80">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent className="bg-black/90 border-white/20">
+                  {playerConfigs.map((config) => (
+                    <SelectItem key={config.id} value={config.id} className="text-white hover:bg-white/10">
+                      {config.name}
+                    </SelectItem>
+                  ))}
+                </SelectContent>
+              </Select>
+            )}
             <button
               onClick={handleClosePlayer}
               className="text-white hover:text-gray-300 transition-colors"
@@ -198,11 +236,11 @@ const EpisodeDetail: React.FC = () => {
 
           {/* Player iframe */}
           <EmbeddedFrame
-            src={getPlayerUrl("vidify", { 
-              tmdbId: id!, 
-              mediaType: "tv", 
-              seasonNumber: parseInt(seasonNumber!), 
-              episodeNumber: parseInt(episodeNumber!) 
+            src={getPlayerUrl(currentPlayer, {
+              tmdbId: id!,
+              mediaType: "tv",
+              seasonNumber: parseInt(seasonNumber!),
+              episodeNumber: parseInt(episodeNumber!)
             })}
             className="fixed top-0 left-0 w-full h-full border-0"
             title={`${show.name} - S${episode.season_number}E${episode.episode_number}`}

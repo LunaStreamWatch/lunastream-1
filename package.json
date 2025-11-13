@@ -29,6 +29,7 @@
     "@fastify/rate-limit": "^7.6.0",
     "@fastify/static": "^6.12.0",
     "@radix-ui/react-dialog": "^1.1.15",
+    "@radix-ui/react-select": "^2.2.6",
     "@radix-ui/react-slot": "^1.2.3",
     "@supabase/supabase-js": "^2.58.0",
     "@types/node-fetch": "^2.6.13",
