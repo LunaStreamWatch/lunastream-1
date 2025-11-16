@@ -28,6 +28,7 @@ import { TooltipProvider } from '@/components/ui/tooltip';
 import { AuthProvider } from './contexts/AuthContext';
 import { PlayerProvider } from './contexts/PlayerContext';
 import AuthCallback from './components/AuthCallback';
+import AdNotificationPopup from './components/AdNotificationPopup';
 import { watchStatsService } from './services/watchStats';
 
 function App() {
@@ -57,8 +58,9 @@ function App() {
           <LanguageProvider>
             <AnimationProvider>
               <Router>
-          {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
-          <ScrollToTopButton />
+              {showIntro && <IntroAnimation onComplete={handleIntroComplete} />}
+              <AdNotificationPopup />
+              <ScrollToTopButton />
           <Routes>
             <Route path="/" element={<HomePageWrapper />} />
             <Route path="/auth/callback" element={<AuthCallback />} />
