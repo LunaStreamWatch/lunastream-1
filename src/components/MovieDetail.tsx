@@ -269,7 +269,6 @@ const MovieDetail: React.FC = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-black/90 border-white/20">
-                <SelectItem value="vidzy" className="text-white hover:bg-white/10">Vidzy</SelectItem>
                 <SelectItem value="vidify" className="text-white hover:bg-white/10">Vidify</SelectItem>
                 <SelectItem value="videasy" className="text-white hover:bg-white/10">Videasy (Ads)</SelectItem>
                 <SelectItem value="vidfast" className="text-white hover:bg-white/10">VidFast (Ads)</SelectItem>

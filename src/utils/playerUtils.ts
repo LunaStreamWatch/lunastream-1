@@ -13,19 +13,6 @@ export interface PlayerConfig {
 
 export const playerConfigs: PlayerConfig[] = [
   {
-    id: "vidzy",
-    name: "Vidzy",
-    generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
-      if (mediaType === "movie" && tmdbId) {
-        return `https://vidzy.luna.tattoo/embed/movie/${tmdbId}`;
-      } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
-        return `https://vidzy.luna.tattoo/embed/tv/${tmdbId}/${seasonNumber}/${episodeNumber}`;
-      }
-
-      throw new Error(`Invalid parameters for ${mediaType}`);
-    },
-  },
-  {
     id: "vidify",
     name: "Vidify",
     generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
