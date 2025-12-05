@@ -103,7 +103,7 @@ export default function AdNotificationPopup() {
             onClick={handleClose}
             className="border-gray-700 hover:bg-gray-900 text-white"
           >
-            Close
+            OK
           </Button>
           <Button
             onClick={handleDontShowAgain}
