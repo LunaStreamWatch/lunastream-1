@@ -17,9 +17,9 @@ export const PlayerProvider: React.FC<PlayerProviderProps> = ({ children }) => {
   const [currentPlayer, setCurrentPlayerState] = useState<PlayerId>(() => {
     try {
       const stored = localStorage.getItem('player');
-      return (stored as PlayerId) || 'vidzy';
+      return (stored as PlayerId) || 'videasy';
     } catch {
-      return 'vidzy';
+      return 'videasy';
     }
   });
 

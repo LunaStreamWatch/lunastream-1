@@ -146,7 +146,7 @@ export const SettingsMenu: React.FC = () => {
     setAccent("default");
     setFont("Inter");
     setCustomHex("#ec4899");
-    setCurrentPlayer("vidzy");
+    setCurrentPlayer("videasy");
     setLanguage("en");
     const newAnimationSettings = { enableWelcomeAnimation: false };
     setAnimationSettings(newAnimationSettings);

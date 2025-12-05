@@ -11,9 +11,9 @@ import { playerConfigs, getPlayerUrl } from '../utils/playerUtils';
 // Helper to get stored player preference
 const getStoredPlayer = () => {
   try {
-    return localStorage.getItem("player") || "vidzy";
+    return localStorage.getItem("player") || "videasy";
   } catch {
-    return "vidzy";
+    return "videasy";
   }
 };
 import EmbeddedFrame from './player/EmbeddedFrame';
