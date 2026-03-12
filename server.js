@@ -19,8 +19,9 @@ const __dirname = dirname(__filename);
 dotenv.config();
 
 // Environment variables with defaults
-const PORT = process.env.PORT || 3000;
-const HOST = process.env.HOST || '0.0.0.0';
+const DOMAIN = 'test.lunastream.gay';
+const PORT = 443;
+const HOST = '0.0.0.0';
 
 // Create your own pino logger
 const logger = pino({
