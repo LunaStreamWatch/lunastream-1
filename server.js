@@ -15,35 +15,6 @@ import { v4 as uuidv4 } from 'uuid';
 import dotenv from 'dotenv';
 
 import fetch from 'node-fetch';
-
-const OPEN_SUBTITLES_API_URL = "https://api.opensubtitles.com/api/v1/subtitles";
-const OPEN_SUBTITLES_API_KEY = process.env.OPEN_SUBTITLES_API_KEY || "ubzr1nyb4zG6xeYx3RorbzXaHXm1k4El";
-
-async function fetchSubtitles(tmdbId, type = "movie") {
-  try {
-    const res = await fetch(`${OPEN_SUBTITLES_API_URL}?tmdb_id=${tmdbId}&type=${type}`, {
-      headers: {
-        "Api-Key": OPEN_SUBTITLES_API_KEY,
-        "Content-Type": "application/json",
-      },
-    });
-
-    if (!res.ok) throw new Error(`Failed to fetch subtitles: ${res.status} ${res.statusText}`);
-
-    const data = await res.json();
-
-    return (data.data || []).map(sub => ({
-      id: sub.id,
-      language: sub.attributes.language,
-      release: sub.attributes.release,
-      url: sub.attributes.url, // direct link
-      lines: [] // optional: can parse subtitle file if needed
-    }));
-  } catch (err) {
-    console.error(`Failed to fetch subtitles from OpenSubtitles: ${err}`);
-    return [];
-  }
-}
 // Setup __dirname for ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -267,34 +238,6 @@ async function registerRoutes() {
       return reply.code(500).send({ error: 'Failed to fetch unique visitor count' });
     }
   });
-
-  fastify.get('/api/subtitles/movie/:tmdbId', async (request, reply) => {
-    const tmdbId = request.params.tmdbId;
-
-    if (!tmdbId || isNaN(Number(tmdbId))) {
-      return reply.code(400).send({ error: 'Invalid TMDB ID' });
-    }
-
-    const subtitles = await fetchSubtitles(Number(tmdbId), 'movie');
-    return reply.send(subtitles);
-  });
-
-  fastify.get('/api/subtitles/tv/:tmdbId/season/:season/episode/:episode', async (request, reply) => {
-    const { tmdbId, season, episode } = request.params;
-
-    if (!tmdbId || isNaN(Number(tmdbId)) || !season || isNaN(Number(season)) || !episode || isNaN(Number(episode))) {
-      return reply.code(400).send({ error: 'Invalid parameters. Expect tmdbId, season, and episode numbers.' });
-    }
-
-    try {
-      // Call OpenSubtitles API with type=tv and pass season/episode
-      const subtitles = await fetchSubtitles(Number(tmdbId), 'tv', Number(season), Number(episode));
-      return reply.send(subtitles);
-    } catch (err) {
-      return reply.code(500).send({ error: 'Failed to fetch subtitles', details: err.message });
-    }
-  });
-
 
   fastify.post('/api/admin/login', {
     config: {
