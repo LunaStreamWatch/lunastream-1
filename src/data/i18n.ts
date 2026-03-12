@@ -106,7 +106,7 @@ export const translations = {
     vault_breakdown: ' Breakdown',
 
     // Home Page
-    home_heading_title: 'Penis',
+    home_heading_title: 'Discover & Stream',
     home_heading_subtitle: 'Your favorite movies and TV shows, all in one place',
     home_trending_loading: 'Loading trending content...',
     home_trending_fetch_error: 'Failed to fetch trending content',
