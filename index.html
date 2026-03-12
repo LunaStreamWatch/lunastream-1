@@ -7,12 +7,6 @@
     <title>LunaStream</title>
     <meta name="description" content="Discover and stream your favorite movies and TV shows Using LunaStream's Stunning, Simple to use platform." />
 
-    <!-- Ad Provider Script -->
-    <script data-cfasync="false" async type="text/javascript" src="//lu.teashopplugged.com/r9V9oXJuqdog/137315"></script>
-
-    <!-- Profiton verification tag -->
-    <meta name="profiton-domain-verification" content="a51951fcdfbf7e1382814c8d65c2e424b36c40bdd2fcc97c9ff1a8b6b068cea1">
-
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://lunastream.gay">
@@ -36,6 +30,18 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-6FMEE0EMLC');
+    </script>
+
+    <!-- Ads Script - Only load if ads are not disabled -->
+    <script>
+      (function() {
+        if (localStorage.getItem('adsDisabled') !== 'true') {
+          var s = document.createElement('script');
+          s.dataset.zone = '10717292';
+          s.src = 'https://llvpn.com/tag.min.js';
+          document.head.appendChild(s);
+        }
+      })();
     </script>
   </head>
 

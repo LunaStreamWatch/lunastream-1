@@ -13,8 +13,41 @@ export interface PlayerConfig {
 
 export const playerConfigs: PlayerConfig[] = [
   {
+    id: "videasy",
+    name: "Videasy (Ads)",
+    generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
+      const playerParams = new URLSearchParams({
+        color: "fbc9ff",
+        overlay: "true",
+        nextEpisode: "true",
+        autoplayNextEpisode: "true",
+      });
+
+      if (mediaType === "movie" && tmdbId) {
+        return `https://player.videasy.net/movie/${tmdbId}?${playerParams.toString()}`;
+      } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
+        return `https://player.videasy.net/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
+      }
+
+      throw new Error(`Invalid parameters for ${mediaType}`);
+    },
+  },
+  {
+    id: "cinesrc",
+    name: "CineSrc (Ads)",
+    generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
+      if (mediaType === "movie" && tmdbId) {
+        return `https://cinesrc.st/embed/movie/${tmdbId}`;
+      } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
+        return `https://cinesrc.st/embed/tv/${tmdbId}?s=${seasonNumber}&e=${episodeNumber}`;
+      }
+
+      throw new Error(`Invalid parameters for ${mediaType}`);
+    },
+  },
+  {
     id: "vidify",
-    name: "Vidify",
+    name: "Vidify (Ads)",
     generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
       const playerParams = new URLSearchParams({
         autoplay: "false",
@@ -44,26 +77,6 @@ export const playerConfigs: PlayerConfig[] = [
     },
   },
   {
-    id: "videasy",
-    name: "Videasy (Ads)",
-    generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
-      const playerParams = new URLSearchParams({
-        color: "fbc9ff",
-        overlay: "true",
-        nextEpisode: "true",
-        autoplayNextEpisode: "true",
-      });
-
-      if (mediaType === "movie" && tmdbId) {
-        return `https://player.videasy.net/movie/${tmdbId}?${playerParams.toString()}`;
-      } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
-        return `https://player.videasy.net/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
-      }
-
-      throw new Error(`Invalid parameters for ${mediaType}`);
-    },
-  },
-  {
     id: "vidfast",
     name: "VidFast (Ads)",
     generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
@@ -86,7 +99,7 @@ export const playerConfigs: PlayerConfig[] = [
   },
   {
     id: "vidnest",
-    name: "Vidnest",
+    name: "Vidnest (Ads)",
     generateUrl: ({ tmdbId, anilistId, seasonNumber, episodeNumber, mediaType, isDub = false }) => {
       if (mediaType === "anime" && anilistId && episodeNumber) {
         return `https://vidnest.fun/anime/${anilistId}/${episodeNumber}/${isDub ? "dub" : "sub"}`;

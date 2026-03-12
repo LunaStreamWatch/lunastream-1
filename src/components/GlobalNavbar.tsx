@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Link, useLocation } from "react-router-dom";
 import {
   Film,
@@ -16,11 +16,50 @@ import { SettingsMenu } from "./SettingsMenu";
 import { AccountMenu } from "./AccountMenu";
 import { useLanguage } from "./LanguageContext";
 
+// Simple toggle component without radix-ui dependency
+const AdsToggle: React.FC<{ checked: boolean; onChange: (checked: boolean) => void }> = ({ checked, onChange }) => {
+  return (
+    <button
+      type="button"
+      onClick={() => onChange(!checked)}
+      className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors focus:outline-none focus:ring-2 focus:ring-pink-500 focus:ring-offset-2 ${
+        checked ? "bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)]" : "bg-gray-400 dark:bg-gray-600"
+      }`}
+      role="switch"
+      aria-checked={checked}
+    >
+      <span
+        className={`inline-block h-4 w-4 transform rounded-full bg-white transition-transform ${
+          checked ? "translate-x-6" : "translate-x-1"
+        }`}
+      />
+    </button>
+  );
+};
+
 const GlobalNavbar: React.FC = () => {
   const location = useLocation();
   const { language } = useLanguage();
   const t = translations[language] || translations.en;
   const [menuOpen, setMenuOpen] = useState(false);
+  const [adsDisabled, setAdsDisabled] = useState<boolean>(() => {
+    if (typeof window !== "undefined") {
+      return localStorage.getItem("adsDisabled") === "true";
+    }
+    return false;
+  });
+  const isInitialMount = React.useRef(true);
+
+  useEffect(() => {
+    // Skip reload on initial mount
+    if (isInitialMount.current) {
+      isInitialMount.current = false;
+      return;
+    }
+    localStorage.setItem("adsDisabled", String(adsDisabled));
+    // Reload page to apply ads setting
+    window.location.reload();
+  }, [adsDisabled]);
 
   const isActive = (path: string) =>
     path === "/" ? location.pathname === "/" : location.pathname.startsWith(path);
@@ -72,6 +111,17 @@ const GlobalNavbar: React.FC = () => {
 
             {/* Right side: Donate + Account + Settings (Desktop only) */}
             <div className="hidden md:flex items-center ml-auto space-x-3 z-10">
+              {/* Ads Toggle */}
+              <div className="flex items-center space-x-2" title={adsDisabled ? "Enable Ads" : "Disable Ads"}>
+                <span className={`text-sm font-medium ${adsDisabled ? "text-gray-400" : "bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] bg-clip-text text-transparent"}`}>
+                  Ads
+                </span>
+                <AdsToggle
+                  checked={!adsDisabled}
+                  onChange={(checked: boolean) => setAdsDisabled(!checked)}
+                />
+              </div>
+
               <Link
                 to="/donate"
                 className="p-2 rounded-lg text-pink-500 hover:text-pink-600 transition flex items-center"
@@ -143,6 +193,17 @@ const GlobalNavbar: React.FC = () => {
 
             {/* Mobile Bottom: Donate + Account + Settings */}
             <div className="mt-auto flex items-center justify-start space-x-3">
+              {/* Ads Toggle */}
+              <div className="flex items-center space-x-2" title={adsDisabled ? "Enable Ads" : "Disable Ads"}>
+                <span className={`text-sm font-medium ${adsDisabled ? "text-gray-400" : "bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] bg-clip-text text-transparent"}`}>
+                  Ads
+                </span>
+                <AdsToggle
+                  checked={!adsDisabled}
+                  onChange={(checked: boolean) => setAdsDisabled(!checked)}
+                />
+              </div>
+
               <Link
                 to="/donate"
                 onClick={() => setMenuOpen(false)}
