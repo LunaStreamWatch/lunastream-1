@@ -5,7 +5,6 @@ import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
 import cors from '@fastify/cors';
-import jwt from '@fastify/jwt';
 import fastifyStatic from '@fastify/static';
 import cookie from '@fastify/cookie';
 import rateLimit from '@fastify/rate-limit';
@@ -14,7 +13,6 @@ import { v4 as uuidv4 } from 'uuid';
 
 import dotenv from 'dotenv';
 
-import fetch from 'node-fetch';
 // Setup __dirname for ESM
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
@@ -23,9 +21,6 @@ dotenv.config();
 // Environment variables with defaults
 const PORT = process.env.PORT || 3000;
 const HOST = process.env.HOST || '0.0.0.0';
-const ADMIN_USERNAME = process.env.ADMIN_USERNAME || 'admin';
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'password';
-const JWT_SECRET = process.env.JWT_SECRET || 'your-super-secret-jwt-key-change-this-in-production';
 
 // Create your own pino logger
 const logger = pino({
@@ -54,10 +49,6 @@ async function registerPlugins() {
   await fastify.register(cors, {
     origin: true,
     credentials: true
-  });
-
-  await fastify.register(jwt, {
-    secret: JWT_SECRET
   });
 
   await fastify.register(fastifyStatic, {
@@ -109,15 +100,6 @@ fastify.addHook('onResponse', async (request, reply) => {
     responseTime: `${responseTime}ms`,
     ip: request.ip,
   }, 'Request completed');
-});
-
-// Authentication decorator
-fastify.decorate('authenticate', async function(request, reply) {
-  try {
-    await request.jwtVerify();
-  } catch (err) {
-    reply.code(401).send({ error: 'Unauthorized' });
-  }
 });
 
 // File-based persistent storage paths
@@ -239,83 +221,6 @@ async function registerRoutes() {
     }
   });
 
-  fastify.post('/api/admin/login', {
-    config: {
-      rateLimit: {
-        max: 5,
-        timeWindow: '1 minute'
-      }
-    },
-    preValidation: (request, reply, done) => {
-      const { username, password } = request.body || {};
-      if (!username || !password || username.length > 50 || password.length > 50) {
-        return reply.code(400).send({ error: 'Invalid request format' });
-      }
-      done();
-    }
-  }, async (request, reply) => {
-    const { username, password } = request.body;
-
-    if (username === ADMIN_USERNAME && password === ADMIN_PASSWORD) {
-      const token = fastify.jwt.sign(
-        { 
-          username,
-          role: 'admin',
-          loginTime: new Date().toISOString()
-        },
-        { expiresIn: '24h' }
-      );
-
-      reply.setCookie('admin_token', token, {
-        httpOnly: true,
-        secure: process.env.NODE_ENV === 'production',
-        sameSite: 'strict',
-        maxAge: 24 * 60 * 60 * 1000
-      });
-
-      return { 
-        success: true, 
-        message: 'Login successful',
-        token,
-        expiresIn: '24h'
-      };
-    } else {
-      reply.code(401);
-      return { 
-        success: false, 
-        message: 'Invalid credentials' 
-      };
-    }
-  });
-
-  fastify.post('/api/admin/logout', async (request, reply) => {
-    reply.clearCookie('admin_token');
-    return { success: true, message: 'Logged out successfully' };
-  });
-
-  fastify.get('/api/admin/verify', { preHandler: [fastify.authenticate] }, async (request) => {
-    return { 
-      success: true, 
-      user: {
-        username: request.user.username,
-        role: request.user.role,
-        loginTime: request.user.loginTime
-      }
-    };
-  });
-
-  fastify.get('/api/admin/data', { preHandler: [fastify.authenticate] }, async () => {
-    return {
-      success: true,
-      data: {
-        totalUsers: Math.floor(Math.random() * 10000) + 1000,
-        activeStreams: Math.floor(Math.random() * 100) + 10,
-        serverUptime: process.uptime(),
-        lastUpdated: new Date().toISOString()
-      }
-    };
-  });
-
   // SPA catch-all handler
   fastify.setNotFoundHandler(async (request, reply) => {
     const indexPath = path.join(__dirname, 'dist', 'index.html');
@@ -412,9 +317,6 @@ const start = async () => {
     });
 
     logger.info(`🚀 LunaStream server running on http://${HOST}:${PORT}`);
-    logger.info(`📊 Admin panel available at http://${HOST}:${PORT}/admin`);
-    logger.info(`🔐 Admin credentials: ${ADMIN_USERNAME} / ${ADMIN_PASSWORD}`);
-    
   } catch (err) {
     logger.error(err);
     process.exit(1);
