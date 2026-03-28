@@ -20,7 +20,7 @@ dotenv.config();
 
 // Environment variables with defaults
 const DOMAIN = 'test.lunastream.gay';
-const PORT = 443;
+const PORT = 3000;
 const HOST = '0.0.0.0';
 
 // Create your own pino logger
@@ -112,7 +112,7 @@ if (!fs.existsSync(DATA_DIR)) {
   fs.mkdirSync(DATA_DIR, { recursive: true });
 }
 
-function loadJSON(filePath, defaultValue = []) {
+function loadJSON(filePath, defaultValue = {}) {
   try {
     if (fs.existsSync(filePath)) {
       const data = fs.readFileSync(filePath, 'utf8');
@@ -132,9 +132,14 @@ function saveJSON(filePath, data) {
   }
 }
 
-const watchStats = loadJSON(WATCH_STATS_FILE, { total: 0, entries: [] });
-const uniqueVisitors = loadJSON(UNIQUE_VISITORS_FILE, { total: 0, ips: new Set() });
-uniqueVisitors.ips = new Set(uniqueVisitors.ips || []);
+// Initialize watch stats
+let watchStats = loadJSON(WATCH_STATS_FILE, { total: 0 });
+watchStats.total = watchStats.total || 0;
+
+// Initialize unique visitors - load IPs as array and convert to Set
+let uniqueVisitorData = loadJSON(UNIQUE_VISITORS_FILE, { total: 0, ips: [] });
+let uniqueVisitors = new Set(uniqueVisitorData.ips || []);
+let uniqueTotal = uniqueVisitorData.total || 0;
 
 // API Routes
 async function registerRoutes() {
@@ -146,22 +151,9 @@ async function registerRoutes() {
   fastify.post('/api/watch-stats', async (request, reply) => {
     try {
       watchStats.total = (watchStats.total || 0) + 1;
-      const timestamp = new Date().toISOString();
-
-      const statEntry = {
-        created_at: timestamp,
-        id: uuidv4()
-      };
-
-      if (!watchStats.entries) {
-        watchStats.entries = [];
-      }
-
-      watchStats.entries.push(statEntry);
-
+      
       saveJSON(WATCH_STATS_FILE, {
-        total: watchStats.total,
-        entries: watchStats.entries.slice(-1000)
+        total: watchStats.total
       });
 
       return reply.send({ success: true, total: watchStats.total });
@@ -173,9 +165,11 @@ async function registerRoutes() {
 
   fastify.get('/api/watch-stats', async (request, reply) => {
     try {
+      // Reload from file to get latest count
+      const data = loadJSON(WATCH_STATS_FILE, { total: 0 });
       return reply.send({
         success: true,
-        total: watchStats.total || 0
+        total: data.total || 0
       });
     } catch (err) {
       logger.error('Error fetching watch stats:', err);
@@ -185,24 +179,31 @@ async function registerRoutes() {
 
   fastify.post('/api/unique', async (request, reply) => {
     try {
-      const clientIP = request.ip || request.headers['x-forwarded-for']?.split(',')[0]?.trim() || 'unknown';
-
-      const isNewVisitor = !uniqueVisitors.ips.has(clientIP);
+      // Get real IP - check x-forwarded-for header first (for proxies)
+      let clientIP = request.headers['x-forwarded-for']?.split(',')[0]?.trim() 
+        || request.ip 
+        || 'unknown';
+      
+      // Use just the IP without port for more consistent tracking
+      clientIP = clientIP.split(':').slice(0, -1).join(':');
+      
+      const isNewVisitor = !uniqueVisitors.has(clientIP);
 
       if (isNewVisitor) {
-        uniqueVisitors.ips.add(clientIP);
-        uniqueVisitors.total = (uniqueVisitors.total || 0) + 1;
+        uniqueVisitors.add(clientIP);
+        uniqueTotal += 1;
 
+        // Save to file
         saveJSON(UNIQUE_VISITORS_FILE, {
-          total: uniqueVisitors.total,
-          ips: Array.from(uniqueVisitors.ips)
+          total: uniqueTotal,
+          ips: Array.from(uniqueVisitors)
         });
       }
 
       return reply.send({
         success: true,
         new_visitor: isNewVisitor,
-        total: uniqueVisitors.total
+        total: uniqueTotal
       });
     } catch (err) {
       logger.error('Error recording unique visitor:', err);
@@ -212,9 +213,11 @@ async function registerRoutes() {
 
   fastify.get('/api/unique', async (request, reply) => {
     try {
+      // Reload from file to get latest count
+      const data = loadJSON(UNIQUE_VISITORS_FILE, { total: 0 });
       return reply.send({
         success: true,
-        total: uniqueVisitors.total || 0
+        total: data.total || 0
       });
     } catch (err) {
       logger.error('Error fetching unique visitor count:', err);

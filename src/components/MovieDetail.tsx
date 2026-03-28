@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
-import { Play, X, ChevronLeft } from "lucide-react"
+import { Play, X, ChevronLeft, Download, Film } from "lucide-react"
 import { tmdb } from "../services/tmdb"
 import { isBanned } from "../utils/banList"
 import { analytics } from "../services/analytics"
@@ -19,6 +19,7 @@ import HybridMovieHeader from "./HybridMovieHeader"
 import EmbeddedFrame from "./player/EmbeddedFrame"
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 import { usePlayer } from "../contexts/PlayerContext"
+import DownloadModal from "./DownloadModal"
 
 
 const MovieDetail: React.FC = () => {
@@ -36,6 +37,7 @@ const MovieDetail: React.FC = () => {
   const [trailerUrl, setTrailerUrl] = useState<string | null>(null)
   const [showTrailer, setShowTrailer] = useState(false)
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [showDownload, setShowDownload] = useState(false);
 
   const { language } = useLanguage()
   const { currentPlayer, setCurrentPlayer } = usePlayer();
@@ -317,34 +319,54 @@ const MovieDetail: React.FC = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-pink-100 via-purple-50 to-indigo-100 dark:from-gray-950 dark:via-gray-900 dark:to-gray-950">
       <GlobalNavbar />
+      <DownloadModal
+        isOpen={showDownload}
+        onClose={() => setShowDownload(false)}
+        tmdbId={id || ""}
+        mediaType="movie"
+      />
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div className="p-4 sm:p-8 flex-1 mobile-spacing">
           <div className="space-y-6">
             <Link to={`/`} className="text-pink-600 dark:text-pink-400 hover:underline ml-1">
               <ChevronLeft />
             </Link>
-            <HybridMovieHeader
-              show={movie}
-              isFavorited={isFavorited}
-              onToggleFavorite={toggleFavorite}
-            />
-            <button
-              onClick={handleWatchMovie}
-              className="w-full flex justify-center items-center space-x-2 bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] hover:opacity-95 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
-            >
-              <Play className="w-5 h-5" />
-              <span>{t.action_watch_movie || "Watch Movie"}</span>
-            </button>
-
-            {trailerUrl && (
+            <div className="relative">
+              <HybridMovieHeader
+                show={movie}
+                isFavorited={isFavorited}
+                onToggleFavorite={toggleFavorite}
+              />
+            </div>
+            {/* Action buttons row */}
+            <div className="flex flex-col sm:flex-row gap-3">
               <button
-                onClick={() => setShowTrailer(true)}
-                className="w-full flex justify-center items-center space-x-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-95 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
+                onClick={handleWatchMovie}
+                className="flex-1 flex justify-center items-center space-x-2 bg-gradient-to-r from-[var(--grad-from)] to-[var(--grad-to)] hover:opacity-95 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
               >
                 <Play className="w-5 h-5" />
-                <span>{t.action_watch_trailer || "Watch Trailer"}</span>
+                <span>{t.action_watch_movie || "Watch Movie"}</span>
               </button>
-            )}
+
+              {trailerUrl && (
+                <button
+                  onClick={() => setShowTrailer(true)}
+                  className="flex-1 flex justify-center items-center space-x-2 bg-gradient-to-r from-indigo-500 to-purple-600 hover:opacity-95 text-white px-6 py-4 rounded-xl font-semibold transition-all duration-200 shadow-lg hover:shadow-xl"
+                >
+                  <Film className="w-5 h-5" />
+                  <span>{t.action_watch_trailer || "Trailer"}</span>
+                </button>
+              )}
+
+              <button
+                onClick={() => setShowDownload(true)}
+                className="flex-1 sm:flex-none flex justify-center items-center space-x-2 bg-white/10 dark:bg-gray-800/50 hover:bg-white/20 dark:hover:bg-gray-700/50 border border-gray-300 dark:border-gray-600 text-gray-700 dark:text-gray-200 px-6 py-4 rounded-xl font-semibold transition-all duration-200"
+                title="Download"
+              >
+                <Download className="w-5 h-5" />
+                <span>Download</span>
+              </button>
+            </div>
 
             
             {/* Comments Section removed */}

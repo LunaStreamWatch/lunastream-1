@@ -15,6 +15,7 @@ const ContinueWatching: React.FC = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [currentItem, setCurrentItem] = useState<ContinueWatchingItem | null>(null);
   const [isFullscreen, setIsFullscreen] = useState(false);
+  const [error, setError] = useState<string | null>(null);
   const { language } = useLanguage();
   const { currentPlayer, setCurrentPlayer } = usePlayer();
   const t = translations[language] || translations.en;
@@ -36,8 +37,15 @@ const ContinueWatching: React.FC = () => {
 
 
   const loadItems = async () => {
-    const continueItems = await continueWatchingService.getContinueWatchingItems();
-    setItems(continueItems);
+    try {
+      const continueItems = await continueWatchingService.getContinueWatchingItems();
+      setItems(continueItems);
+      setError(null);
+    } catch (err) {
+      console.error('Error loading continue watching:', err);
+      setError('Failed to load continue watching');
+      setItems([]);
+    }
   };
 
   const handleContinueWatching = (item: ContinueWatchingItem) => {
@@ -62,28 +70,33 @@ const ContinueWatching: React.FC = () => {
   };
 
   const getPlayerUrlForItem = (item: ContinueWatchingItem): string => {
-    if (item.type === 'movie' && item.tmdbId) {
-      return getPlayerUrl(currentPlayer, {
-        tmdbId: item.tmdbId.toString(),
-        mediaType: 'movie'
-      });
-    } else if (item.type === 'tv' && item.tmdbId && item.season && item.episode) {
-      return getPlayerUrl(currentPlayer, {
-        tmdbId: item.tmdbId.toString(),
-        mediaType: 'tv',
-        seasonNumber: item.season,
-        episodeNumber: item.episode
-      });
-    } else if (item.type === 'anime' && item.anilistId && item.episode) {
-      // For anime, fallback to vidify since vidnest is not available
-      return getPlayerUrl('vidify', {
-        anilistId: item.anilistId.toString(),
-        mediaType: 'anime',
-        episodeNumber: item.episode,
-        isDub: item.isDub || false
-      });
+    try {
+      if (item.type === 'movie' && item.tmdbId) {
+        return getPlayerUrl(currentPlayer, {
+          tmdbId: item.tmdbId.toString(),
+          mediaType: 'movie'
+        });
+      } else if (item.type === 'tv' && item.tmdbId && item.season && item.episode) {
+        return getPlayerUrl(currentPlayer, {
+          tmdbId: item.tmdbId.toString(),
+          mediaType: 'tv',
+          seasonNumber: item.season,
+          episodeNumber: item.episode
+        });
+      } else if (item.type === 'anime' && item.anilistId && item.episode) {
+        // For anime, fallback to vidify since vidnest is not available
+        return getPlayerUrl('vidify', {
+          anilistId: item.anilistId.toString(),
+          mediaType: 'anime',
+          episodeNumber: item.episode,
+          isDub: item.isDub || false
+        });
+      }
+      throw new Error('Invalid continue watching item');
+    } catch (err) {
+      console.error('Error generating player URL:', err);
+      return '';
     }
-    throw new Error('Invalid continue watching item');
   };
 
   const formatProgress = (progress?: number): string => {

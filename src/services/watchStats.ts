@@ -6,9 +6,7 @@ class WatchStatsService {
     try {
       await fetch(this.watchStatsUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        body: JSON.stringify({}),
       });
     } catch (err) {
       console.error('Error recording watch:', err);
@@ -36,9 +34,7 @@ class WatchStatsService {
     try {
       const response = await fetch(this.uniqueVisitorUrl, {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        body: JSON.stringify({}),
       });
 
       if (!response.ok) {

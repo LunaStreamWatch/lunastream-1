@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect } from "react"
 import { useParams, Link } from "react-router-dom"
-import { Play, Star, Calendar, Clock, Film, X, Heart, Eye, EyeOff, ChevronDown, Tv, Info, List, Grid2x2 as Grid, ChevronLeft } from "lucide-react"
+import { Play, Star, Calendar, Clock, Film, X, Heart, Eye, EyeOff, ChevronDown, Tv, Info, List, Grid2x2 as Grid, ChevronLeft, Download } from "lucide-react"
 import { tmdb } from "../services/tmdb"
 import { analytics } from "../services/analytics"
 import type { TVDetails, Episode } from "../types"
@@ -11,12 +11,14 @@ import { continueWatchingService } from "../services/continueWatching"
 import { watchStatsService } from "../services/watchStats"
 import GlobalNavbar from "./GlobalNavbar"
 import { playerConfigs, getPlayerUrl } from "../utils/playerUtils"
+import { usePlayer } from "../contexts/PlayerContext"
 import { useLanguage } from "./LanguageContext"
 import { translations } from "../data/i18n"
 import Loading from "./Loading"
 import { useIsMobile } from "../hooks/useIsMobile"
 import HybridTVHeader from "./HybridTVHeader"
 import EmbeddedFrame from "./player/EmbeddedFrame"
+import DownloadModal from "./DownloadModal"
 
 
 const TVDetail: React.FC = () => {
@@ -40,9 +42,12 @@ const TVDetail: React.FC = () => {
   const [seasonTrailerKey, setSeasonTrailerKey] = useState<string | null>(null)
   const [isTrailerOpen, setIsTrailerOpen] = useState(false)
   const [activeTrailerType, setActiveTrailerType] = useState<"show" | "season" | null>(null)
+  const [showDownload, setShowDownload] = useState(false)
+  const [downloadEpisode, setDownloadEpisode] = useState<{ season: number; episode: number } | null>(null)
   const { language } = useLanguage()
 
   const isMobile = useIsMobile()
+  const { currentPlayer } = usePlayer()
 
   const t = translations[language];
 
@@ -364,7 +369,7 @@ const TVDetail: React.FC = () => {
 
         {/* Player iframe */}
         <EmbeddedFrame
-          src={getPlayerUrl(localStorage.getItem("player") || "vidify", {
+          src={getPlayerUrl(currentPlayer || "videasy", {
             tmdbId: id!,
             mediaType: "tv",
             seasonNumber: currentEpisode.season_number,
@@ -537,6 +542,16 @@ const TVDetail: React.FC = () => {
                           >
                             <Grid className="w-5 h-5" />
                           </Link>
+                          <button
+                            onClick={() => {
+                              setDownloadEpisode({ season: episode.season_number, episode: episode.episode_number })
+                              setShowDownload(true)
+                            }}
+                            className="text-gray-500 dark:text-gray-400 hover:text-pink-600 dark:hover:text-pink-400 transition-colors p-1"
+                            title="Download"
+                          >
+                            <Download className="w-5 h-5" />
+                          </button>
                           {episode.overview && (
                             <button
                               onClick={() => toggleDescription(episode.id)}
@@ -595,6 +610,18 @@ const TVDetail: React.FC = () => {
           </div>
         </div>
       )}
+
+      <DownloadModal
+        isOpen={showDownload}
+        onClose={() => {
+          setShowDownload(false)
+          setDownloadEpisode(null)
+        }}
+        tmdbId={id || ""}
+        mediaType="tv"
+        seasonNumber={downloadEpisode?.season}
+        episodeNumber={downloadEpisode?.episode}
+      />
 
     </div>
   )
