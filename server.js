@@ -10,7 +10,6 @@ import cookie from '@fastify/cookie';
 import rateLimit from '@fastify/rate-limit';
 import pino from 'pino';
 import { v4 as uuidv4 } from 'uuid';
-
 import dotenv from 'dotenv';
 
 // Setup __dirname for ESM
@@ -18,12 +17,24 @@ const __filename = fileURLToPath(import.meta.url);
 const __dirname = dirname(__filename);
 dotenv.config();
 
-// Environment variables with defaults
-const DOMAIN = 'test.lunastream.gay';
-const PORT = 3000;
+/*
+PRODUCTION CONFIG (KEEPED FROM VPS)
+*/
+const DOMAIN = 'lunastream.gay';
+const PORT = 443;
 const HOST = '0.0.0.0';
 
-// Create your own pino logger
+/*
+HTTPS CERTIFICATE (KEEPED)
+*/
+const httpsOptions = {
+  key: fs.readFileSync('/root/certs/origin.key'),
+  cert: fs.readFileSync('/root/certs/origin.pem')
+};
+
+/*
+LOGGER
+*/
 const logger = pino({
   level: 'info',
   transport: {
@@ -32,20 +43,23 @@ const logger = pino({
   }
 });
 
+/*
+FASTIFY SERVER
+*/
 const fastify = Fastify({
-  logger: false, // Disable default Fastify logger
+  https: httpsOptions,
+  logger: false,
   trustProxy: true,
   bodyLimit: 10 * 1024,
   maxParamLength: 100,
-  // Removed keepAliveTimeout to avoid lingering sockets on shutdown
-  // keepAliveTimeout: 5,
   requestTimeout: 5000
 });
 
-// Decorate request to hold requestId
 fastify.decorateRequest('id', null);
 
-// Register plugins
+/*
+PLUGINS
+*/
 async function registerPlugins() {
   await fastify.register(cors, {
     origin: true,
@@ -63,7 +77,7 @@ async function registerPlugins() {
     max: 100,
     timeWindow: '1 minute',
     ban: 3,
-    allowList: (req, key) => req.ip === '127.0.0.1' || req.ip === '::1',
+    allowList: (req) => req.ip === '127.0.0.1' || req.ip === '::1',
     addHeaders: {
       'x-ratelimit-limit': true,
       'x-ratelimit-remaining': true,
@@ -72,7 +86,9 @@ async function registerPlugins() {
   });
 }
 
-// Assign unique ID and log request start
+/*
+REQUEST LOGGING (IMPROVED)
+*/
 fastify.addHook('onRequest', async (request, reply) => {
   const requestId = uuidv4();
   request.id = requestId;
@@ -89,7 +105,9 @@ fastify.addHook('onRequest', async (request, reply) => {
   }, 'Incoming request');
 });
 
-// Log response with status and response time
+/*
+RESPONSE LOGGING
+*/
 fastify.addHook('onResponse', async (request, reply) => {
   const responseTime = reply.getResponseTime().toFixed(2);
 
@@ -103,7 +121,9 @@ fastify.addHook('onResponse', async (request, reply) => {
   }, 'Request completed');
 });
 
-// File-based persistent storage paths
+/*
+DATA STORAGE
+*/
 const DATA_DIR = path.join(__dirname, 'data');
 const WATCH_STATS_FILE = path.join(DATA_DIR, 'watch-stats.json');
 const UNIQUE_VISITORS_FILE = path.join(DATA_DIR, 'unique-visitors.json');
@@ -132,68 +152,68 @@ function saveJSON(filePath, data) {
   }
 }
 
-// Initialize watch stats
+/*
+INITIAL DATA (IMPROVED)
+*/
 let watchStats = loadJSON(WATCH_STATS_FILE, { total: 0 });
 watchStats.total = watchStats.total || 0;
 
-// Initialize unique visitors - load IPs as array and convert to Set
 let uniqueVisitorData = loadJSON(UNIQUE_VISITORS_FILE, { total: 0, ips: [] });
 let uniqueVisitors = new Set(uniqueVisitorData.ips || []);
 let uniqueTotal = uniqueVisitorData.total || 0;
 
-// API Routes
+/*
+ROUTES
+*/
 async function registerRoutes() {
+
   fastify.get('/api/health', async () => {
     return { status: 'ok', timestamp: new Date().toISOString() };
   });
 
-  // Watch stats endpoints
+  /*
+  WATCH STATS (IMPROVED)
+  */
   fastify.post('/api/watch-stats', async (request, reply) => {
     try {
-      watchStats.total = (watchStats.total || 0) + 1;
-      
-      saveJSON(WATCH_STATS_FILE, {
-        total: watchStats.total
-      });
+      watchStats.total++;
+      saveJSON(WATCH_STATS_FILE, { total: watchStats.total });
 
       return reply.send({ success: true, total: watchStats.total });
     } catch (err) {
-      logger.error('Error recording watch stat:', err);
+      logger.error(err);
       return reply.code(500).send({ error: 'Failed to record watch stat' });
     }
   });
 
   fastify.get('/api/watch-stats', async (request, reply) => {
     try {
-      // Reload from file to get latest count
       const data = loadJSON(WATCH_STATS_FILE, { total: 0 });
-      return reply.send({
-        success: true,
-        total: data.total || 0
-      });
+      return reply.send({ success: true, total: data.total || 0 });
     } catch (err) {
-      logger.error('Error fetching watch stats:', err);
+      logger.error(err);
       return reply.code(500).send({ error: 'Failed to fetch watch stats' });
     }
   });
 
+  /*
+  UNIQUE VISITORS (IMPROVED IP HANDLING)
+  */
   fastify.post('/api/unique', async (request, reply) => {
     try {
-      // Get real IP - check x-forwarded-for header first (for proxies)
-      let clientIP = request.headers['x-forwarded-for']?.split(',')[0]?.trim() 
-        || request.ip 
+      let clientIP =
+        request.headers['x-forwarded-for']?.split(',')[0]?.trim()
+        || request.ip
         || 'unknown';
-      
-      // Use just the IP without port for more consistent tracking
+
       clientIP = clientIP.split(':').slice(0, -1).join(':');
-      
-      const isNewVisitor = !uniqueVisitors.has(clientIP);
 
-      if (isNewVisitor) {
+      const isNew = !uniqueVisitors.has(clientIP);
+
+      if (isNew) {
         uniqueVisitors.add(clientIP);
-        uniqueTotal += 1;
+        uniqueTotal++;
 
-        // Save to file
         saveJSON(UNIQUE_VISITORS_FILE, {
           total: uniqueTotal,
           ips: Array.from(uniqueVisitors)
@@ -202,30 +222,32 @@ async function registerRoutes() {
 
       return reply.send({
         success: true,
-        new_visitor: isNewVisitor,
+        new_visitor: isNew,
         total: uniqueTotal
       });
+
     } catch (err) {
-      logger.error('Error recording unique visitor:', err);
+      logger.error(err);
       return reply.code(500).send({ error: 'Failed to record unique visitor' });
     }
   });
 
   fastify.get('/api/unique', async (request, reply) => {
     try {
-      // Reload from file to get latest count
       const data = loadJSON(UNIQUE_VISITORS_FILE, { total: 0 });
       return reply.send({
         success: true,
         total: data.total || 0
       });
     } catch (err) {
-      logger.error('Error fetching unique visitor count:', err);
-      return reply.code(500).send({ error: 'Failed to fetch unique visitor count' });
+      logger.error(err);
+      return reply.code(500).send({ error: 'Failed to fetch unique count' });
     }
   });
 
-  // SPA catch-all handler
+  /*
+  SPA HANDLER
+  */
   fastify.setNotFoundHandler(async (request, reply) => {
     const indexPath = path.join(__dirname, 'dist', 'index.html');
 
@@ -234,93 +256,71 @@ async function registerRoutes() {
         const html = fs.readFileSync(indexPath, 'utf8');
         reply.type('text/html').send(html);
       } else {
-        reply.code(404).send({ error: 'Application not built. Run "npm run build" first.' });
+        reply.code(404).send({ error: 'Build missing. Run npm run build' });
       }
-    } catch (error) {
-      logger.error(error);
+    } catch (err) {
+      logger.error(err);
       reply.code(500).send({ error: 'Internal server error' });
     }
   });
 }
 
-// Error handler with requestId in logs
+/*
+ERROR HANDLER (IMPROVED)
+*/
 fastify.setErrorHandler((error, request, reply) => {
-  logger.error({
-    reqId: request?.id,
-    error: error,
-  });
+  logger.error({ reqId: request?.id, error });
 
   if (error.validation) {
     reply.code(400).send({
       error: 'Validation Error',
-      message: error.message,
-      details: error.validation
-    });
-  } else if (error.statusCode) {
-    reply.code(error.statusCode).send({
-      error: error.name || 'Error',
       message: error.message
     });
   } else {
     reply.code(500).send({
-      error: 'Internal Server Error',
-      message: 'Something went wrong'
+      error: 'Internal Server Error'
     });
   }
 });
 
-// Graceful shutdown with forceCloseConnections and timeout fallback
+/*
+GRACEFUL SHUTDOWN (IMPORTANT FOR PM2 RELOAD)
+*/
 const gracefulShutdown = async (signal) => {
-  logger.info(`Received ${signal}, shutting down gracefully`);
+  logger.info(`Received ${signal}, shutting down`);
 
-  const shutdownTimeout = setTimeout(() => {
-    logger.error('Force exiting process after timeout');
+  const timeout = setTimeout(() => {
     process.exit(1);
-  }, 10000); // 10 seconds max wait
+  }, 10000);
 
   try {
-    // Close Fastify with forceCloseConnections option if supported
-    if (fastify.close.length === 1) {
-      await fastify.close({ forceCloseConnections: true });
-    } else {
-      await fastify.close();
-    }
-
-    // Close underlying native server if open
-    if (fastify.server && fastify.server.listening) {
-      await new Promise((resolve, reject) => {
-        fastify.server.close((err) => (err ? reject(err) : resolve()));
-      });
-      logger.info('Underlying HTTP server closed');
-    }
-
-    clearTimeout(shutdownTimeout);
-    logger.info('Shutdown complete, exiting process');
+    await fastify.close();
+    clearTimeout(timeout);
     process.exit(0);
-
   } catch (err) {
-    logger.error('Error during shutdown:', err);
-    clearTimeout(shutdownTimeout);
+    logger.error(err);
     process.exit(1);
   }
 };
 
-// Bind signal handlers once, using process.once
 process.once('SIGTERM', () => gracefulShutdown('SIGTERM'));
 process.once('SIGINT', () => gracefulShutdown('SIGINT'));
 
-// Start server
+/*
+START
+*/
 const start = async () => {
   try {
     await registerPlugins();
     await registerRoutes();
 
-    await fastify.listen({ 
-      port: PORT, 
-      host: HOST 
+    await fastify.listen({
+      port: PORT,
+      host: HOST
     });
 
-    logger.info(`🚀 LunaStream server running on http://${HOST}:${PORT}`);
+    logger.info(`🚀 LunaStream running https://${DOMAIN}`);
+
   } catch (err) {
     logger.error(err);
     process.exit(1);
