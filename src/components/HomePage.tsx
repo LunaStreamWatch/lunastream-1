@@ -250,7 +250,7 @@ const HomePage: React.FC = () => {
                                   <div className="flex items-center space-x-1">
                                     <span className="text-yellow-500 text-xs">★</span>
                                     <span className="text-xs text-gray-600 dark:text-gray-300">
-                                      {item.vote_average.toFixed(1)}
+                                      {item.vote_average?.toFixed(1) || '–'}
                                     </span>
                                   </div>
                                   <span
@@ -352,7 +352,7 @@ const HomePage: React.FC = () => {
                         <span>{new Date(movie.release_date).getFullYear()}</span>
                         <div className="flex items-center">
                           <span className="text-yellow-500">★</span>
-                          <span className="ml-1">{movie.vote_average.toFixed(1)}</span>
+                          <span className="ml-1">{movie.vote_average?.toFixed(1) || '–'}</span>
                         </div>
                       </div>
                     </div>
@@ -389,7 +389,7 @@ const HomePage: React.FC = () => {
                         <span>{new Date(show.first_air_date).getFullYear()}</span>
                         <div className="flex items-center">
                           <span className="text-yellow-500">★</span>
-                          <span className="ml-1">{show.vote_average.toFixed(1)}</span>
+                          <span className="ml-1">{show.vote_average?.toFixed(1) || '–'}</span>
                         </div>
                       </div>
                     </div>

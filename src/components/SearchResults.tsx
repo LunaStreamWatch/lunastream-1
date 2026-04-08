@@ -360,7 +360,7 @@ const SearchResults: React.FC = () => {
                     </span>
                     <span className="flex items-center">
                       <Star className="w-3.5 h-3.5 mr-1 text-yellow-500" />
-                      {item.vote_average.toFixed(1)}
+                      {item.vote_average?.toFixed(1) || '–'}
                     </span>
                     <span className="flex items-center">
                       <Film className="w-3.5 h-3.5 mr-1" />

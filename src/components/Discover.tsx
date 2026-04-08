@@ -366,7 +366,7 @@ const Discover: React.FC = () => {
                       </h3>
                       <div className={`flex justify-between mt-1 text-gray-500 dark:text-gray-400 ${isMobile ? 'text-xs' : 'text-xs'}`}>
                         <span>{date ? new Date(date).getFullYear() : t.content_n_a}</span>
-                        <span>★ {item.vote_average.toFixed(1)}</span>
+                        <span>★ {item.vote_average?.toFixed(1) || '–'}</span>
                       </div>
                     </div>
                   </Link>
