@@ -21,24 +21,16 @@ dotenv.config();
 PRODUCTION CONFIG (KEEPED FROM VPS)
 */
 const DOMAIN = 'lunastream.gay';
-const PORT = process.env.PORT ? parseInt(process.env.PORT) : (process.env.NODE_ENV === 'production' ? 443 : 3000);
+const PORT = 443;
 const HOST = '0.0.0.0';
 
 /*
-HTTPS CERTIFICATE (KEEPED) - Only load if files exist
+HTTPS CERTIFICATE (KEEPED)
 */
-let httpsOptions = null;
-const keyPath = '/root/certs/origin.key';
-const certPath = '/root/certs/origin.pem';
-
-if (fs.existsSync(keyPath) && fs.existsSync(certPath)) {
-  httpsOptions = {
-    key: fs.readFileSync(keyPath),
-    cert: fs.readFileSync(certPath)
-  };
-} else {
-  console.log('⚠️  SSL certificates not found, running on HTTP (localhost mode)');
-}
+const httpsOptions = {
+  key: fs.readFileSync('/root/certs/origin.key'),
+  cert: fs.readFileSync('/root/certs/origin.pem')
+};
 
 /*
 LOGGER
@@ -327,7 +319,7 @@ const start = async () => {
       host: HOST
     });
 
-    logger.info(`🚀 LunaStream running ${httpsOptions ? 'https' : 'http'}://localhost:${PORT}`);
+    logger.info(`🚀 LunaStream running https://${DOMAIN}`);
 
   } catch (err) {
     logger.error(err);

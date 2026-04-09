@@ -11,7 +11,7 @@ import { watchlistService } from "../services/watchlist"
 import { continueWatchingService } from "../services/continueWatching"
 import { watchStatsService } from "../services/watchStats"
 import GlobalNavbar from "./GlobalNavbar"
-import { getPlayerUrl } from "../utils/playerUtils"
+import { getPlayerUrl, playerConfigs } from "../utils/playerUtils"
 import { useLanguage } from "./LanguageContext"
 import { translations } from "../data/i18n"
 import Loading from "./Loading"
@@ -271,10 +271,11 @@ const MovieDetail: React.FC = () => {
                 <SelectValue />
               </SelectTrigger>
               <SelectContent className="bg-black/90 border-white/20">
-                <SelectItem value="vidify" className="text-white hover:bg-white/10">Vidify</SelectItem>
-                <SelectItem value="videasy" className="text-white hover:bg-white/10">Videasy (Ads)</SelectItem>
-                <SelectItem value="vidfast" className="text-white hover:bg-white/10">VidFast (Ads)</SelectItem>
-                <SelectItem value="vidnest" className="text-white hover:bg-white/10">Vidnest</SelectItem>
+                {playerConfigs.map((config) => (
+                  <SelectItem key={config.id} value={config.id} className="text-white hover:bg-white/10">
+                    {config.name}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           )}
