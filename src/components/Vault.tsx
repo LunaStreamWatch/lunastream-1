@@ -317,7 +317,7 @@ const Vault: React.FC = () => {
                                 </div>
                                 <div className="flex items-center space-x-1">
                                   <Star className="w-3 h-3 text-yellow-500" />
-                                  <span>{data.vote_average.toFixed(1)}</span>
+                                  <span>{data.vote_average?.toFixed(1) || '–'}</span>
                                 </div>
                               </div>
                               

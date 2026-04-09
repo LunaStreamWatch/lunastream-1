@@ -168,7 +168,7 @@ const HybridTVHeader: React.FC<HybridTVHeaderProps> = ({
             <div className="flex items-center space-x-4 mb-4 text-sm">
               <div className="flex items-center bg-white/20 backdrop-blur-sm px-3 py-1 rounded-full">
                 <Star className="w-4 h-4 mr-1 text-yellow-400" />
-                <span className="text-white">{displayData.rating.toFixed(1)}</span>
+                <span className="text-white">{displayData.rating?.toFixed(1) || '–'}</span>
               </div>
               <div className="text-gray-300">{displayData.year}</div>
               <div className="text-gray-300">

@@ -275,7 +275,7 @@ const SeasonDetail: React.FC = () => {
                 {season.vote_average > 0 && (
                   <div className="flex items-center bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-3 py-1 rounded-full ml-4">
                     <Star className="w-4 h-4 mr-1" />
-                    <span className="text-sm font-semibold">{season.vote_average.toFixed(1)}</span>
+                    <span className="text-sm font-semibold">{season.vote_average?.toFixed(1)}</span>
                   </div>
                 )}
               </div>
@@ -391,7 +391,7 @@ const SeasonDetail: React.FC = () => {
                           {episode.vote_average > 0 && (
                             <div className="flex items-center bg-gradient-to-r from-yellow-400 to-orange-500 text-white px-2 py-1 rounded-full ml-auto">
                               <Star className="w-3 h-3 mr-1" />
-                              <span className="text-xs font-semibold">{episode.vote_average.toFixed(1)}</span>
+                              <span className="text-xs font-semibold">{episode.vote_average?.toFixed(1)}</span>
                             </div>
                           )}
                         </div>

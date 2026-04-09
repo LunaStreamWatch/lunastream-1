@@ -13,6 +13,26 @@ export interface PlayerConfig {
 
 export const playerConfigs: PlayerConfig[] = [
   {
+    id: "vidfun",
+    name: "Vidfun (No Ads)",
+    generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
+      const playerParams = new URLSearchParams({
+        color: "fbc9ff",
+        subtitle: "en",
+        cast: "false",
+        adverse: "false",
+      });
+
+      if (mediaType === "movie" && tmdbId) {
+        return `https://vidfun.pro/movie/${tmdbId}?${playerParams.toString()}`;
+      } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
+        return `https://vidfun.pro/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
+      }
+
+      throw new Error(`Invalid parameters for ${mediaType}`);
+    },
+  },
+  {
     id: "videasy",
     name: "Videasy (Ads)",
     generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
