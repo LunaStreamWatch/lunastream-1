@@ -11,9 +11,9 @@ import { playerConfigs, getPlayerUrl } from '../utils/playerUtils';
 // Helper to get stored player preference
 const getStoredPlayer = () => {
   try {
-    return localStorage.getItem("player") || "videasy";
+    return localStorage.getItem("player") || "vidfun";
   } catch {
-    return "videasy";
+    return "vidfun";
   }
 };
 import EmbeddedFrame from './player/EmbeddedFrame';
@@ -211,20 +211,18 @@ const EpisodeDetail: React.FC = () => {
         <div className="fixed inset-0 bg-black z-50">
           {/* Controls */}
           <div className="absolute top-6 right-6 z-10 flex items-center gap-3">
-            {!isFullscreen && (
-              <Select value={currentPlayer} onValueChange={setCurrentPlayer}>
-                <SelectTrigger className="w-[140px] bg-black/70 border-white/20 text-white hover:bg-black/80">
-                  <SelectValue />
-                </SelectTrigger>
-                <SelectContent className="bg-black/90 border-white/20">
-                  {playerConfigs.map((config) => (
-                    <SelectItem key={config.id} value={config.id} className="text-white hover:bg-white/10">
-                      {config.name}
-                    </SelectItem>
-                  ))}
-                </SelectContent>
-              </Select>
-            )}
+            <Select value={currentPlayer} onValueChange={setCurrentPlayer}>
+              <SelectTrigger className="w-[180px] bg-black/70 border-white/20 text-white hover:bg-black/80">
+                <SelectValue />
+              </SelectTrigger>
+              <SelectContent className="bg-black/90 border-white/20">
+                {playerConfigs.map((config) => (
+                  <SelectItem key={config.id} value={config.id} className="text-white hover:bg-white/10">
+                    {config.name}
+                  </SelectItem>
+                ))}
+              </SelectContent>
+            </Select>
             <button
               onClick={handleClosePlayer}
               className="text-white hover:text-gray-300 transition-colors"

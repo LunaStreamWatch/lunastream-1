@@ -21,6 +21,7 @@ export const playerConfigs: PlayerConfig[] = [
         subtitle: "en",
         cast: "false",
         adverse: "false",
+        pauseOverlay: "true",
       });
 
       if (mediaType === "movie" && tmdbId) {

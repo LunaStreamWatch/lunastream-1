@@ -12,6 +12,8 @@ import { useLanguage } from './LanguageContext';
 import { translations } from '../data/i18n';
 import Loading from './Loading';
 import { useIsMobile } from '../hooks/useIsMobile';
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from './ui/select';
+import { usePlayer } from '../contexts/PlayerContext';
 
 interface Episode {
   id: number;
@@ -50,6 +52,7 @@ const SeasonDetail: React.FC = () => {
   const { language } = useLanguage();
   const t = translations[language];
   const isMobile = useIsMobile();
+  const { currentPlayer, setCurrentPlayer } = usePlayer();
 
   useEffect(() => {
     const fetchData = async () => {
@@ -165,8 +168,20 @@ const SeasonDetail: React.FC = () => {
   if (isPlaying && currentEpisode) {
     return (
       <div className="fixed inset-0 bg-black z-50">
-        {/* Close button */}
-        <div className="absolute top-6 right-6 z-10">
+        {/* Controls */}
+        <div className="absolute top-6 right-6 z-10 flex items-center gap-3">
+          <Select value={currentPlayer} onValueChange={setCurrentPlayer}>
+            <SelectTrigger className="w-[180px] bg-black/70 border-white/20 text-white hover:bg-black/80">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-black/90 border-white/20">
+              {playerConfigs.map((config) => (
+                <SelectItem key={config.id} value={config.id} className="text-white hover:bg-white/10">
+                  {config.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <button
             onClick={handleClosePlayer}
             className="text-white hover:text-gray-300 transition-colors"
@@ -179,7 +194,7 @@ const SeasonDetail: React.FC = () => {
 
         {/* Player iframe */}
         <EmbeddedFrame
-          src={getPlayerUrl("vidify", { 
+          src={getPlayerUrl(currentPlayer, { 
             tmdbId: id!, 
             mediaType: "tv", 
             seasonNumber: currentEpisode.season_number, 

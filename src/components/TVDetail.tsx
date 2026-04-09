@@ -19,6 +19,7 @@ import { useIsMobile } from "../hooks/useIsMobile"
 import HybridTVHeader from "./HybridTVHeader"
 import EmbeddedFrame from "./player/EmbeddedFrame"
 import DownloadModal from "./DownloadModal"
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "./ui/select"
 
 
 const TVDetail: React.FC = () => {
@@ -47,7 +48,7 @@ const TVDetail: React.FC = () => {
   const { language } = useLanguage()
 
   const isMobile = useIsMobile()
-  const { currentPlayer } = usePlayer()
+  const { currentPlayer, setCurrentPlayer } = usePlayer()
 
   const t = translations[language];
 
@@ -355,8 +356,20 @@ const TVDetail: React.FC = () => {
   if (isPlaying && currentEpisode) {
     return (
       <div className="fixed inset-0 bg-black z-50">
-        {/* Close button */}
-        <div className="absolute top-6 right-6 z-10">
+        {/* Controls */}
+        <div className="absolute top-6 right-6 z-10 flex items-center gap-3">
+          <Select value={currentPlayer} onValueChange={setCurrentPlayer}>
+            <SelectTrigger className="w-[180px] bg-black/70 border-white/20 text-white hover:bg-black/80">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent className="bg-black/90 border-white/20">
+              {playerConfigs.map((config) => (
+                <SelectItem key={config.id} value={config.id} className="text-white hover:bg-white/10">
+                  {config.name}
+                </SelectItem>
+              ))}
+            </SelectContent>
+          </Select>
           <button
             onClick={handleClosePlayer}
             className="text-white hover:text-gray-300 transition-colors"
@@ -369,7 +382,7 @@ const TVDetail: React.FC = () => {
 
         {/* Player iframe */}
         <EmbeddedFrame
-          src={getPlayerUrl(currentPlayer || "videasy", {
+          src={getPlayerUrl(currentPlayer, {
             tmdbId: id!,
             mediaType: "tv",
             seasonNumber: currentEpisode.season_number,
