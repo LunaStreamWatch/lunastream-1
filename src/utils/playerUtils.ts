@@ -25,9 +25,9 @@ export const playerConfigs: PlayerConfig[] = [
       });
 
       if (mediaType === "movie" && tmdbId) {
-        return `https://vidfun.pro/movie/${tmdbId}?${playerParams.toString()}`;
+        return `https://vidfun.xyz/movie/${tmdbId}?${playerParams.toString()}`;
       } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
-        return `https://vidfun.pro/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
+        return `https://vidfun.xyz/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
       }
 
       throw new Error(`Invalid parameters for ${mediaType}`);
