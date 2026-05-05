@@ -22,7 +22,7 @@ export const playerConfigs: PlayerConfig[] = [
         cast: "false",
         adverse: "false",
         pauseOverlay: "true",
-        server: "Luna",
+        server: "Berlin",
       });
 
       if (mediaType === "movie" && tmdbId) {
