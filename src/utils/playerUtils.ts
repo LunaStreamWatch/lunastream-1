@@ -22,6 +22,7 @@ export const playerConfigs: PlayerConfig[] = [
         cast: "false",
         adverse: "false",
         pauseOverlay: "true",
+        server: "Luna",
       });
 
       if (mediaType === "movie" && tmdbId) {
