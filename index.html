@@ -4,9 +4,7 @@
     <meta charset="UTF-8" />
     <link rel="icon" href="favicon.ico" type="image/x-icon" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
     <title>LunaStream</title>
-
     <meta
       name="description"
       content="Discover and stream your favorite movies and TV shows using LunaStream's stunning, simple-to-use platform."
@@ -42,31 +40,25 @@
       async
       src="https://www.googletagmanager.com/gtag/js?id=G-6FMEE0EMLC"
     ></script>
-
     <script>
       window.dataLayer = window.dataLayer || [];
-
       function gtag() {
         dataLayer.push(arguments);
       }
-
       gtag('js', new Date());
       gtag('config', 'G-6FMEE0EMLC');
     </script>
 
-    <!-- Ads Script (respects saved toggle preference) -->
+    <!-- Ads Script (controlled by toggle) -->
     <script>
       (function () {
-        const adsDisabled = localStorage.getItem('adsDisabled') === 'true';
-
-        if (!adsDisabled) {
+        if (localStorage.getItem('adsDisabled') !== 'true') {
           const script = document.createElement('script');
-
-          script.dataset.zone = '10754757';
-          script.src = 'https://llvpn.com/tag.min.js';
+          script.setAttribute('data-cfasync', 'false');
           script.async = true;
-
-          (document.body || document.documentElement).appendChild(script);
+          script.type = 'text/javascript';
+          script.src = 'https://ly.talipesspirts.com/rgMRkqxa3A3F/mGAVN';
+          document.head.appendChild(script);
         }
       })();
     </script>
@@ -84,7 +76,7 @@
       data-include-search-params="true"
       data-only-in-iframe="true"
       data-debug="true"
-      data-custom-data='{"appName":"Lunastream","version":"1.0.0","greeting":"hi"}'
+      data-custom-data='{"appName": "Lunastream", "version": "1.0.0", "greeting": "hi"}'
       defer
     ></script>
   </body>
