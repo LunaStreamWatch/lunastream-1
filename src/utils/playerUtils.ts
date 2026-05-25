@@ -12,50 +12,50 @@ export interface PlayerConfig {
 }
 
 export const playerConfigs: PlayerConfig[] = [
-  {
-    id: "vidfun",
-    name: "Vidfun (No Ads)",
-    generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
-      const playerParams = new URLSearchParams({
-        color: "fbc9ff",
-        subtitle: "en",
-        cast: "false",
-        adverse: "false",
-        pauseOverlay: "true",
-        server: "Luna",
-      });
+   {
+     id: "videasy",
+     name: "Videasy (Ads)",
+     generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
+       const playerParams = new URLSearchParams({
+         color: "fbc9ff",
+         overlay: "true",
+         nextEpisode: "true",
+         autoplayNextEpisode: "true",
+       });
 
-      if (mediaType === "movie" && tmdbId) {
-        return `https://vidfun.xyz/movie/${tmdbId}?${playerParams.toString()}`;
-      } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
-        return `https://vidfun.xyz/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
-      }
+       if (mediaType === "movie" && tmdbId) {
+         return `https://player.videasy.net/movie/${tmdbId}?${playerParams.toString()}`;
+       } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
+         return `https://player.videasy.net/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
+       }
 
-      throw new Error(`Invalid parameters for ${mediaType}`);
-    },
-  },
-  {
-    id: "videasy",
-    name: "Videasy (Ads)",
-    generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
-      const playerParams = new URLSearchParams({
-        color: "fbc9ff",
-        overlay: "true",
-        nextEpisode: "true",
-        autoplayNextEpisode: "true",
-      });
+       throw new Error(`Invalid parameters for ${mediaType}`);
+     },
+   },
+   {
+     id: "vidfun",
+     name: "Vidfun (No Ads)",
+     generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
+       const playerParams = new URLSearchParams({
+         color: "fbc9ff",
+         subtitle: "en",
+         cast: "false",
+         adverse: "false",
+         pauseOverlay: "true",
+         server: "Luna",
+       });
 
-      if (mediaType === "movie" && tmdbId) {
-        return `https://player.videasy.net/movie/${tmdbId}?${playerParams.toString()}`;
-      } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
-        return `https://player.videasy.net/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
-      }
+       if (mediaType === "movie" && tmdbId) {
+         return `https://vidfun.xyz/movie/${tmdbId}?${playerParams.toString()}`;
+       } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
+         return `https://vidfun.xyz/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
+       }
 
-      throw new Error(`Invalid parameters for ${mediaType}`);
-    },
-  },
-  {
-    id: "cinesrc",
+       throw new Error(`Invalid parameters for ${mediaType}`);
+     },
+   },
+   {
+     id: "cinesrc",
     name: "CineSrc (Ads)",
     generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
       if (mediaType === "movie" && tmdbId) {

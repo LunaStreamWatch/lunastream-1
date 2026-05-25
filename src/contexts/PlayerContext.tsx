@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-type PlayerId = 'vidfun' | 'videasy' | 'cinesrc' | 'vidify' | 'vidfast' | 'vidnest';
+type PlayerId = 'videasy' | 'vidfun' | 'cinesrc' | 'vidify' | 'vidfast' | 'vidnest';
 
 interface PlayerContextType {
   currentPlayer: PlayerId;
@@ -17,9 +17,9 @@ export const PlayerProvider: React.FC<PlayerProviderProps> = ({ children }) => {
   const [currentPlayer, setCurrentPlayerState] = useState<PlayerId>(() => {
     try {
       const stored = localStorage.getItem('player');
-      return (stored as PlayerId) || 'vidfun';
+      return (stored as PlayerId) || 'videasy';
     } catch {
-      return 'vidfun';
+      return 'videasy';
     }
   });
 
