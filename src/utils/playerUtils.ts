@@ -21,6 +21,7 @@ export const playerConfigs: PlayerConfig[] = [
          overlay: "true",
          nextEpisode: "true",
          autoplayNextEpisode: "true",
+         episodeSelector: "true",
        });
 
        if (mediaType === "movie" && tmdbId) {
