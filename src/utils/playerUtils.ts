@@ -25,9 +25,9 @@ export const playerConfigs: PlayerConfig[] = [
        });
 
        if (mediaType === "movie" && tmdbId) {
-         return `https://player.videasy.net/movie/${tmdbId}?${playerParams.toString()}`;
+         return `https://player.videasy.to/movie/${tmdbId}?${playerParams.toString()}`;
        } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
-         return `https://player.videasy.net/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
+         return `https://player.videasy.to/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
        }
 
        throw new Error(`Invalid parameters for ${mediaType}`);
