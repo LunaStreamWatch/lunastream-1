@@ -14,3 +14,4 @@
   from = "/*"
   to = "/index.html"
   status = 200
+  conditions = {path = ["!/_assets/*", "!/*.js", "!/*.jsx", "!/*.ts", "!/*.tsx", "!/*.css", "!/*.json", "!/*.ico", "!/*.png", "!/*.jpg", "!/*.svg", "!/*.woff", "!/*.woff2"]}
