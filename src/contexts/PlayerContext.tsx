@@ -1,6 +1,6 @@
 import React, { createContext, useContext, useState, useEffect, ReactNode } from 'react';
 
-type PlayerId = 'videasy' | 'vidfun' | 'cinesrc' | 'vidify' | 'vidfast' | 'vidnest';
+type PlayerId = 'videasy' | 'vidsuper' | 'vidfun' | 'cinesrc' | 'vidify' | 'vidfast' | 'vidnest';
 
 interface PlayerContextType {
   currentPlayer: PlayerId;

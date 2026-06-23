@@ -12,29 +12,49 @@ export interface PlayerConfig {
 }
 
 export const playerConfigs: PlayerConfig[] = [
-   {
-     id: "videasy",
-     name: "Videasy (Ads)",
-     generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
-       const playerParams = new URLSearchParams({
-         color: "fbc9ff",
-         overlay: "true",
-         nextEpisode: "true",
-         autoplayNextEpisode: "true",
-         episodeSelector: "true",
-       });
+{
+      id: "videasy",
+      name: "Videasy (Ads)",
+      generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
+        const playerParams = new URLSearchParams({
+          color: "fbc9ff",
+          overlay: "true",
+          nextEpisode: "true",
+          autoplayNextEpisode: "true",
+          episodeSelector: "true",
+        });
 
-       if (mediaType === "movie" && tmdbId) {
-         return `https://player.videasy.to/movie/${tmdbId}?${playerParams.toString()}`;
-       } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
-         return `https://player.videasy.to/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
-       }
+        if (mediaType === "movie" && tmdbId) {
+          return `https://player.videasy.to/movie/${tmdbId}?${playerParams.toString()}`;
+        } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
+          return `https://player.videasy.to/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
+        }
 
-       throw new Error(`Invalid parameters for ${mediaType}`);
-     },
-   },
-   {
-     id: "vidfun",
+        throw new Error(`Invalid parameters for ${mediaType}`);
+      },
+    },
+    {
+      id: "vidsuper",
+      name: "Vidsuper (No ads)",
+      generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
+        const playerParams = new URLSearchParams({
+          color: "fbc9ff",
+          overlay: "true",
+          skip_intro: "true",
+          nextEpisode: "true",
+        });
+
+        if (mediaType === "movie" && tmdbId) {
+          return `https://vidsuper.net/movie/${tmdbId}?${playerParams.toString()}`;
+        } else if (mediaType === "tv" && tmdbId && seasonNumber && episodeNumber) {
+          return `https://vidsuper.net/tv/${tmdbId}/${seasonNumber}/${episodeNumber}?${playerParams.toString()}`;
+        }
+
+        throw new Error(`Invalid parameters for ${mediaType}`);
+      },
+    },
+    {
+      id: "vidfun",
      name: "Vidfun (No Ads)",
      generateUrl: ({ tmdbId, seasonNumber, episodeNumber, mediaType }) => {
        const playerParams = new URLSearchParams({
